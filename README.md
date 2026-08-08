@@ -1,6 +1,8 @@
 # Portal-Dungeon-python
 A small top-down 2D dungeon crawler game made in python with pygame.
 
+#NOT WORKING YET
+
 ## Changes
 Cleaned up all code (removed most useless comments, left in random move funcs in entity to look back on)
 
