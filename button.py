@@ -21,14 +21,14 @@ class Main_Menu_Button():
 
     def mouse_hover(self, m_pos, click, m_player):
         if self.rect.collidepoint(m_pos):
-            if self.image != self.down:
+            if self.image != self.down:#don't really need
                 self.image = self.down
                 if m_player.hitbox.colliderect(self.rect.topleft[0]+8, self.rect.topleft[1]+8, self.rect.topright[0]-self.rect.topleft[0]-16, self.rect.bottomleft[1]-self.rect.topleft[1]-32):
                     m_player.pos.y += 16
             if click:
                 self.clicked = True
         else:
-            if self.image != self.up:
+            if self.image != self.up:#dont really need
                 self.image = self.up
                 if m_player.hitbox.colliderect(self.rect.topleft[0]+8, self.rect.topleft[1]+8+16, self.rect.topright[0]-self.rect.topleft[0]-16, self.rect.bottomleft[1]-self.rect.topleft[1]-32):
                     m_player.pos.y -= 16
@@ -128,7 +128,7 @@ class Back_Button(Button):
         super().render()
 
 class Continue_Button(Button):
-    def __init__(self, next_state, x = d_width/2, y = d_height/2, up = cont_u, down = cont_d):
+    def __init__(self, next_state = 'Playing', x = d_width/2, y = d_height/2, up = cont_u, down = cont_d):
         super().__init__(next_state, x, y, up, down)
     
     def update(self, m_pos, click):
@@ -158,7 +158,7 @@ class Quit_Button_2(Button):
         super().render()
         
 class Respawn_Button(Button):
-    def __init__(self, next_state, x = d_width/2, y = d_height/2, up = rspn_u, down = rspn_d):
+    def __init__(self, next_state = 'Playing', x = d_width/2, y = d_height/2, up = rspn_u, down = rspn_d):
         super().__init__(next_state, x, y, up, down)
     
     def update(self, m_pos, click):
@@ -168,7 +168,7 @@ class Respawn_Button(Button):
         super().render()
         
 class Retry_Button(Button):
-    def __init__(self, next_state, x = d_width/2, y = d_height/2, up = rtry_u, down = rtry_d):
+    def __init__(self, next_state = 'Playing', x = d_width/2, y = d_height/2, up = rtry_u, down = rtry_d):
         super().__init__(next_state, x, y, up, down)
     
     def update(self, m_pos, click):
