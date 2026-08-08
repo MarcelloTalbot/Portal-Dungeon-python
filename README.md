@@ -1,7 +1,7 @@
 # Portal-Dungeon-python
 A small top-down 2D dungeon crawler game made in python with pygame.
 
-# Changes
+## Changes
 Changed how the level is changed by moving parts into the player
 
 Changed prev stats to be inside the player class
