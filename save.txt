@@ -1,0 +1,1672 @@
+
+self.player = Player(393.94826817189096, 373.94826817189096, lives = 2)
+self.player.solid = True
+self.player.health = 58
+self.player.healthmax = 100
+self.player.xvel = 0.0
+self.player.yvel = 0.0
+self.player.vel = 4
+self.player.t = 593
+self.player.idle_vel = 1
+self.player.collidable_tiles = ['wall', 'tree']
+self.player.weapon = 1
+self.player.attack_timer = 20726
+self.player.wait = 0
+self.player.healthregen = 1
+self.player.energyval = 32.29999999999987
+self.player.energyregen = 0.2
+self.player.energymax = 50
+self.player.sprintvelmult = 2
+self.player.footprint_timer = 6
+self.player.score = 70
+self.player.bullet_delay = 7
+self.player.cash = 22
+self.player.change_lvl = False
+self.player.damage = 2
+self.player.kills = 9
+self.player.bullets = 9
+self.player.attack_dist = 20
+self.player.portal_cost = 10
+self.player.respawn_protection = False
+self.player.respawn_protection_timer = 0
+self.player.level = 2
+self.player.prev_score = 70
+self.player.prev_kills = 9
+self.player.prev_bullets = 9
+self.player.prev_cash = 22
+self.camera.add(self.player)
+sprite = Ghost(742.4192641962557, 217.58073580374426)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = -1.414213562373095
+sprite.yvel = 1.414213562373095
+sprite.vel = 2
+sprite.t = 389
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = 114.27313161339073
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(790.4192641962557, 217.58073580374426)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = -1.414213562373095
+sprite.yvel = 1.414213562373095
+sprite.vel = 2
+sprite.t = 142
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = 111.63084702532483
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(838.4192641962557, 217.58073580374426)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = -1.414213562373095
+sprite.yvel = 1.414213562373095
+sprite.vel = 2
+sprite.t = 91
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = 109.48692662486145
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(887.8334777586288, 216.16652224137115)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = -1.414213562373095
+sprite.yvel = 1.414213562373095
+sprite.vel = 2
+sprite.t = 196
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = 107.81811026507886
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(958.4608947565985, 193.53910524340145)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = -1.414213562373095
+sprite.yvel = 1.414213562373095
+sprite.vel = 2
+sprite.t = 59
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = 107.81139355608774
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(1017.7746032555833, 182.2253967444166)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = -1.414213562373095
+sprite.yvel = 1.414213562373095
+sprite.vel = 2
+sprite.t = 397
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = 107.16594205753296
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(1089.8162338159261, 158.1837661840738)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = -1.414213562373095
+sprite.yvel = 1.414213562373095
+sprite.vel = 2
+sprite.t = 5
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = 107.29996264510622
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(1176.0, 120.0)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 0
+sprite.yvel = 0
+sprite.vel = 2
+sprite.t = 520
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 0
+sprite.damage = 10
+sprite.angle = 0
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(1224.0, 120.0)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 0
+sprite.yvel = 0
+sprite.vel = 2
+sprite.t = 275
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 0
+sprite.damage = 10
+sprite.angle = 0
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(1272.0, 120.0)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 0
+sprite.yvel = 0
+sprite.vel = 2
+sprite.t = 297
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 0
+sprite.damage = 10
+sprite.angle = 0
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(1320.0, 120.0)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 0
+sprite.yvel = 0
+sprite.vel = 2
+sprite.t = 331
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 0
+sprite.damage = 10
+sprite.angle = 0
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(1368.0, 120.0)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 0
+sprite.yvel = 0
+sprite.vel = 2
+sprite.t = 636
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 0
+sprite.damage = 10
+sprite.angle = 0
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(838.4192641962557, 265.58073580374435)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = -1.414213562373095
+sprite.yvel = 1.414213562373095
+sprite.vel = 2
+sprite.t = 863
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = 103.83172672170099
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(887.8334777586288, 264.16652224137124)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = -1.414213562373095
+sprite.yvel = 1.414213562373095
+sprite.vel = 2
+sprite.t = 490
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = 102.65324954867218
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(958.4608947565985, 241.53910524340154)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = -1.414213562373095
+sprite.yvel = 1.414213562373095
+sprite.vel = 2
+sprite.t = 812
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = 103.30421312028004
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(1017.7746032555833, 230.22539674441668)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = -1.414213562373095
+sprite.yvel = 1.414213562373095
+sprite.vel = 2
+sprite.t = 680
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = 103.0686185929371
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(1082.7451660040606, 213.2548339959394)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = -1.414213562373095
+sprite.yvel = 1.414213562373095
+sprite.vel = 2
+sprite.t = 180
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = 103.21731643929031
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(1176.0, 168.0)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 0
+sprite.yvel = 0
+sprite.vel = 2
+sprite.t = 223
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 0
+sprite.damage = 10
+sprite.angle = 0
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(1224.0, 168.0)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 0
+sprite.yvel = 0
+sprite.vel = 2
+sprite.t = 779
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 0
+sprite.damage = 10
+sprite.angle = 0
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(1272.0, 168.0)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 0
+sprite.yvel = 0
+sprite.vel = 2
+sprite.t = 878
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 0
+sprite.damage = 10
+sprite.angle = 0
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(1320.0, 168.0)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 0
+sprite.yvel = 0
+sprite.vel = 2
+sprite.t = 409
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 0
+sprite.damage = 10
+sprite.angle = 0
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(1368.0, 168.0)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 0
+sprite.yvel = 0
+sprite.vel = 2
+sprite.t = 794
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 0
+sprite.damage = 10
+sprite.angle = 0
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(958.4608947565985, 289.53910524340154)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = -1.414213562373095
+sprite.yvel = 1.414213562373095
+sprite.vel = 2
+sprite.t = 229
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = 98.62325742039502
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(1017.7746032555833, 278.2253967444167)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = -1.414213562373095
+sprite.yvel = 1.414213562373095
+sprite.vel = 2
+sprite.t = 566
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = 98.83084879460327
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(1082.7451660040606, 261.2548339959394)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = -1.414213562373095
+sprite.yvel = 1.414213562373095
+sprite.vel = 2
+sprite.t = 636
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = 99.3873902050961
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(1176.0, 216.0)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 0
+sprite.yvel = 0
+sprite.vel = 2
+sprite.t = 201
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 0
+sprite.damage = 10
+sprite.angle = 0
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(1224.0, 216.0)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 0
+sprite.yvel = 0
+sprite.vel = 2
+sprite.t = 952
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 0
+sprite.damage = 10
+sprite.angle = 0
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(1272.0, 216.0)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 0
+sprite.yvel = 0
+sprite.vel = 2
+sprite.t = 553
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 0
+sprite.damage = 10
+sprite.angle = 0
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(1320.0, 216.0)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 0
+sprite.yvel = 0
+sprite.vel = 2
+sprite.t = 468
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 0
+sprite.damage = 10
+sprite.angle = 0
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(1368.0, 216.0)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 0
+sprite.yvel = 0
+sprite.vel = 2
+sprite.t = 715
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 0
+sprite.damage = 10
+sprite.angle = 0
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(1082.7451660040606, 309.2548339959394)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = -1.414213562373095
+sprite.yvel = 1.414213562373095
+sprite.vel = 2
+sprite.t = 410
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = 95.47103667457456
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(1176.0, 264.0)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 0
+sprite.yvel = 0
+sprite.vel = 2
+sprite.t = 786
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 0
+sprite.damage = 10
+sprite.angle = 0
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(1224.0, 264.0)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 0
+sprite.yvel = 0
+sprite.vel = 2
+sprite.t = 423
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 0
+sprite.damage = 10
+sprite.angle = 0
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(1272.0, 264.0)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 0
+sprite.yvel = 0
+sprite.vel = 2
+sprite.t = 502
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 0
+sprite.damage = 10
+sprite.angle = 0
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(1320.0, 264.0)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 0
+sprite.yvel = 0
+sprite.vel = 2
+sprite.t = 11
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 0
+sprite.damage = 10
+sprite.angle = 0
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(1368.0, 264.0)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 0
+sprite.yvel = 0
+sprite.vel = 2
+sprite.t = 89
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 0
+sprite.damage = 10
+sprite.angle = 0
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(1224.0, 312.0)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 0
+sprite.yvel = 0
+sprite.vel = 2
+sprite.t = 166
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 0
+sprite.damage = 10
+sprite.angle = 0
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(1272.0, 312.0)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 0
+sprite.yvel = 0
+sprite.vel = 2
+sprite.t = 542
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 0
+sprite.damage = 10
+sprite.angle = 0
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(1320.0, 312.0)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 0
+sprite.yvel = 0
+sprite.vel = 2
+sprite.t = 211
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 0
+sprite.damage = 10
+sprite.angle = 0
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(1368.0, 312.0)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 0
+sprite.yvel = 0
+sprite.vel = 2
+sprite.t = 583
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 0
+sprite.damage = 10
+sprite.angle = 0
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(1320.0, 360.0)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 0
+sprite.yvel = 0
+sprite.vel = 2
+sprite.t = 785
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 0
+sprite.damage = 10
+sprite.angle = 0
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(1368.0, 360.0)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 0
+sprite.yvel = 0
+sprite.vel = 2
+sprite.t = 462
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 0
+sprite.damage = 10
+sprite.angle = 0
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(217.58073580374426, 502.41926419625565)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 1.414213562373095
+sprite.yvel = -1.414213562373095
+sprite.vel = 2
+sprite.t = 480
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = -53.84858424129591
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(265.58073580374435, 502.41926419625565)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 1.414213562373095
+sprite.yvel = -1.414213562373095
+sprite.vel = 2
+sprite.t = 840
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = -44.977170639564946
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(209.09545442950562, 558.9045455704943)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 1.414213562373095
+sprite.yvel = -1.414213562373095
+sprite.vel = 2
+sprite.t = 900
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = -44.9840916966452
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(257.0954544295057, 558.9045455704943)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 1.414213562373095
+sprite.yvel = -1.414213562373095
+sprite.vel = 2
+sprite.t = 809
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = -36.5714738240628
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(305.0954544295057, 558.9045455704943)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 1.414213562373095
+sprite.yvel = -1.414213562373095
+sprite.vel = 2
+sprite.t = 768
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = -25.842848853664304
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(324.8111831820436, 557.7329726952405)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 1.414213562373095
+sprite.yvel = -1.414213562373095
+sprite.vel = 2
+sprite.t = 403
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = -20.854276962373923
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(189.29646455628213, 626.7035354437178)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 1.414213562373095
+sprite.yvel = -1.414213562373095
+sprite.vel = 2
+sprite.t = 208
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = -39.03315365112903
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(237.29646455628222, 626.7035354437178)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 1.414213562373095
+sprite.yvel = -1.414213562373095
+sprite.vel = 2
+sprite.t = 249
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = -31.877158356447694
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(285.2964645562822, 626.7035354437178)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 1.414213562373095
+sprite.yvel = -1.414213562373095
+sprite.vel = 2
+sprite.t = 838
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = -23.41462984856482
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(333.2964645562822, 626.7035354437178)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 1.414213562373095
+sprite.yvel = -1.414213562373095
+sprite.vel = 2
+sprite.t = 46
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = -13.722589969393702
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(365.74011537017805, 626.1177490060909)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 1.414213562373095
+sprite.yvel = -1.414213562373095
+sprite.vel = 2
+sprite.t = 133
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = -6.6628067762752226
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(389.69848480983524, 625.531962568464)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 1.414213562373095
+sprite.yvel = -1.414213562373095
+sprite.vel = 2
+sprite.t = 420
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = -1.2824964472172617
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(177.98275605729728, 686.0172439427026)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 1.414213562373095
+sprite.yvel = -1.414213562373095
+sprite.vel = 2
+sprite.t = 384
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = -34.738732878418986
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(225.98275605729737, 686.0172439427026)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 1.414213562373095
+sprite.yvel = -1.414213562373095
+sprite.vel = 2
+sprite.t = 57
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = -28.383025906611586
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(273.98275605729737, 686.0172439427026)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 1.414213562373095
+sprite.yvel = -1.414213562373095
+sprite.vel = 2
+sprite.t = 396
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = -21.166249878964774
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(321.98275605729737, 686.0172439427026)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 1.414213562373095
+sprite.yvel = -1.414213562373095
+sprite.vel = 2
+sprite.t = 288
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = -13.174514877570333
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(369.98275605729737, 686.0172439427026)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 1.414213562373095
+sprite.yvel = -1.414213562373095
+sprite.vel = 2
+sprite.t = 109
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = -4.628594235233871
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(391.11269837220834, 684.259884629822)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 0
+sprite.yvel = -2
+sprite.vel = 2
+sprite.t = 190
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = -0.5201910831059303
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(391.0294372515227, 681.9167388793144)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 0
+sprite.yvel = -2
+sprite.vel = 2
+sprite.t = 149
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = -0.5395121307072617
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(398.01724394270263, 686.0172439427026)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = -1.414213562373095
+sprite.yvel = -1.414213562373095
+sprite.vel = 2
+sprite.t = 940
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = 1.0020683248756437
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(149.69848480983515, 762.3015151901648)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 1.414213562373095
+sprite.yvel = -1.414213562373095
+sprite.vel = 2
+sprite.t = 406
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = -32.22255413663005
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(197.69848480983524, 762.3015151901648)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 1.414213562373095
+sprite.yvel = -1.414213562373095
+sprite.vel = 2
+sprite.t = 332
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = -26.8910765580485
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(245.69848480983524, 762.3015151901648)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 1.414213562373095
+sprite.yvel = -1.414213562373095
+sprite.vel = 2
+sprite.t = 161
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = -21.005930075812394
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(293.69848480983524, 762.3015151901648)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 1.414213562373095
+sprite.yvel = -1.414213562373095
+sprite.vel = 2
+sprite.t = 893
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = -14.618882268315796
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(341.69848480983524, 762.3015151901648)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 1.414213562373095
+sprite.yvel = -1.414213562373095
+sprite.vel = 2
+sprite.t = 115
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = -7.839315418371429
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(389.69848480983524, 762.3015151901648)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 1.414213562373095
+sprite.yvel = -1.414213562373095
+sprite.vel = 2
+sprite.t = 505
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = -0.8325484072841228
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(391.0294372515227, 758.2010101267765)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 0
+sprite.yvel = -2
+sprite.vel = 2
+sprite.t = 295
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = -0.43296394158210044
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(426.30151519016476, 762.3015151901648)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = -1.414213562373095
+sprite.yvel = -1.414213562373095
+sprite.vel = 2
+sprite.t = 289
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = 4.95145030547753
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(474.30151519016476, 762.3015151901648)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = -1.414213562373095
+sprite.yvel = -1.414213562373095
+sprite.vel = 2
+sprite.t = 630
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = 11.847993538981157
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(522.3015151901648, 762.3015151901648)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = -1.414213562373095
+sprite.yvel = -1.414213562373095
+sprite.vel = 2
+sprite.t = 399
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 1.2
+sprite.damage = 10
+sprite.angle = 18.41443641274042
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(120.0, 840.0)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 0
+sprite.yvel = 0
+sprite.vel = 2
+sprite.t = 267
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 0
+sprite.damage = 10
+sprite.angle = 0
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(168.0, 840.0)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 0
+sprite.yvel = 0
+sprite.vel = 2
+sprite.t = 92
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 0
+sprite.damage = 10
+sprite.angle = 0
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(216.0, 840.0)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 0
+sprite.yvel = 0
+sprite.vel = 2
+sprite.t = 121
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 0
+sprite.damage = 10
+sprite.angle = 0
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(264.0, 840.0)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 0
+sprite.yvel = 0
+sprite.vel = 2
+sprite.t = 121
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 0
+sprite.damage = 10
+sprite.angle = 0
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(312.0, 840.0)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 0
+sprite.yvel = 0
+sprite.vel = 2
+sprite.t = 704
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 0
+sprite.damage = 10
+sprite.angle = 0
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(360.0, 840.0)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 0
+sprite.yvel = 0
+sprite.vel = 2
+sprite.t = 936
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 0
+sprite.damage = 10
+sprite.angle = 0
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(408.0, 840.0)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 0
+sprite.yvel = 0
+sprite.vel = 2
+sprite.t = 936
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 0
+sprite.damage = 10
+sprite.angle = 0
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(456.0, 840.0)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 0
+sprite.yvel = 0
+sprite.vel = 2
+sprite.t = 456
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 0
+sprite.damage = 10
+sprite.angle = 0
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(504.0, 840.0)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 0
+sprite.yvel = 0
+sprite.vel = 2
+sprite.t = 801
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 0
+sprite.damage = 10
+sprite.angle = 0
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(552.0, 840.0)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 0
+sprite.yvel = 0
+sprite.vel = 2
+sprite.t = 776
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 0
+sprite.damage = 10
+sprite.angle = 0
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(600.0, 840.0)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 0
+sprite.yvel = 0
+sprite.vel = 2
+sprite.t = 468
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 0
+sprite.damage = 10
+sprite.angle = 0
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Ghost(648.0, 840.0)
+sprite.solid = False
+sprite.health = 15
+sprite.healthmax = 15
+sprite.xvel = 0
+sprite.yvel = 0
+sprite.vel = 2
+sprite.t = 300
+sprite.idle_vel = 1
+sprite.collidable_tiles = []
+sprite.sight = 800
+sprite.idle_start_time = 0
+sprite.anim_spd = 0
+sprite.damage = 10
+sprite.angle = 0
+sprite.attack_timer = 0
+sprite.attack_dist = 20
+self.enemy_group.add(sprite)
+self.camera.add(sprite)
+sprite = Mud_Footprint(363.07821048680194, 347.07821048680194, -86.18592516570965)
+sprite.solid = True
+sprite.health = 10
+sprite.healthmax = 10
+sprite.xvel = 0
+sprite.yvel = 0
+sprite.vel = 4
+sprite.t = 24
+sprite.angle = -86.18592516570965
+self.footprint_group.add(sprite)
+self.camera.add(sprite)
+sprite = Mud_Footprint(380.0487732352792, 364.0487732352792, -110.77225468204583)
+sprite.solid = True
+sprite.health = 10
+sprite.healthmax = 10
+sprite.xvel = 0
+sprite.yvel = 0
+sprite.vel = 4
+sprite.t = 12
+sprite.angle = -110.77225468204583
+self.footprint_group.add(sprite)
+self.camera.add(sprite)
+sprite = Mud_Footprint(389.94826817189096, 373.94826817189096, -124.69515353123397)
+sprite.solid = True
+sprite.health = 10
+sprite.healthmax = 10
+sprite.xvel = 0
+sprite.yvel = 0
+sprite.vel = 4
+sprite.t = 5
+sprite.angle = -124.69515353123397
+self.footprint_group.add(sprite)
+self.camera.add(sprite)
+sprite = Gold_Chest(528.0, 432.0, 0)
+sprite.once = True
+sprite.needs_key = False
+sprite.c_type = 3
+self.interactable_group.add(sprite)
+self.camera.add(sprite)

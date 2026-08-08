@@ -2,7 +2,7 @@ import pygame, math
 from pygame.locals import *
 from camera import *
 
-pygame.init()
+# pygame.init()
 
 #get data of the monitor being used
 computer = pygame.display.Info()
@@ -45,7 +45,7 @@ levels = {
 img_dir = "images/"#directories for correct path
 
 misc_dir = "misc/"
-misc = {
+misc_imgs = {
     title_img := pygame.image.load(img_dir+misc_dir+"title.png").convert_alpha(), 
     ctrls_img := pygame.transform.scale(pygame.image.load(img_dir+misc_dir+"control_menu.png").convert_alpha(), (d_width, d_height-128)), 
     hrt := pygame.image.load(img_dir+misc_dir+"heart.png").convert_alpha(), 
@@ -57,7 +57,7 @@ misc = {
 w_show = [fist_show, gun_show]
 
 til_dir = "tiles/"
-tiles = {
+tile_imgs = {
     grass := pygame.image.load(img_dir+til_dir+"grass.png").convert_alpha(), 
     wall := pygame.image.load(img_dir+til_dir+"wall.png").convert_alpha(), 
     tree := pygame.image.load(img_dir+til_dir+"tree.png").convert_alpha(), 
@@ -68,13 +68,13 @@ tiles = {
     flower_grass := pygame.image.load(img_dir+til_dir+"flower_grass.png").convert_alpha(), 
 }
 plr_dir = "player/"
-players = {
+player_imgs = {
     plrhd := pygame.image.load(img_dir+plr_dir+"playerHead.png").convert_alpha(), 
     plrrm := pygame.image.load(img_dir+plr_dir+"playerArms.png").convert_alpha(), 
 }
 enm_dir = "enemies/"
 gst_dir = "ghost/"
-enemies = {
+enemy_imgs = {
     zmbhd := pygame.image.load(img_dir+enm_dir+"zombieHead.png").convert_alpha(), 
     zmbrm := pygame.image.load(img_dir+enm_dir+"zombieArms.png").convert_alpha(), 
     sklhd := pygame.image.load(img_dir+enm_dir+"skeletonHead.png").convert_alpha(), 
@@ -95,22 +95,22 @@ enemies = {
 gsttlAnim = (gsttlV_1, gsttlV_2, gsttlV_3, gsttlV_4, gsttlV_5, gsttlV_6, gsttlV_7, gsttlV_8)
 
 spwn_dir = "spawners/"
-spawners = {
+spawner_imgs = {
     grvstn := pygame.image.load(img_dir+spwn_dir+"grave.png").convert_alpha(), 
 }
 ptcl_dir = "particles/"
-particles = {
+particle_imgs = {
     snow_footprints := pygame.image.load(img_dir+ptcl_dir+"snow_footprints.png").convert_alpha(), 
     mud_footprints := pygame.image.load(img_dir+ptcl_dir+"mud_footprints.png").convert_alpha(), 
     blt := pygame.image.load(img_dir+ptcl_dir+"bullet.png").convert_alpha(), 
 }
 col_dir = "collectables/"
-collectables = {
+collectable_imgs = {
     cn := pygame.image.load(img_dir+col_dir+"coin.png").convert_alpha(), 
     amo := pygame.image.load(img_dir+col_dir+"ammo.png").convert_alpha(), 
 }
 btn_dir = "buttons/"
-buttons = {
+button_imgs = {
     play_u := pygame.image.load(img_dir+btn_dir+"play_up.png").convert_alpha(), 
     play_d := pygame.image.load(img_dir+btn_dir+"play_down.png").convert_alpha(), 
     quit_u := pygame.image.load(img_dir+btn_dir+"quit_up.png").convert_alpha(), 
@@ -133,7 +133,7 @@ buttons = {
     rspn_d := pygame.image.load(img_dir+btn_dir+"respawn_down.png").convert_alpha(), 
 }
 int_dir = "interactables/"
-interactables = {
+interactable_imgs = {
     wood_closed := pygame.image.load(img_dir+int_dir+"wood_chest_closed.png").convert_alpha(), 
     wood_open := pygame.image.load(img_dir+int_dir+"wood_chest_open.png").convert_alpha(), 
     iron_closed := pygame.image.load(img_dir+int_dir+"iron_chest_closed.png").convert_alpha(), 
@@ -148,7 +148,11 @@ interactables = {
     # door_anticlock_down := pygame.image.load(img_dir+int_dir+"door_anticlockwise_down.png").convert_alpha(), 
     # door_clock_down := pygame.image.load(img_dir+int_dir+"door_clockwise_down.png").convert_alpha(), 
     # door_anticlock_left := pygame.image.load(img_dir+int_dir+"door_anticlockwise_left.png").convert_alpha(), 
-    door := pygame.image.load(img_dir+int_dir+"wood_door.png").convert_alpha(),
+    wood_door := pygame.image.load(img_dir+int_dir+"wood_door.png").convert_alpha(),
+}
+wpn_dir = "weapons/"
+weapon_imgs = {
+    pistol := pygame.image.load(img_dir+wpn_dir+"pistol.png").convert_alpha(),
 }
 
 #icon
@@ -161,8 +165,8 @@ entity_x_scale = aspect_ratio * 18
 entity_y_scale = aspect_ratio * 18
 
 sprite_scale = 1
-
-tile_scale = sprite_scale * 48
+tile_size = 48
+tile_scale = sprite_scale * tile_size
 
 #key presses
 up_pressed = False

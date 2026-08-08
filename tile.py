@@ -25,7 +25,7 @@ class Tile(pygame.sprite.DirtySprite):
         self.z = 0
 
 class Portal(pygame.sprite.DirtySprite):
-    def __init__(self, t_type, image,pos):
+    def __init__(self, t_type, image, pos):
         super().__init__()
         self.type = "portal"
         self.life = "alive"

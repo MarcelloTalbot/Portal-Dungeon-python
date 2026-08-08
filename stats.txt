@@ -1,0 +1,3 @@
+Score: 70
+Kills: 9
+Lives: 2
