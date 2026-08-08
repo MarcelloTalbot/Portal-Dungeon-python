@@ -1,4 +1,4 @@
-import math,random#pygame,math,random
+import math, random#pygame, math, random
 from textbox import *
 from settings import *
 #from pygame.locals import *
@@ -8,12 +8,12 @@ from settings import *
 
 #objects (all sprites)
 class Object(pygame.sprite.DirtySprite):
-    def __init__(self,x,y,display,image):#I may not need image,arm,tail as args
+    def __init__(self, x, y, display, image):#I may not need image, arm, tail as args
         super().__init__()
         self.type = "object"
         self.display = display
         pygame.sprite.DirtySprite.__init__(self)
-        self.pos = pygame.math.Vector2((x,y))
+        self.pos = pygame.math.Vector2((x, y))
         self.solid = True
         self.health = 10
         self.healthmax = 10
@@ -22,32 +22,33 @@ class Object(pygame.sprite.DirtySprite):
         self.vel = 4
         self.z = 3
         self.image = image
-        self.scal_image = pygame.transform.scale(self.image,(sprite_scale*18,sprite_scale*18))
+        self.scal_image = pygame.transform.scale(self.image, (sprite_scale*18, sprite_scale*18))
         self.rot_image = self.scal_image
-        self.rect = self.rot_image.get_rect(center = (round(self.pos.x),round(self.pos.y)))
-        self.hitbox = self.scal_image.get_rect(center = (round(self.pos.x),round(self.pos.y)))
+        self.rect = self.rot_image.get_rect(center = (round(self.pos.x), round(self.pos.y)))
+        self.hitbox = self.scal_image.get_rect(center = (round(self.pos.x), round(self.pos.y)))
+        # self.save_vals = ['solid', 'health', 'healthmax', 'xvel', 'yvel', 'vel']
 
-    def die(self,p,c_group):
+    def die(self, p, c_group, camera):
         if self.health <= 0:
             p.score += self.healthmax
-            for n in range(0,(self.healthmax//2 - random.randint(0,self.healthmax//4))):
-                x = (self.hitbox.topleft[0] + random.randint(0,(self.hitbox.topright[0]-self.hitbox.topleft[0])))
-                y = (self.hitbox.topleft[1] + random.randint(0,(self.hitbox.bottomleft[1]-self.hitbox.topleft[1])))
-                num = random.randint(0,30)
+            for n in range(0, (self.healthmax//2 - random.randint(0, self.healthmax//4))):
+                x = (self.hitbox.topleft[0] + random.randint(0, (self.hitbox.topright[0]-self.hitbox.topleft[0])))
+                y = (self.hitbox.topleft[1] + random.randint(0, (self.hitbox.bottomleft[1]-self.hitbox.topleft[1])))
+                num = random.randint(0, 30)
                 if num == 30:
-                    self.create_ammo(x,y,c_group)
+                    self.create_ammo(x, y, c_group, camera)
                 else:
-                    self.create_coin(x,y,c_group)
+                    self.create_coin(x, y, c_group, camera)
             p.kills += 1
             self.kill()
             
-    def create_coin(self,x,y,c_group):
-        coin = Coin(x,y,self.display,cn,1)
+    def create_coin(self, x, y, c_group, camera):
+        coin = Coin(x, y)
         c_group.add(coin)
         camera.add(coin)
 
-    def create_ammo(self,x,y,c_group):
-        ammo = Ammo(x,y,self.display,amo,30)
+    def create_ammo(self, x, y, c_group, camera):
+        ammo = Ammo(x, y)
         c_group.add(ammo)
         camera.add(ammo)
 
@@ -62,38 +63,39 @@ class Object(pygame.sprite.DirtySprite):
         
 #entities(moving sprites)
 class Entity(Object):
-    def __init__(self,x,y,display,image,arm):
-        super().__init__(x,y,display,image)
+    def __init__(self, x, y, display, image, arm):
+        super().__init__(x, y, display, image)
         self.type = "entity"
         self.arm = arm
-        self.scal_arm = pygame.transform.scale(self.arm,(sprite_scale*30,sprite_scale*30))
+        self.scal_arm = pygame.transform.scale(self.arm, (sprite_scale*30, sprite_scale*30))
         self.rot_arm = self.scal_arm
-        self.arm_rect = self.scal_arm.get_rect(center = (round(self.pos.x),round(self.pos.y)))
-        self.t = random.randint(0,960)
+        self.arm_rect = self.scal_arm.get_rect(center = (round(self.pos.x), round(self.pos.y)))
+        self.t = random.randint(0, 960)
         self.idle_vel = 1
         self.z = 4
-        self.next_pos = (0,0)
+        self.next_pos = (0, 0)
         self.collidable_tiles = []
+        # self.save_vals.extend(['t', 'idle_vel', 'next_pos', 'collidable_tiles'])
 
-    def die(self,p,c_group,s_group):
-        super().die(p,c_group)
+    def die(self, p, c_group, s_group, camera):
+        super().die(p, c_group, camera)
 
-    def create_coin(self,x,y,c_group):
-        super().create_coin(x,y,c_group)
+    def create_coin(self, x, y, c_group, camera):
+        super().create_coin(x, y, c_group, camera)
 
-    def create_ammo(self,x,y,c_group):
-        super().create_ammo(x,y,c_group)
+    def create_ammo(self, x, y, c_group, camera):
+        super().create_ammo(x, y, c_group, camera)
 
     def sync(self):
         super().sync()
-        self.arm_rect.center = self.pos.x,self.pos.y
+        self.arm_rect.center = self.pos.x, self.pos.y
         
     def random_move(self):
         if self.idle == False:
             self.t = 0
-            next_x = random.randint(0,int(self.pos.x) + 200) - 100
-            next_y = random.randint(0,int(self.pos.y) + 200) - 100
-            self.next_pos = pygame.math.Vector2((next_x,next_y))
+            next_x = random.randint(0, int(self.pos.x) + 200) - 100
+            next_y = random.randint(0, int(self.pos.y) + 200) - 100
+            self.next_pos = pygame.math.Vector2((next_x, next_y))
             self.idle = True
         
         if self.t > 60 and self.t < 210:
@@ -169,7 +171,7 @@ class Entity(Object):
             
         #self.rotate()
             
-    def square_move_2(self,timer):#would need to reset idle when not updating as timer would tick when not moving making it janky
+    def square_move_2(self, timer):#would need to reset idle when not updating as timer would tick when not moving making it janky
         #timer = get_timer()
         
         if self.idle == False:
@@ -224,8 +226,8 @@ class Entity(Object):
 
 #enemy spawners(factories)
 class Spawner(Object):
-    def __init__(self,x,y,display,image,s_type,num):
-       super().__init__(x,y,display,image)
+    def __init__(self, x, y, display, image, s_type, num):
+       super().__init__(x, y, display, image)
        self.health = 50
        self.healthmax = 50
        self.s_type = s_type
@@ -233,86 +235,88 @@ class Spawner(Object):
        self.e_count = 0
        self.e_count_max = 20
        self.num = num
+       self.type = "spawner"
+       # self.save_vals.extend(['s_type', 'spawn_timer', 'e_count', 'e_count_max', 'num'])
        
-    def create_zombie(self,e_group):
-        zombie = Zombie(self.pos.x,self.pos.y,self.display,zmbhd,zmbrm,True,self.num)
+    def create_zombie(self, e_group, camera):
+        zombie = Zombie(self.pos.x, self.pos.y)#, self.display, zmbhd, zmbrm, True, self.num)
         e_group.add(zombie)
         camera.add(zombie)
 
-    def create_skeleton(self,e_group):
-        skeleton = Skeleton(self.pos.x,self.pos.y,self.display,sklhd,sklrm,True,self.num)
+    def create_skeleton(self, e_group, camera):
+        skeleton = Skeleton(self.pos.x, self.pos.y)#, self.display, sklhd, sklrm, True, self.num)
         e_group.add(skeleton)
         camera.add(skeleton)
         
-    def create_ghost(self,e_group):
-        ghost = Ghost(self.pos.x,self.pos.y,self.display,gsthdV,gstrmV,gsttlAnim)
+    def create_ghost(self, e_group, camera):
+        ghost = Ghost(self.pos.x, self.pos.y, self.display, gsthdV, gstrmV, gsttlAnim)
         e_group.add(ghost)
         camera.add(ghost)
 
 # def create_enemy(self):
 #    self.spawn_timer += 1
 #    if self.spawn_timer >= 300:
-#        exec("%s = %d" % (self.s_type,self.s_type(self.pos.x,self.pos.y,display,)
+#        exec("%s = %d" % (self.s_type, self.s_type(self.pos.x, self.pos.y, display, )
 
 #zombie + skeleton spawner
 class Grave(Spawner):#Object):
-    def __init__(self,x,y,display,image,s_type,num):#,s_type):
-        super().__init__(x,y,display,image,s_type,num)
-        self.scal_image = pygame.transform.scale(self.image,(sprite_scale*48,sprite_scale*64))
+    def __init__(self, x, y, display = display, image = grvstn, s_type = 0, num = 0):#, s_type):
+        super().__init__(x, y, display, image, s_type, num)
+        self.scal_image = pygame.transform.scale(self.image, (sprite_scale*48, sprite_scale*64))
         self.rot_image = self.scal_image
-        self.rect = self.rot_image.get_rect(center = (round(self.pos.x),round(self.pos.y)))
-        self.hitbox = self.scal_image.get_rect(center = (round(self.pos.x),round(self.pos.y)))
+        self.rect = self.rot_image.get_rect(center = (round(self.pos.x), round(self.pos.y)))
+        self.hitbox = self.scal_image.get_rect(center = (round(self.pos.x), round(self.pos.y)))
         #self.s_type = s_type
         self.health = 50
         self.healthmax = 50
-        self.spawn_timer = 0
-        self.e_count = 0
+        # self.spawn_timer = 0
+        # self.e_count = 0
         self.e_count_max = 20
         self.s_spawn = False
-        self.num = num
-        self.type = "spawner"
+        # self.num = num
         self.spawn_list = [self.create_zombie, self.create_skeleton]
+        # self.save_vals.extend(['s_spawn'])
 
-    def update(self,e_group,p,c_group,offset):
-        self.die(p,c_group)
-        self.create(e_group)
+    def update(self, e_group, p, c_group, offset, camera):
+        self.die(p, c_group, camera)
+        self.create(e_group, camera)
         #self.render()
         self.render_bars(offset)
 
-    def create_coin(self,x,y,c_group):
-        super().create_coin(x,y,c_group)
+    def create_coin(self, x, y, c_group, camera):
+        super().create_coin(x, y, c_group, camera)
 
-    def create_ammo(self,x,y,c_group):
-        super().create_ammo(x,y,c_group)
+    def create_ammo(self, x, y, c_group, camera):
+        super().create_ammo(x, y, c_group, camera)
 
-    def die(self,p,c_group):
-        super().die(p,c_group)
+    def die(self, p, c_group, camera):
+        super().die(p, c_group, camera)
 
-    def create(self,e_group):
+    def create(self, e_group, camera):
         self.spawn_timer += 1
         if self.spawn_timer >= 300 and self.e_count < self.e_count_max:
             # spawn_list = [self.create_zombie, self.create_skeleton]
-            random.choice(self.spawn_list)(e_group)#randomly chooses which function to perform
+            random.choice(self.spawn_list)(e_group, camera)#randomly chooses which function to perform
             self.e_count += 1
             self.spawn_timer = 0
 
-    # def create_zombie(self,e_group):
-    #     zombie = Zombie(self.pos.x,self.pos.y,self.display,zmbhd,zmbrm,True,self.num)
+    # def create_zombie(self, e_group):
+    #     zombie = Zombie(self.pos.x, self.pos.y, self.display, zmbhd, zmbrm, True, self.num)
     #     e_group.add(zombie)
     #     camera.add(zombie)
 
-    # def create_skeleton(self,e_group):
-    #     skeleton = Skeleton(self.pos.x,self.pos.y,self.display,sklhd,sklrm,True,self.num)
+    # def create_skeleton(self, e_group):
+    #     skeleton = Skeleton(self.pos.x, self.pos.y, self.display, sklhd, sklrm, True, self.num)
     #     e_group.add(skeleton)
     #     camera.add(skeleton)
     
-    def create_zombie(self,e_group):
-        super().create_zombie(e_group)
+    def create_zombie(self, e_group, camera):
+        super().create_zombie(e_group, camera)
         
-    def create_skeleton(self, e_group):
-        super().create_skeleton(e_group)
+    def create_skeleton(self, e_group, camera):
+        super().create_skeleton(e_group, camera)
 
-    def render_bars(self,offset):
+    def render_bars(self, offset):
         #progress rectangle stats
         hpbar_p_left = offset[0] - 3
         hpbar_p_top = offset[1] - 10
@@ -326,42 +330,43 @@ class Grave(Spawner):#Object):
         hpbar_b_height = hpbar_p_height + 4
 
         #hp bar
-        pygame.draw.rect(self.display,dark_red,pygame.Rect(hpbar_b_left,hpbar_b_top,hpbar_b_width,hpbar_b_height))
-        pygame.draw.rect(self.display,red,pygame.Rect(hpbar_p_left,hpbar_p_top,hpbar_p_width,hpbar_p_height))
+        pygame.draw.rect(self.display, dark_red, pygame.Rect(hpbar_b_left, hpbar_b_top, hpbar_b_width, hpbar_b_height))
+        pygame.draw.rect(self.display, red, pygame.Rect(hpbar_p_left, hpbar_p_top, hpbar_p_width, hpbar_p_height))
 
     def render(self):
         self.render_bars()
-        self.display.blit(self.rot_image,self.rect)
+        self.display.blit(self.rot_image, self.rect)
                            
 #enemies
 class Enemy(Entity):
-    def __init__(self,x,y,display,image,arm):
-        super().__init__(x,y,display,image,arm)
+    def __init__(self, x, y, display, image, arm):
+        super().__init__(x, y, display, image, arm)
         self.sight = 700 * sprite_scale
         self.vel = 3
         self.idle = False
         self.idle_start_time = 0
+        # self.save_vals.extend(['sight', 'idle', 'idle_start_time'])
 
     def sync(self):
         super().sync()
 
-    def die(self,p,c_group,s_group):
-        super().die(p,c_group,s_group)
+    def die(self, p, c_group, s_group, camera):
+        super().die(p, c_group, s_group, camera)
         #if self.s_spawn:
         #    s_group[self.s_num].e_count -= 1
 
-    def create_coin(self,x,y,c_group):
-        super().create_coin(x,y,c_group)
+    def create_coin(self, x, y, c_group, camera):
+        super().create_coin(x, y, c_group, camera)
 
-    def create_ammo(self,x,y,c_group):
-        super().create_ammo(x,y,c_group)
+    def create_ammo(self, x, y, c_group, camera):
+        super().create_ammo(x, y, c_group, camera)
 
-    def tile_collisions(self,tiles):
+    def tile_collisions(self, tiles):
         for t in tiles:
             #collision of impassible tiles
             if t.t_type in self.collidable_tiles:
                 #x axis collisions
-                if t.rect.colliderect(self.hitbox.topleft[0] + (self.xvel * sprite_scale * 1.1),self.hitbox.topleft[1],self.hitbox.topright[0]-self.hitbox.topleft[0],self.hitbox.bottomleft[1]-self.hitbox.topleft[1]):
+                if t.rect.colliderect(self.hitbox.topleft[0] + (self.xvel * sprite_scale * 1.1), self.hitbox.topleft[1], self.hitbox.topright[0]-self.hitbox.topleft[0], self.hitbox.bottomleft[1]-self.hitbox.topleft[1]):
                     if self.xvel > 0:
                         self.xvel = t.rect.left - self.hitbox.left
                         self.xvel = 0
@@ -369,7 +374,7 @@ class Enemy(Entity):
                         self.xvel = self.hitbox.right - t.rect.right
                         self.xvel = 0
                 #y axis collisions
-                if t.rect.colliderect(self.hitbox.topleft[0],self.hitbox.topleft[1] + (self.yvel * sprite_scale * 1.1),self.hitbox.topright[0]-self.hitbox.topleft[0],self.hitbox.bottomleft[1]-self.hitbox.topleft[1]):
+                if t.rect.colliderect(self.hitbox.topleft[0], self.hitbox.topleft[1] + (self.yvel * sprite_scale * 1.1), self.hitbox.topright[0]-self.hitbox.topleft[0], self.hitbox.bottomleft[1]-self.hitbox.topleft[1]):
                     if self.yvel < 0:
                         self.yvel = self.hitbox.bottom - t.rect.bottom
                         self.yvel = 0
@@ -384,12 +389,12 @@ class Enemy(Entity):
                     self.xvel *= t.speed_mult
                     self.yvel *= t.speed_mult
                 
-    def door_collisions(self,i_group):
+    def door_collisions(self, i_group):
         for d in i_group:
             #collision of doors
             if d.type == "door":
                 #x axis collisions
-                if d.rect.colliderect(self.hitbox.topleft[0] + (self.xvel * sprite_scale * 1.1),self.hitbox.topleft[1],self.hitbox.topright[0]-self.hitbox.topleft[0],self.hitbox.bottomleft[1]-self.hitbox.topleft[1]):
+                if d.rect.colliderect(self.hitbox.topleft[0] + (self.xvel * sprite_scale * 1.1), self.hitbox.topleft[1], self.hitbox.topright[0]-self.hitbox.topleft[0], self.hitbox.bottomleft[1]-self.hitbox.topleft[1]):
                     if self.xvel > 0:
                         self.xvel = d.rect.left - self.hitbox.left
                         self.xvel = 0
@@ -397,7 +402,7 @@ class Enemy(Entity):
                         self.xvel = self.hitbox.right - d.rect.right
                         self.xvel = 0
                 #y axis collisions
-                if d.rect.colliderect(self.hitbox.topleft[0],self.hitbox.topleft[1] + (self.yvel * sprite_scale * 1.1),self.hitbox.topright[0]-self.hitbox.topleft[0],self.hitbox.bottomleft[1]-self.hitbox.topleft[1]):
+                if d.rect.colliderect(self.hitbox.topleft[0], self.hitbox.topleft[1] + (self.yvel * sprite_scale * 1.1), self.hitbox.topright[0]-self.hitbox.topleft[0], self.hitbox.bottomleft[1]-self.hitbox.topleft[1]):
                     if self.yvel < 0:
                         self.yvel = self.hitbox.bottom - d.rect.bottom
                         self.yvel = 0
@@ -405,10 +410,10 @@ class Enemy(Entity):
                         self.yvel = d.rect.top - self.hitbox.top
                         self.yvel = 0
                         
-    def enemy_collision(self,enemies):#not done yet
+    def enemy_collision(self, enemies):#not done yet
         for e in enemies.sprites():#is .sprites() needed?
             if e.pos != self.pos and e.solid == True:
-                if e.hitbox.colliderect(self.hitbox.topleft[0] + self.xvel,self.hitbox.topleft[1],self.hitbox.topright[0]-self.hitbox.topleft[0],self.hitbox.bottomleft[1]-self.hitbox.topleft[1]):
+                if e.hitbox.colliderect(self.hitbox.topleft[0] + self.xvel, self.hitbox.topleft[1], self.hitbox.topright[0]-self.hitbox.topleft[0], self.hitbox.bottomleft[1]-self.hitbox.topleft[1]):
                     if self.xvel > 0:
                         if e.xvel == 0:
                             self.xvel = e.hitbox.left - self.hitbox.left
@@ -424,7 +429,7 @@ class Enemy(Entity):
                             self.xvel = self.hitbox.right - e.hitbox.right
                             self.xvel = e.xvel
                 #y axis collisions
-                if e.hitbox.colliderect(self.hitbox.topleft[0],self.hitbox.topleft[1] + self.yvel,self.hitbox.topright[0]-self.hitbox.topleft[0],self.hitbox.bottomleft[1]-self.hitbox.topleft[1]):
+                if e.hitbox.colliderect(self.hitbox.topleft[0], self.hitbox.topleft[1] + self.yvel, self.hitbox.topright[0]-self.hitbox.topleft[0], self.hitbox.bottomleft[1]-self.hitbox.topleft[1]):
                     if self.yvel < 0:
                         if e.yvel == 0:
                             self.yvel = self.hitbox.bottom - e.hitbox.bottom
@@ -442,8 +447,8 @@ class Enemy(Entity):
 
                 self.push(e)
 
-    def player_collision(self,p):#improve (there is a bit of sticking due equalling the speeds)
-        if p.hitbox.colliderect(self.hitbox.topleft[0] + self.xvel,self.hitbox.topleft[1],self.hitbox.topright[0]-self.hitbox.topleft[0],self.hitbox.bottomleft[1]-self.hitbox.topleft[1]):
+    def player_collision(self, p):#improve (there is a bit of sticking due equalling the speeds)
+        if p.hitbox.colliderect(self.hitbox.topleft[0] + self.xvel, self.hitbox.topleft[1], self.hitbox.topright[0]-self.hitbox.topleft[0], self.hitbox.bottomleft[1]-self.hitbox.topleft[1]):
             if self.xvel > 0:
                 if p.xvel == 0:
                     self.xvel = p.hitbox.left - self.hitbox.left
@@ -459,7 +464,7 @@ class Enemy(Entity):
                     self.xvel = self.hitbox.right - p.hitbox.right
                     self.xvel = p.xvel
         #y axis collisions
-        if p.hitbox.colliderect(self.hitbox.topleft[0],self.hitbox.topleft[1] + self.yvel,self.hitbox.topright[0]-self.hitbox.topleft[0],self.hitbox.bottomleft[1]-self.hitbox.topleft[1]):
+        if p.hitbox.colliderect(self.hitbox.topleft[0], self.hitbox.topleft[1] + self.yvel, self.hitbox.topright[0]-self.hitbox.topleft[0], self.hitbox.bottomleft[1]-self.hitbox.topleft[1]):
             if self.yvel < 0:
                 if p.yvel == 0:
                     self.yvel = self.hitbox.bottom - p.hitbox.bottom
@@ -477,21 +482,21 @@ class Enemy(Entity):
 
         self.push(p)
 
-    def push(self,p):
+    def push(self, p):
         dist = self.pos.distance_to(p.pos)
         if dist < 12:
             self.yvel += 1
                     
 #ghost
 class Ghost(Enemy):
-    def __init__(self,x,y,display,image,arm,tail,s_spawn,s_num):
-        super().__init__(x,y,display,image,arm)
+    def __init__(self, x, y, display = display, image = gsthdV, arm = gstrmV, tail = gsttlAnim, s_spawn = False, s_num = 0):
+        super().__init__(x, y, display, image, arm)
         self.type = "tailed_entity"
         self.anim = tail
         self.tail = self.anim[0]
-        self.scal_tail = pygame.transform.scale(self.tail,(sprite_scale*18,sprite_scale*54))
+        self.scal_tail = pygame.transform.scale(self.tail, (sprite_scale*18, sprite_scale*54))
         self.rot_tail = self.scal_tail
-        self.tail_rect = self.scal_tail.get_rect(center = (round(self.pos.x),round(self.pos.y)))
+        self.tail_rect = self.scal_tail.get_rect(center = (round(self.pos.x), round(self.pos.y)))
         self.vel = 2
         self.health = 15
         self.healthmax = 15
@@ -501,24 +506,25 @@ class Ghost(Enemy):
         self.anim_t = 0
         self.anim_spd = 0
         self.solid = False
-        self.hp_bar_p = pygame.Rect((0,0),(0,0))
-        self.hp_bar_b = pygame.Rect((0,0),(0,0))
+        self.hp_bar_p = pygame.Rect((0, 0), (0, 0))
+        self.hp_bar_b = pygame.Rect((0, 0), (0, 0))
         self.damage = 10
         self.angle = 0
         self.attack_timer = 0
         self.attack_dist = 20
+        # self.save_vals.extend(['anim_spd', 'damage', 'angle', 'attack_timer', 'attack_dist'])
         
-    def update(self,p,tiles,dist,c_group,s_group,offset):
+    def update(self, p, tiles, dist, c_group, s_group, offset, camera):
         self.dirty = 1
-        self.die(p,c_group,s_group)
+        self.die(p, c_group, s_group, camera)
         #self.timer()
-        self.move(p,tiles,dist)
+        self.move(p, tiles, dist)
         self.tail_anim()
-        self.attack(p,dist)
+        self.attack(p, dist)
         self.render_bars(offset)
         #self.render()
         
-    def move(self,p,tiles,dist):
+    def move(self, p, tiles, dist):
         if dist <= self.sight:
             self.anim_spd = 1.2
             self.idle = False
@@ -540,7 +546,7 @@ class Ghost(Enemy):
     #         self.idle = not self.idle
     #         self.change_idling = False
 
-    def tile_collisions(self,tiles):
+    def tile_collisions(self, tiles):
         for t in tiles:
             if t.t_type == "portal":
                 if t.rect_1.colliderect(self.hitbox):
@@ -551,7 +557,7 @@ class Ghost(Enemy):
                 if t.rect.colliderect(self.hitbox):
                     self.health -= 1
 
-    def attack(self,p,dist):
+    def attack(self, p, dist):
         if dist <= self.attack_dist and not(p.respawn_protection):
             self.attack_timer += 1
             if self.attack_timer >= 45:
@@ -590,7 +596,7 @@ class Ghost(Enemy):
             x = 7
 
         self.tail = self.anim[x]
-        self.scal_tail = pygame.transform.scale(self.tail,(sprite_scale*18,sprite_scale*54))
+        self.scal_tail = pygame.transform.scale(self.tail, (sprite_scale*18, sprite_scale*54))
         self.rotate()
         
 
@@ -598,7 +604,7 @@ class Ghost(Enemy):
         # self.square_move()
         self.random_move()
 
-    def move_to_player(self,p):#change to a better movement
+    def move_to_player(self, p):#change to a better movement
         if (p.pos.x + 3) >= self.pos.x and (p.pos.x - 3) <= self.pos.x:
             self.xvel = 0
         elif (p.pos.x - 3) > self.pos.x:
@@ -619,15 +625,15 @@ class Ghost(Enemy):
             self.yvel = (self.yvel/self.vel) * abs_vel
 
     def rotatehead(self):
-        self.rot_image = pygame.transform.rotate(self.scal_image,self.angle)
+        self.rot_image = pygame.transform.rotate(self.scal_image, self.angle)
         self.rect = self.rot_image.get_rect(center = self.rect.center)
 
     def rotatearms(self):
-        self.rot_arm = pygame.transform.rotate(self.scal_arm,self.angle)
+        self.rot_arm = pygame.transform.rotate(self.scal_arm, self.angle)
         self.arm_rect = self.rot_arm.get_rect(center = self.arm_rect.center)
 
     def rotatetail(self):
-        self.rot_tail = pygame.transform.rotate(self.scal_tail,self.angle)
+        self.rot_tail = pygame.transform.rotate(self.scal_tail, self.angle)
         self.tail_rect = self.rot_tail.get_rect(center = self.tail_rect.center)
 
     def rotate(self):
@@ -635,13 +641,13 @@ class Ghost(Enemy):
         self.rotatearms()
         self.rotatetail()
 
-    def chase_player(self,p):
-        dx,dy = self.pos.x - p.pos.x, self.pos.y - p.pos.y
-        self.angle = math.degrees(math.atan2(dx,dy))
+    def chase_player(self, p):
+        dx, dy = self.pos.x - p.pos.x, self.pos.y - p.pos.y
+        self.angle = math.degrees(math.atan2(dx, dy))
         self.rotate()
         self.move_to_player(p)
 
-    def render_bars(self,offset):
+    def render_bars(self, offset):
         #progress rectangle variables
         hpbar_p_left = offset[0] - 9
         hpbar_p_top = offset[1] -10
@@ -655,13 +661,13 @@ class Ghost(Enemy):
         hpbar_b_height = hpbar_p_height + 4
 
         #hp bar
-        pygame.draw.rect(self.display,dark_red,pygame.Rect(hpbar_b_left,hpbar_b_top,hpbar_b_width,hpbar_b_height))
-        pygame.draw.rect(self.display,red,pygame.Rect(hpbar_p_left,hpbar_p_top,hpbar_p_width,hpbar_p_height))
+        pygame.draw.rect(self.display, dark_red, pygame.Rect(hpbar_b_left, hpbar_b_top, hpbar_b_width, hpbar_b_height))
+        pygame.draw.rect(self.display, red, pygame.Rect(hpbar_p_left, hpbar_p_top, hpbar_p_width, hpbar_p_height))
 
     def render(self):
-        self.display.blit(self.rot_arm,self.arm_rect)
-        self.display.blit(self.rot_tail,self.tail_rect)
-        self.display.blit(self.rot_image,self.rect)
+        self.display.blit(self.rot_arm, self.arm_rect)
+        self.display.blit(self.rot_tail, self.tail_rect)
+        self.display.blit(self.rot_image, self.rect)
         self.render_bars()
         
     def random_move(self):
@@ -670,27 +676,27 @@ class Ghost(Enemy):
     def square_move(self):
         super().square_move()
         
-    def die(self,p,c_group,s_group):
-        super().die(p,c_group,s_group)
+    def die(self, p, c_group, s_group, camera):
+        super().die(p, c_group, s_group, camera)
         
-    def create_coin(self,x,y,c_group):
-        super().create_coin(x,y,c_group)
+    def create_coin(self, x, y, c_group, camera):
+        super().create_coin(x, y, c_group, camera)
 
-    def create_ammo(self,x,y,c_group):
-        super().create_ammo(x,y,c_group)
+    def create_ammo(self, x, y, c_group, camera):
+        super().create_ammo(x, y, c_group, camera)
 
     def sync(self):
         super().sync()
-        self.tail_rect.center = self.pos.x,self.pos.y
+        self.tail_rect.center = self.pos.x, self.pos.y
 
     def idle_sync(self):
         super().idle_sync()
-        self.tail_rect.center = self.pos.x,self.pos.y
+        self.tail_rect.center = self.pos.x, self.pos.y
 
 #skeleton
 class Skeleton(Enemy):
-    def __init__(self,x,y,display,image,arm,s_spawn,s_num):#,t,s_spawn,s_num):
-        super().__init__(x,y,display,image,arm)
+    def __init__(self, x, y, display = display, image = sklhd, arm = sklrm, s_spawn = False, s_num = 0):#, t, s_spawn, s_num):
+        super().__init__(x, y, display, image, arm)
         self.sight = 600 * sprite_scale
         #self.s_spawn = s_spawn
         #self.s_num = s_num
@@ -699,20 +705,21 @@ class Skeleton(Enemy):
         self.angle = 0
         self.vel = 3
         self.vel_back = 2
-        self.collidable_tiles = ["wall","tree"]
+        self.collidable_tiles = ["wall", "tree"]
+        # self.save_vals.extend(['attack_dist', 'attack_timer', 'angle', 'vel_back', 'collidable_tiles'])
 
-    def update(self,p,tiles,dist,c_group,s_group,b_group,e,offset,i_group):
+    def update(self, p, tiles, dist, c_group, s_group, b_group, e, offset, i_group, camera):
         self.dirty = 1
-        self.die(p,c_group,s_group)
-        self.move(p,tiles,dist,e,i_group)
-        self.attack(p,dist,b_group)
+        self.die(p, c_group, s_group, camera)
+        self.move(p, tiles, dist, e, i_group)
+        self.attack(p, dist, b_group, camera)
         self.render_bars(offset)
         #self.render()
         
-    def move(self,p,tiles,dist,e,i_group):
+    def move(self, p, tiles, dist, e, i_group):
         if dist <= self.sight:
             self.idle = False
-            self.chase_player(p,dist)
+            self.chase_player(p, dist)
             
         else:
             # self.idle = True
@@ -725,18 +732,18 @@ class Skeleton(Enemy):
         
         self.sync()
 
-    def attack(self,p,dist,b_group):
+    def attack(self, p, dist, b_group, camera):
         if dist <= self.attack_dist and not(p.respawn_protection):
             self.attack_timer += 1
             if self.attack_timer >= 20:
                 self.attack_timer = 0
-                self.create_bullet(b_group)
+                self.create_bullet(b_group, camera)
 
     def idle_move(self):
         # self.square_move()
         self.random_move()
 
-    def move_to_player(self,p,dist):
+    def move_to_player(self, p, dist):
         if dist >= 152*sprite_scale:
             if (p.pos.x + 3) >= self.pos.x and (p.pos.x - 3) <= self.pos.x:
                 self.xvel = 0
@@ -780,30 +787,30 @@ class Skeleton(Enemy):
                 self.xvel = (self.xvel/self.vel_back) * abs_vel
                 self.yvel = (self.yvel/self.vel_back) * abs_vel
 
-    def create_bullet(self,b_group):
-        bullet = Bullet(self.pos.x,self.pos.y,self.display,blt,self.angle,"skeleton")
+    def create_bullet(self, b_group, camera):
+        bullet = Bullet(self.pos.x, self.pos.y, self.angle, b_type = "skeleton")
         b_group.add(bullet)
         camera.add(bullet)
 
     def rotatehead(self):
-        self.rot_image = pygame.transform.rotate(self.scal_image,self.angle)
+        self.rot_image = pygame.transform.rotate(self.scal_image, self.angle)
         self.rect = self.rot_image.get_rect(center = self.rect.center)
 
     def rotatearms(self):
-        self.rot_arm = pygame.transform.rotate(self.scal_arm,self.angle)
+        self.rot_arm = pygame.transform.rotate(self.scal_arm, self.angle)
         self.arm_rect = self.rot_arm.get_rect(center = self.arm_rect.center)
 
     def rotate(self):
         self.rotatehead()
         self.rotatearms()
 
-    def chase_player(self,p,dist):
-        dx,dy = self.pos.x - p.pos.x, self.pos.y - p.pos.y
-        self.angle = math.degrees(math.atan2(dx,dy))
+    def chase_player(self, p, dist):
+        dx, dy = self.pos.x - p.pos.x, self.pos.y - p.pos.y
+        self.angle = math.degrees(math.atan2(dx, dy))
         self.rotate()
-        self.move_to_player(p,dist)
+        self.move_to_player(p, dist)
 
-    def render_bars(self,offset):
+    def render_bars(self, offset):
         #progress rectangle stats
         hpbar_p_left = offset[0] - 9
         hpbar_p_top = offset[1] - 10
@@ -817,30 +824,30 @@ class Skeleton(Enemy):
         hpbar_b_height = hpbar_p_height + 4
 
         #hp bar
-        pygame.draw.rect(self.display,dark_red,pygame.Rect(hpbar_b_left,hpbar_b_top,hpbar_b_width,hpbar_b_height))
-        pygame.draw.rect(self.display,red,pygame.Rect(hpbar_p_left,hpbar_p_top,hpbar_p_width,hpbar_p_height))
+        pygame.draw.rect(self.display, dark_red, pygame.Rect(hpbar_b_left, hpbar_b_top, hpbar_b_width, hpbar_b_height))
+        pygame.draw.rect(self.display, red, pygame.Rect(hpbar_p_left, hpbar_p_top, hpbar_p_width, hpbar_p_height))
 
     def render(self):
-        self.display.blit(self.rot_arm,self.arm_rect)
-        self.display.blit(self.rot_image,self.rect)
+        self.display.blit(self.rot_arm, self.arm_rect)
+        self.display.blit(self.rot_image, self.rect)
         self.render_bars()
         
     def square_move(self):
         super().square_move()
         
-    def create_coin(self,x,y,c_group):
-        super().create_coin(x,y,c_group)
+    def create_coin(self, x, y, c_group, camera):
+        super().create_coin(x, y, c_group, camera)
 
-    def create_ammo(self,x,y,c_group):
-        super().create_ammo(x,y,c_group)
+    def create_ammo(self, x, y, c_group, camera):
+        super().create_ammo(x, y, c_group, camera)
 
-    def die(self,p,c_group,s_group):
-        super().die(p,c_group,s_group)
+    def die(self, p, c_group, s_group, camera):
+        super().die(p, c_group, s_group, camera)
 
-    def player_collision(self,p):
+    def player_collision(self, p):
         super().player_collision(p)
 
-    def enemy_collision(self,e):
+    def enemy_collision(self, e):
         super().enemy_collision(e)
 
     def sync(self):
@@ -849,33 +856,34 @@ class Skeleton(Enemy):
     def idle_sync(self):
         super().idle_sync()
 
-    def tile_collisions(self,tiles):
+    def tile_collisions(self, tiles):
         super().tile_collisions(tiles)
 
-    def door_collisions(self,i_group):
+    def door_collisions(self, i_group):
         super().door_collisions(i_group)
 
 #zombie
 class Zombie(Enemy):
-    def __init__(self,x,y,display,image,arm,s_spawn,s_num):
-        super().__init__(x,y,display,image,arm)
+    def __init__(self, x, y, display = display, image = zmbhd, arm = zmbrm, s_spawn = False, s_num = 0):
+        super().__init__(x, y, display, image, arm)
         self.damage = 5
         self.angle = 0
         self.vel = 3
         self.attack_timer = 0
         self.attack_dist = 25
         self.sight = 700 * sprite_scale
-        self.collidable_tiles = ["wall","tree"]
+        self.collidable_tiles = ["wall", "tree"]
+        # self.save_vals.extend(['damage', 'angle', 'attack_timer', 'attack_dist', 'collidable_tiles'])
         
-    def update(self,p,tiles,dist,c_group,s_group,b_group,e,offset,i_group):
+    def update(self, p, tiles, dist, c_group, s_group, b_group, e, offset, i_group, camera):
         self.dirty = 1
-        self.die(p,c_group,s_group)
-        self.move(p,tiles,dist,e,i_group)
-        self.attack(p,dist)
+        self.die(p, c_group, s_group, camera)
+        self.move(p, tiles, dist, e, i_group)
+        self.attack(p, dist)
         self.render_bars(offset)
         #self.render()
         
-    def move(self,p,tiles,dist,e,i_group):
+    def move(self, p, tiles, dist, e, i_group):
         if dist <= self.sight:
             self.idle = False
             self.chase_player(p)
@@ -893,7 +901,7 @@ class Zombie(Enemy):
 
         #self.push(p)
 
-    def attack(self,p,dist):
+    def attack(self, p, dist):
         if dist <= self.attack_dist and not(p.respawn_protection):
             self.attack_timer += 1
             if self.attack_timer >= 30:
@@ -902,23 +910,23 @@ class Zombie(Enemy):
                 self.rotate()
                 p.health -= self.damage
 
-    def die(self,p,c_group,s_group):
-        super().die(p,c_group,s_group)
+    def die(self, p, c_group, s_group, camera):
+        super().die(p, c_group, s_group, camera)
 
-    #def push(self,p):
+    #def push(self, p):
         #super().push(p)
 
-    def tile_collisions(self,tiles):
+    def tile_collisions(self, tiles):
         super().tile_collisions(tiles)
 
-    def door_collisions(self,i_group):
+    def door_collisions(self, i_group):
         super().door_collisions(i_group)
 
     def idle_move(self):
         # self.square_move()
         self.random_move()
 
-    def move_to_player(self,p):#change to a better movement
+    def move_to_player(self, p):#change to a better movement
         if (p.pos.x + 3) >= self.pos.x and (p.pos.x - 3) <= self.pos.x:
             self.xvel = 0
         elif (p.pos.x - 3) > self.pos.x:
@@ -939,27 +947,27 @@ class Zombie(Enemy):
             self.yvel = (self.yvel/self.vel) * abs_vel
 
     def rotatehead(self):
-        self.rot_image = pygame.transform.rotate(self.scal_image,self.angle)
+        self.rot_image = pygame.transform.rotate(self.scal_image, self.angle)
         self.rect = self.rot_image.get_rect(center = self.rect.center)
 
     def rotatearms(self):
-        self.rot_arm = pygame.transform.rotate(self.scal_arm,self.angle)
+        self.rot_arm = pygame.transform.rotate(self.scal_arm, self.angle)
         self.arm_rect = self.rot_arm.get_rect(center = self.arm_rect.center)
 
     def rotate(self):
         self.rotatehead()
         self.rotatearms()
 
-    def chase_player(self,p):
-        dx,dy = self.pos.x - p.pos.x, self.pos.y - p.pos.y
-        self.angle = math.degrees(math.atan2(dx,dy))
+    def chase_player(self, p):
+        dx, dy = self.pos.x - p.pos.x, self.pos.y - p.pos.y
+        self.angle = math.degrees(math.atan2(dx, dy))
         self.rotate()
         self.move_to_player(p)
 
     def take_damage(self):
         pass
 
-    def render_bars(self,offset):
+    def render_bars(self, offset):
         #progress rectangle stats
         hpbar_p_left = offset[0] - 9
         hpbar_p_top = offset[1] - 10
@@ -973,27 +981,27 @@ class Zombie(Enemy):
         hpbar_b_height = hpbar_p_height + 4
 
         #hp bar
-        pygame.draw.rect(self.display,dark_red,pygame.Rect(hpbar_b_left,hpbar_b_top,hpbar_b_width,hpbar_b_height))
-        pygame.draw.rect(self.display,red,pygame.Rect(hpbar_p_left,hpbar_p_top,hpbar_p_width,hpbar_p_height))
+        pygame.draw.rect(self.display, dark_red, pygame.Rect(hpbar_b_left, hpbar_b_top, hpbar_b_width, hpbar_b_height))
+        pygame.draw.rect(self.display, red, pygame.Rect(hpbar_p_left, hpbar_p_top, hpbar_p_width, hpbar_p_height))
 
     def render(self):
-        self.display.blit(self.rot_arm,self.arm_rect)
-        self.display.blit(self.rot_image,self.rect)
+        self.display.blit(self.rot_arm, self.arm_rect)
+        self.display.blit(self.rot_image, self.rect)
         self.render_bars()
         
     def square_move(self):
         super().square_move()
         
-    def create_coin(self,x,y,c_group):
-        super().create_coin(x,y,c_group)
+    def create_coin(self, x, y, c_group, camera):
+        super().create_coin(x, y, c_group, camera)
 
-    def create_ammo(self,x,y,c_group):
-        super().create_ammo(x,y,c_group)
+    def create_ammo(self, x, y, c_group, camera):
+        super().create_ammo(x, y, c_group, camera)
 
-    def player_collision(self,p):
+    def player_collision(self, p):
         super().player_collision(p)
 
-    def enemy_collision(self,e):
+    def enemy_collision(self, e):
         super().enemy_collision(e)
 
     def sync(self):
@@ -1004,8 +1012,8 @@ class Zombie(Enemy):
 
 #player
 class Player(Entity):
-    def __init__(self,x,y,display,image,arm):
-        super().__init__(x,y,display,image,arm)
+    def __init__(self, x, y, display = display, image = plrhd, arm = plrrm, lives = 3):
+        super().__init__(x, y, display, image, arm)
         self.type = "player"
         self.weapon = 0
         self.angle = 0
@@ -1028,33 +1036,36 @@ class Player(Entity):
         self.bullets = 50
         self.attack_dist = 20
         self.weapon_hitbox = self.hitbox
-        self.lives = 3
+        self.lives = lives
         self.z = 5
         self.portal_cost = 10
         self.respawn_protection = False
         self.respawn_protection_timer = 0
-        self.collidable_tiles = ["wall","tree"]
+        self.collidable_tiles = ["wall", "tree"]
         self.vel = 4
-        self.hp_textbox = textbox((d_width/2)-30,(d_height * 0.96)+1,15,white,display)
-        self.ep_textbox = textbox((d_width/2)-20,(d_height * 0.92)+1,15,white,display)
+        self.hp_textbox = textbox((d_width/2)-30, (d_height * 0.96)+1, 15, white, display)
+        self.ep_textbox = textbox((d_width/2)-20, (d_height * 0.92)+1, 15, white, display)
+        self.level = 0
         
         self.hrt_rects = []
-        for i in range(0,3):
-            hrt_rect = hrt.get_rect(topleft = (round(d_width - 48 - (i*33)),15))
+        for i in range(0, self.lives):
+            hrt_rect = hrt.get_rect(topleft = (round(d_width - 48 - (i*33)), 15))
             self.hrt_rects.append(hrt_rect)
+            
+        # self.save_vals = ['solid', 'health', 'healthmax', 'xvel', 'yvel', 'vel', 't', 'idle_vel', 'next_pos', 'collidable_tiles', 'weapon', 'angle', 'attack_timer', 'wait', 'healthregen', 'energyval', 'energyregen', 'energymax', 'sprintvelmult', 'footprint_timer', 'score', 'bullet_delay', 'cash', 'change_lvl', 'damage', 'kills', 'bullets', 'attack_dist', 'lives', 'portal_cost', 'respawn_protection', 'respawn_protection_timer']
 
-    def update(self,moves,tiles,mx,my,b_group,f_group,e_group,s_group,i_group):
+    def update(self, moves, tiles, m_pos, b_group, f_group, e_group, s_group, i_group, camera):
         self.change_lvl = False
         #self.die()
-        self.rotate_to_mouse(mx,my)
-        self.move(moves,tiles,f_group,i_group)
+        self.rotate_to_mouse(m_pos)
+        self.move(moves, tiles, f_group, i_group, camera)
         if self.bullet_delay < 7:
             self.bullet_delay += 1
         if moves[6]:
             self.change_weapon()
         self.attack_timer += 1
         if moves[5]:
-            self.attack(mx,my,b_group,e_group,s_group)
+            self.attack(m_pos, b_group, e_group, s_group, camera)
         #self.render()
         self.dirty = 1
         self.respawn()
@@ -1063,7 +1074,9 @@ class Player(Entity):
     def die(self):
         if self.health <= 0:
             self.lives -= 1
-            self.pos = pygame.math.Vector2((200*sprite_scale,200*sprite_scale))
+            if len(self.hrt_rects) > 0:
+                del self.hrt_rects[-1]
+            self.pos = pygame.math.Vector2((200*sprite_scale, 200*sprite_scale))
             self.respawn_protection = True
             return True
         
@@ -1074,7 +1087,7 @@ class Player(Entity):
                 self.respawn_protection = False
                 self.respawn_protection_timer = 0
 
-    def collectable_coll(self,c_group):
+    def collectable_coll(self, c_group):
         for c in c_group:
             if self.hitbox.colliderect(c.rect):
                 if c.c_type == "coin":
@@ -1085,12 +1098,12 @@ class Player(Entity):
                 elif c.c_type == "consumable":
                     pass
 
-    def tile_collisions(self,tiles,moves,f_group):
+    def tile_collisions(self, tiles, moves, f_group, camera):
         for t in tiles:
             #collision of impassible tiles
             if t.t_type in self.collidable_tiles:
                 #x axis collisions
-                if t.rect.colliderect(self.hitbox.topleft[0] + (self.xvel * sprite_scale * 1.1),self.hitbox.topleft[1],self.hitbox.topright[0]-self.hitbox.topleft[0],self.hitbox.bottomleft[1]-self.hitbox.topleft[1]):
+                if t.rect.colliderect(self.hitbox.topleft[0] + (self.xvel * sprite_scale * 1.1), self.hitbox.topleft[1], self.hitbox.topright[0]-self.hitbox.topleft[0], self.hitbox.bottomleft[1]-self.hitbox.topleft[1]):
                     if self.xvel > 0:
                         self.xvel = t.rect.left - self.hitbox.left
                         self.xvel = 0
@@ -1098,7 +1111,7 @@ class Player(Entity):
                         self.xvel = self.hitbox.right - t.rect.right
                         self.xvel = 0
                 #y axis collisions
-                elif t.rect.colliderect(self.hitbox.topleft[0],self.hitbox.topleft[1] + (self.yvel * sprite_scale * 1.1),self.hitbox.topright[0]-self.hitbox.topleft[0],self.hitbox.bottomleft[1]-self.hitbox.topleft[1]):
+                elif t.rect.colliderect(self.hitbox.topleft[0], self.hitbox.topleft[1] + (self.yvel * sprite_scale * 1.1), self.hitbox.topright[0]-self.hitbox.topleft[0], self.hitbox.bottomleft[1]-self.hitbox.topleft[1]):
                     if self.yvel < 0:
                         self.yvel = self.hitbox.bottom - t.rect.bottom
                         self.yvel = 0
@@ -1111,22 +1124,22 @@ class Player(Entity):
                     self.footprint_timer += 1
                     if self.footprint_timer >= 15:
                         self.footprint_timer = 0
-                        self.create_s_footprint(f_group)
+                        self.create_s_footprint(f_group, camera)
                         
             elif t.t_type == "mud":
                 if t.rect.colliderect(self.hitbox):
                     self.footprint_timer += 1
                     if self.footprint_timer >= 15:
                         self.footprint_timer = 0
-                        self.create_m_footprint(f_group)
+                        self.create_m_footprint(f_group, camera)
                         
             elif t.t_type == "portal" and moves[7] and self.energyval >= 10:#t.timer == 90:
                 if t.rect_1.colliderect(self.hitbox):
-                    self.pos = t.pos_2 + (tile_scale/2,tile_scale/2)
+                    self.pos = t.pos_2 + (tile_scale/2, tile_scale/2)
                     self.energyval -= self.portal_cost
                     #t.timer = 0
                 elif t.rect_2.colliderect(self.hitbox):
-                    self.pos = t.pos_1 + (tile_scale/2,tile_scale/2)
+                    self.pos = t.pos_1 + (tile_scale/2, tile_scale/2)
                     self.energyval -= self.portal_cost
                     #t.timer = 0
                     
@@ -1140,12 +1153,12 @@ class Player(Entity):
                     self.xvel = self.xvel * t.speed_mult
                     self.yvel = self.yvel * t.speed_mult
 
-    def door_collisions(self,i_group):
+    def door_collisions(self, i_group):
         for d in i_group:
             #collision of doors
             if d.type == "door":
                 #x axis collisions
-                if d.rect.colliderect(self.hitbox.topleft[0] + (self.xvel * sprite_scale * 1.1),self.hitbox.topleft[1],self.hitbox.topright[0]-self.hitbox.topleft[0],self.hitbox.bottomleft[1]-self.hitbox.topleft[1]):
+                if d.rect.colliderect(self.hitbox.topleft[0] + (self.xvel * sprite_scale * 1.1), self.hitbox.topleft[1], self.hitbox.topright[0]-self.hitbox.topleft[0], self.hitbox.bottomleft[1]-self.hitbox.topleft[1]):
                     if self.xvel > 0:
                         self.xvel = d.rect.left - self.hitbox.left
                         self.xvel = 0
@@ -1153,7 +1166,7 @@ class Player(Entity):
                         self.xvel = self.hitbox.right - d.rect.right
                         self.xvel = 0
                 #y axis collisions
-                if d.rect.colliderect(self.hitbox.topleft[0],self.hitbox.topleft[1] + (self.yvel * sprite_scale * 1.1),self.hitbox.topright[0]-self.hitbox.topleft[0],self.hitbox.bottomleft[1]-self.hitbox.topleft[1]):
+                if d.rect.colliderect(self.hitbox.topleft[0], self.hitbox.topleft[1] + (self.yvel * sprite_scale * 1.1), self.hitbox.topright[0]-self.hitbox.topleft[0], self.hitbox.bottomleft[1]-self.hitbox.topleft[1]):
                     if self.yvel < 0:
                         self.yvel = self.hitbox.bottom - d.rect.bottom
                         self.yvel = 0
@@ -1161,24 +1174,36 @@ class Player(Entity):
                         self.yvel = d.rect.top - self.hitbox.top
                         self.yvel = 0
 
-    def move(self,moves,tiles,f_group,i_group):
-        if moves[0] and not moves[1]:
-            self.yvel = -self.vel
-        elif moves[1] and not moves[0]:
-            self.yvel = self.vel
-        elif moves[0] and moves[1]:
-            self.yvel = 0
-        else:
-            self.yvel = 0
+    def move(self, moves, tiles, f_group, i_group, camera):#this should be moved after all speed changes if speed is set to a specific value by something
+        # if moves[0] and not moves[1]:
+        #     self.yvel = -self.vel
+        # elif moves[1] and not moves[0]:
+        #     self.yvel = self.vel
+        # elif moves[0] and moves[1]:
+        #     self.yvel = 0
+        # else:
+        #     self.yvel = 0
             
-        if moves[2] and not moves[3]:
-            self.xvel = -self.vel
-        elif moves[3] and not moves[2]:
-            self.xvel = self.vel
-        elif moves[2] and moves[3]:
-            self.xvel = 0
-        else:
-            self.xvel = 0
+        # if moves[2] and not moves[3]:
+        #     self.xvel = -self.vel
+        # elif moves[3] and not moves[2]:
+        #     self.xvel = self.vel
+        # elif moves[2] and moves[3]:
+        #     self.xvel = 0
+        # else:
+        #     self.xvel = 0
+        
+        self.yvel = 0#this should change if I have ice tiles
+        if moves[0]:
+            self.yvel -= self.vel
+        if moves[1]:
+            self.yvel += self.vel
+            
+        self.xvel = 0
+        if moves[2]:
+            self.xvel -= self.vel
+        if moves[3]:
+            self.xvel += self.vel
             
         if abs(self.xvel) == abs(self.yvel) and self.xvel != 0:
             abs_vel = (self.vel/root_2)
@@ -1187,26 +1212,26 @@ class Player(Entity):
 
         self.sprint(moves)
 
-        self.tile_collisions(tiles,moves,f_group)
+        self.tile_collisions(tiles, moves, f_group, camera)
         self.door_collisions(i_group)
 
         self.sync()
 
     def rotatehead(self):
-        self.rot_image = pygame.transform.rotate(self.scal_image,self.angle)
+        self.rot_image = pygame.transform.rotate(self.scal_image, self.angle)
         self.rect = self.rot_image.get_rect(center = self.rect.center)
 
     def rotatearms(self):
-        self.rot_arm = pygame.transform.rotate(self.scal_arm,self.angle)
+        self.rot_arm = pygame.transform.rotate(self.scal_arm, self.angle)
         self.arm_rect = self.rot_arm.get_rect(center = self.arm_rect.center)
 
     def rotate(self):
         self.rotatehead()
         self.rotatearms()
 
-    def rotate_to_mouse(self,mx,my):
-        dx,dy = (d_width / 2) - mx, (d_height / 2) - my
-        self.angle = math.degrees(math.atan2(dx,dy))
+    def rotate_to_mouse(self, m_pos):
+        dx, dy = (d_width / 2) - m_pos[0], (d_height / 2) - m_pos[1]
+        self.angle = math.degrees(math.atan2(dx, dy))
         self.rotate()
 
     def render_text(self):
@@ -1227,26 +1252,22 @@ class Player(Entity):
         energybar_b_height, hpbar_b_height = energybar_p_height + 6, hpbar_p_height + 6
 
         #energy bar
-        pygame.draw.rect(self.display,dark_blue,pygame.Rect(energybar_b_left,energybar_b_top,energybar_b_width,energybar_b_height))
-        pygame.draw.rect(self.display,blue,pygame.Rect(energybar_p_left,energybar_p_top,energybar_p_width,energybar_p_height))
+        pygame.draw.rect(self.display, dark_blue, pygame.Rect(energybar_b_left, energybar_b_top, energybar_b_width, energybar_b_height))
+        pygame.draw.rect(self.display, blue, pygame.Rect(energybar_p_left, energybar_p_top, energybar_p_width, energybar_p_height))
 
         #hp bar
-        pygame.draw.rect(self.display,dark_green,pygame.Rect(hpbar_b_left,hpbar_b_top,hpbar_b_width,hpbar_b_height))
-        pygame.draw.rect(self.display,green,pygame.Rect(hpbar_p_left,hpbar_p_top,hpbar_p_width,hpbar_p_height))
+        pygame.draw.rect(self.display, dark_green, pygame.Rect(hpbar_b_left, hpbar_b_top, hpbar_b_width, hpbar_b_height))
+        pygame.draw.rect(self.display, green, pygame.Rect(hpbar_p_left, hpbar_p_top, hpbar_p_width, hpbar_p_height))
 
     def render_hearts(self):
-        # for l in range(0,self.lives):
-        #     hrt_rect = hrt.get_rect(topleft = (round(d_width - 48 - (l*33)),15))
-        #     self.display.blit(hrt,self.hrt_rect)
-        
         for i in range(0, len(self.hrt_rects)):
-            self.display.blit(hrt,self.hrt_rects[i])
+            self.display.blit(hrt, self.hrt_rects[i])
 
     def render_weapon_show(self):
-        rect = fist_show.get_rect(topleft = (round(d_width-140),round(d_height-140)))
-        self.display.blit(w_show[self.weapon],rect)
+        rect = fist_show.get_rect(topleft = (round(d_width-140), round(d_height-140)))
+        self.display.blit(w_show[self.weapon], rect)
     
-    def sprint(self,moves):
+    def sprint(self, moves):
         self.wait += 1
         if self.wait >= 30:
             self.energyval += self.energyregen
@@ -1260,7 +1281,7 @@ class Player(Entity):
             self.yvel = self.sprintvelmult * self.yvel
             if self.energyval <= 0:
                 self.energyval = 0
-        self.energyval = round(self.energyval,1)
+        self.energyval = round(self.energyval, 1)
 
     def change_weapon(self):
         if self.weapon ==  0:
@@ -1270,16 +1291,16 @@ class Player(Entity):
         else:
             pass
 
-    def attack(self,mx,my,b_group,e_group,s_group):#needs improving, click and hold rotates player back and forth
+    def attack(self, m_pos, b_group, e_group, s_group, camera):#needs improving, click and hold rotates player back and forth
         if self.weapon == 0:
             if self.attack_timer >= 15:
                 self.angle += 20
                 for e in e_group.sprites():
-                    if self.weapon_hitbox.colliderect(e.hitbox.topleft[0]-5,e.hitbox.topright[1]-5,(e.hitbox.topright[0]-e.hitbox.topleft[0]+10),(e.hitbox.bottomleft[1]-e.hitbox.topleft[1]+10)):
+                    if self.weapon_hitbox.colliderect(e.hitbox.topleft[0]-5, e.hitbox.topright[1]-5, (e.hitbox.topright[0]-e.hitbox.topleft[0]+10), (e.hitbox.bottomleft[1]-e.hitbox.topleft[1]+10)):
                         if e.solid == True:
                             e.health -= self.damage
                 for s in s_group.sprites():
-                    if self.weapon_hitbox.colliderect(s.hitbox.topleft[0]-5,s.hitbox.topright[1]-5,(s.hitbox.topright[0]-s.hitbox.topleft[0]+10),(s.hitbox.bottomleft[1]-s.hitbox.topleft[1]+10)):
+                    if self.weapon_hitbox.colliderect(s.hitbox.topleft[0]-5, s.hitbox.topright[1]-5, (s.hitbox.topright[0]-s.hitbox.topleft[0]+10), (s.hitbox.bottomleft[1]-s.hitbox.topleft[1]+10)):
                         s.health -= self.damage
             
                 self.rotate()
@@ -1290,27 +1311,27 @@ class Player(Entity):
             if self.bullets > 0:
                 if self.bullet_delay >= 7:
                     self.bullets -= 1
-                    self.create_bullet(b_group)
+                    self.create_bullet(b_group, camera)
                     self.bullet_delay = 0
 
-    def create_s_footprint(self,f_group):
-        footprint = Footprint(self.pos.x,self.pos.y,self.display,snow_footprints,self.angle)
+    def create_s_footprint(self, f_group, camera):
+        footprint = Snow_Footprint(self.pos.x, self.pos.y, self.angle)
         f_group.add(footprint)
         camera.add(footprint)
 
-    def create_m_footprint(self,f_group):
-        footprint = Footprint(self.pos.x,self.pos.y,self.display,mud_footprints,self.angle)
+    def create_m_footprint(self, f_group, camera):
+        footprint = Mud_Footprint(self.pos.x, self.pos.y, self.angle)
         f_group.add(footprint)
         camera.add(footprint)
 
-    def create_bullet(self,b_group):
-        bullet = Bullet(self.pos.x,self.pos.y,self.display,blt,self.angle,"player")
+    def create_bullet(self, b_group, camera):
+        bullet = Bullet(self.pos.x, self.pos.y, self.angle, b_type = "player")
         b_group.add(bullet)
         camera.add(bullet)
 
-    def render(self,arm_offset_pos,img_offset_pos):
-        self.display.blit(self.rot_arm,arm_offset_pos)#order matters as arms look weird if drawn over head
-        self.display.blit(self.rot_image,img_offset_pos)
+    def render(self, arm_offset_pos, img_offset_pos):
+        self.display.blit(self.rot_arm, arm_offset_pos)#order matters as arms look weird if drawn over head
+        self.display.blit(self.rot_image, img_offset_pos)
         self.render_bars()
         self.render_text()
         self.render_hearts()
@@ -1320,31 +1341,31 @@ class Player(Entity):
         super().sync()
 
 class Bullet(Object):
-    def __init__(self,x,y,display,image,angle,b_type):
-        super().__init__(x,y,display,image)
-        self.scal_image = pygame.transform.scale(self.image,(sprite_scale*4,sprite_scale*4))
+    def __init__(self, x, y, angle, b_type = "player", display = display, image = blt):
+        super().__init__(x, y, display, image)
+        self.scal_image = pygame.transform.scale(self.image, (sprite_scale*4, sprite_scale*4))
         self.rot_image = self.scal_image
-        self.rect = self.rot_image.get_rect(center = (round(self.pos.x),round(self.pos.y)))
-        self.hitbox = self.scal_image.get_rect(center = (round(self.pos.x),round(self.pos.y)))
+        self.rect = self.rot_image.get_rect(center = (round(self.pos.x), round(self.pos.y)))
+        self.hitbox = self.scal_image.get_rect(center = (round(self.pos.x), round(self.pos.y)))
         self.angle = math.radians(angle) + math.pi
-        self.xvel = (10 * math.sin(self.angle)) + random.randint(0,1) - 0.5
-        self.yvel = (10 * math.cos(self.angle)) + random.randint(0,1) - 0.5
+        self.xvel = (10 * math.sin(self.angle)) + random.randint(0, 1) - 0.5
+        self.yvel = (10 * math.cos(self.angle)) + random.randint(0, 1) - 0.5
         self.damage = 2
         self.t = 0
         self.z = 1
         self.type = "bullet"
         self.b_type = b_type
 
-    def update(self,tiles,player,enemies,spawners,i_group):
-        self.move(tiles,player,enemies,spawners,i_group)
+    def update(self, tiles, player, enemies, spawners, i_group):
+        self.move(tiles, player, enemies, spawners, i_group)
         self.stop()
         #self.render()
 
-    def move(self,tiles,player,enemies,spawners,i_group):
+    def move(self, tiles, player, enemies, spawners, i_group):
 
         self.tile_collisions(tiles)
 
-        self.entity_collisions(player,enemies,spawners)
+        self.entity_collisions(player, enemies, spawners)
 
         self.door_collisions(i_group)
         
@@ -1355,63 +1376,63 @@ class Bullet(Object):
         if self.t >= 60:
             self.kill()
 
-    def tile_collisions(self,tiles):
+    def tile_collisions(self, tiles):
         for t in tiles:
             #collision of impassible tiles
             if t.t_type == "wall" or t.t_type == "tree" or t.t_type == "door":
-                if t.rect.colliderect(self.hitbox.topleft[0] + (self.xvel * sprite_scale),self.hitbox.topleft[1] + (self.yvel * sprite_scale),self.hitbox.topright[0]-self.hitbox.topleft[0],self.hitbox.bottomleft[1]-self.hitbox.topleft[1]):
+                if t.rect.colliderect(self.hitbox.topleft[0] + (self.xvel * sprite_scale), self.hitbox.topleft[1] + (self.yvel * sprite_scale), self.hitbox.topright[0]-self.hitbox.topleft[0], self.hitbox.bottomleft[1]-self.hitbox.topleft[1]):
                     self.kill()
 
-    def door_collisions(self,i_group):
+    def door_collisions(self, i_group):
         for d in i_group:
             #collision of impassible tiles
             if d.type == "door":
-                if d.rect.colliderect(self.hitbox.topleft[0] + (self.xvel * sprite_scale),self.hitbox.topleft[1] + (self.yvel * sprite_scale),self.hitbox.topright[0]-self.hitbox.topleft[0],self.hitbox.bottomleft[1]-self.hitbox.topleft[1]):
+                if d.rect.colliderect(self.hitbox.topleft[0] + (self.xvel * sprite_scale), self.hitbox.topleft[1] + (self.yvel * sprite_scale), self.hitbox.topright[0]-self.hitbox.topleft[0], self.hitbox.bottomleft[1]-self.hitbox.topleft[1]):
                     self.kill()
 
-    def enemy_collisions(self,enemies,spawners):
+    def enemy_collisions(self, enemies, spawners):
         for e in enemies:
             #collision of enemy hitbox
-            if e.solid and e.hitbox.colliderect(self.hitbox.topleft[0] + (self.xvel * sprite_scale),self.hitbox.topleft[1] + (self.yvel * sprite_scale),self.hitbox.topright[0]-self.hitbox.topleft[0],self.hitbox.bottomleft[1]-self.hitbox.topleft[1]):
+            if e.solid and e.hitbox.colliderect(self.hitbox.topleft[0] + (self.xvel * sprite_scale), self.hitbox.topleft[1] + (self.yvel * sprite_scale), self.hitbox.topright[0]-self.hitbox.topleft[0], self.hitbox.bottomleft[1]-self.hitbox.topleft[1]):
                 self.deal_damage(e)
                 self.kill()
         for s in spawners:
             #collision of spawner hitbox
-            if s.solid and s.hitbox.colliderect(self.hitbox.topleft[0] + (self.xvel * sprite_scale),self.hitbox.topleft[1] + (self.yvel * sprite_scale),self.hitbox.topright[0]-self.hitbox.topleft[0],self.hitbox.bottomleft[1]-self.hitbox.topleft[1]):
+            if s.solid and s.hitbox.colliderect(self.hitbox.topleft[0] + (self.xvel * sprite_scale), self.hitbox.topleft[1] + (self.yvel * sprite_scale), self.hitbox.topright[0]-self.hitbox.topleft[0], self.hitbox.bottomleft[1]-self.hitbox.topleft[1]):
                 self.deal_damage(s)
                 self.kill()
 
-    def player_collision(self,player):
-        if player.hitbox.colliderect(self.hitbox.topleft[0] + (self.xvel * sprite_scale),self.hitbox.topleft[1] + (self.yvel * sprite_scale),self.hitbox.topright[0]-self.hitbox.topleft[0],self.hitbox.bottomleft[1]-self.hitbox.topleft[1]):
+    def player_collision(self, player):
+        if player.hitbox.colliderect(self.hitbox.topleft[0] + (self.xvel * sprite_scale), self.hitbox.topleft[1] + (self.yvel * sprite_scale), self.hitbox.topright[0]-self.hitbox.topleft[0], self.hitbox.bottomleft[1]-self.hitbox.topleft[1]):
             self.deal_damage(player)
             self.kill()
 
-    def entity_collisions(self,player,enemies,spawners):
+    def entity_collisions(self, player, enemies, spawners):
         if self.b_type == "player":
-            self.enemy_collisions(enemies,spawners)
+            self.enemy_collisions(enemies, spawners)
         else:
             self.player_collision(player)
 
-    def deal_damage(self,entity):
+    def deal_damage(self, entity):
         entity.health -= self.damage
 
     def sync(self):
         super().sync()
 
     def rotate(self):
-        self.rot_image = pygame.transform.rotate(self.scal_image,self.angle)
+        self.rot_image = pygame.transform.rotate(self.scal_image, self.angle)
         self.rect = self.rot_image.get_rect(center = self.rect.center)
 
     def render(self):
-        self.display.blit(self.rot_image,self.rect)
+        self.display.blit(self.rot_image, self.rect)
 
 class Footprint(Object):
-    def __init__(self,x,y,display,image,angle):
-        super().__init__(x,y,display,image)
+    def __init__(self, x, y, angle, display, image):
+        super().__init__(x, y, display, image)
         self.type = "particle"
-        self.scal_image = pygame.transform.scale(self.image,(sprite_scale*18,sprite_scale*18))
-        self.rot_image = pygame.transform.rotate(self.scal_image,angle)
-        self.rect = self.rot_image.get_rect(center = (round(self.pos.x),round(self.pos.y)))
+        self.scal_image = pygame.transform.scale(self.image, (sprite_scale*18, sprite_scale*18))
+        self.rot_image = pygame.transform.rotate(self.scal_image, angle)
+        self.rect = self.rot_image.get_rect(center = (round(self.pos.x), round(self.pos.y)))
         self.t = 0
         self.xvel = 0
         self.yvel = 0
@@ -1430,15 +1451,29 @@ class Footprint(Object):
             self.kill()
 
     def rotate(self):
-        self.rot_image = pygame.transform.rotate(self.scal_image,self.angle)
+        self.rot_image = pygame.transform.rotate(self.scal_image, self.angle)
         self.rect = self.rot_image.get_rect(center = self.rect.center)
 
     def render(self):
-        self.display.blit(self.rot_image,self.rect)
+        self.display.blit(self.rot_image, self.rect)
+        
+class Snow_Footprint(Footprint):
+    def __init__(self, x, y, angle, display = display, image = snow_footprints):
+        super().__init__(x, y, angle, display, image)
+        
+    def update(self):
+        super().update()
+        
+class Mud_Footprint(Footprint):
+    def __init__(self, x, y, angle, display = display, image = mud_footprints):
+        super().__init__(x, y, angle, display, image)
+        
+    def update(self):
+        super().update()
 
 class Collectable(Object):
-    def __init__(self,x,y,display,image,value):
-        super().__init__(x,y,display,image)
+    def __init__(self, x, y, display, image, value):
+        super().__init__(x, y, display, image)
         self.type = "collectable"
         self.value = value
         self.fade_timer = 0
@@ -1449,21 +1484,21 @@ class Collectable(Object):
             self.kill()
 
     #pushes them out of walls and portals
-    #def push(self,tiles):
+    #def push(self, tiles):
     #    pass
 
 class Ammo(Collectable):
-    def __init__(self,x,y,display,image,value):
-        super().__init__(x,y,display,image,value)
-        self.fade_limit = random.randint(1250,1500)
-        self.scal_image = pygame.transform.scale(self.image,(sprite_scale*32,sprite_scale*32))
+    def __init__(self, x, y, display = display, image = amo, value = 30):
+        super().__init__(x, y, display, image, value)
+        self.fade_limit = random.randint(1250, 1500)
+        self.scal_image = pygame.transform.scale(self.image, (sprite_scale*32, sprite_scale*32))
         self.rot_image = self.scal_image
 
-    def update(self,p):
+    def update(self, p):
         self.collect(p)
         self.fade()
 
-    def collect(self,p):
+    def collect(self, p):
         if p.hitbox.colliderect(self.hitbox):
             p.bullets += self.value
             self.kill()
@@ -1472,15 +1507,15 @@ class Ammo(Collectable):
         super().fade()
 
 class Coin(Collectable):
-    def __init__(self,x,y,display,image,value):
-        super().__init__(x,y,display,image,value)
-        self.fade_limit = random.randint(850,950)
+    def __init__(self, x, y, display = display, image = cn, value = 1):
+        super().__init__(x, y, display, image, value)
+        self.fade_limit = random.randint(850, 950)
 
-    def update(self,p):
+    def update(self, p):
         self.collect(p)
         self.fade()
 
-    def collect(self,p):
+    def collect(self, p):
         if p.hitbox.colliderect(self.hitbox):
             p.cash += self.value
             self.kill()
@@ -1489,22 +1524,23 @@ class Coin(Collectable):
         super().fade()
 
 class Menu_player(Entity):
-    def __init__(self,x,y,display,image,arm):
-        super().__init__(x,y,display,image,arm)
+    def __init__(self, x, y, display = display, image = plrhd, arm = plrrm):
+        super().__init__(x, y, display, image, arm)
         self.energyval = 50
         self.energyregen = 0.2
         self.energymax = 50
         self.sprintvelmult = 2
         self.wait = 0
         self.vel = 4
+        self.name = "bob"
 
-    def update(self,moves,mx,my,m_p_rect,play_group,quit_group,ctrl_group):
-        self.rotate(mx,my)
-        self.move(moves,play_group,quit_group,ctrl_group)
-        self.render()
+    def update(self, moves, m_pos, m_p_rect, play_group, quit_group, ctrl_group):
+        self.rotate(m_pos)
+        self.move(moves, play_group, quit_group, ctrl_group)
+        # self.render()
         self.die(m_p_rect)
 
-    def move(self,moves,play_group,quit_group,ctrl_group):
+    def move(self, moves, play_group, quit_group, ctrl_group):
         # if moves[0] and not moves[1]:
         #     self.yvel = -self.vel
         # elif moves[1] and not moves[0]:
@@ -1513,22 +1549,29 @@ class Menu_player(Entity):
         #     self.yvel = 0
         # else:
         #     self.yvel = 0
+            
+        # if moves[2] and not moves[3]:
+        #     self.xvel = -self.vel
+        # elif moves[3] and not moves[2]:
+        #     self.xvel = self.vel
+        # elif moves[2] and moves[3]:
+        #     self.xvel = 0
+        # else:
+        #     self.xvel = 0
+        
         self.yvel = 0
         if moves[0]:
             self.yvel -= self.vel
         if moves[1]:
             self.yvel += self.vel
             
-        if moves[2] and not moves[3]:
-            self.xvel = -self.vel
-        elif moves[3] and not moves[2]:
-            self.xvel = self.vel
-        elif moves[2] and moves[3]:
-            self.xvel = 0
-        else:
-            self.xvel = 0
+        self.xvel = 0
+        if moves[2]:
+            self.xvel -= self.vel
+        if moves[3]:
+            self.xvel += self.vel
             
-        if abs(self.xvel) == abs(self.yvel) and self.xvel != 0:
+        if abs(self.xvel) == abs(self.yvel) and self.xvel != 0:#this should be moved after all speed changes if speed is set to a specific value by something
             abs_vel = (self.vel/root_2)
             self.xvel = (self.xvel/self.vel) * abs_vel
             self.yvel = (self.yvel/self.vel) * abs_vel
@@ -1543,7 +1586,7 @@ class Menu_player(Entity):
 
         self.sync()
 
-    def die(self,m_p_rect):
+    def die(self, m_p_rect):
         if self.hitbox.colliderect(m_p_rect):
             self.dirty = 0
             self.kill()
@@ -1560,24 +1603,26 @@ class Menu_player(Entity):
         elif self.pos.y >= ((d_height - (9 * sprite_scale)) - self.yvel):
             self.yvel = 0
 
-    def button_collision(self,group):
+    def button_collision(self, group):
         if group[1] == group[2]:
-            if self.hitbox.colliderect((group[0].topleft[0] - self.xvel),group[0].topleft[1],1,(group[0].bottomleft[1] - group[0].topleft[1])):
+            if self.hitbox.colliderect((group[0].topleft[0] - self.xvel), group[0].topleft[1], 1, (group[0].bottomleft[1] - group[0].topleft[1])):
                 if self.xvel > 0:
                     self.xvel = 0
-            elif self.hitbox.colliderect((group[0].topright[0] - 1),group[0].topright[1],(1 - self.xvel),(group[0].bottomright[1] - group[0].topright[1])):
+            elif self.hitbox.colliderect((group[0].topright[0] - 1), group[0].topright[1], (1 - self.xvel), (group[0].bottomright[1] - group[0].topright[1])):
                 if self.xvel < 0:
                     self.xvel = 0
-            if self.hitbox.colliderect(group[0].topleft[0],(group[0].topleft[1] - self.yvel),(group[0].topright[0] - group[0].topleft[0]),1):
+            if self.hitbox.colliderect(group[0].topleft[0], (group[0].topleft[1] - self.yvel), (group[0].topright[0] - group[0].topleft[0]), 1):
                 if self.yvel > 0:
                     self.yvel = 0
-            elif self.hitbox.colliderect(group[0].bottomleft[0],(group[0].bottomleft[1] - 1),(group[0].topright[0] - group[0].topleft[0]),(1 - self.yvel)):
+            elif self.hitbox.colliderect(group[0].bottomleft[0], (group[0].bottomleft[1] - 1), (group[0].topright[0] - group[0].topleft[0]), (1 - self.yvel)):
                 if self.yvel < 0:
                     self.yvel = 0
-            elif self.hitbox.colliderect(group[0].bottomleft[0],group[0].bottomleft[1]-16+(9*sprite_scale),(group[0].bottomright[0]-group[0].bottomleft[0]),2):
+            elif self.hitbox.colliderect(group[0].bottomleft[0], group[0].bottomleft[1]-16+(9*sprite_scale), (group[0].bottomright[0]-group[0].bottomleft[0]), 2):
                 self.pos.y = group[0].bottomleft[1] + (9*sprite_scale)
+            # elif pygame.Rect(group[0].bottomleft[0], group[0].bottomleft[1]-16+(9*sprite_scale), (group[0].bottomright[0]-group[0].bottomleft[0]), 2).collidepoint(self.pos):
+            #     self.pos.y = group[0].bottomleft[1] + (9*sprite_scale)
 
-    def sprint(self,moves):
+    def sprint(self, moves):
         self.wait += 1
         if self.wait >= 60:
             self.energyval += self.energyregen
@@ -1591,23 +1636,23 @@ class Menu_player(Entity):
             self.yvel = self.sprintvelmult * self.yvel
             if self.energyval <= 0:
                 self.energyval = 0
-        self.energyval = round(self.energyval,1)
+        self.energyval = round(self.energyval, 1)
         
     def rotatehead(self):
-        self.rot_image = pygame.transform.rotate(self.scal_image,self.angle)
+        self.rot_image = pygame.transform.rotate(self.scal_image, self.angle)
         self.rect = self.rot_image.get_rect(center = self.rect.center)
 
     def rotatearms(self):
-        self.rot_arm = pygame.transform.rotate(self.scal_arm,self.angle)
+        self.rot_arm = pygame.transform.rotate(self.scal_arm, self.angle)
         self.arm_rect = self.rot_arm.get_rect(center = self.arm_rect.center)
 
-    def rotate(self,mx,my):
-        dx,dy = self.pos.x - mx, self.pos.y - my
-        self.angle = math.degrees(math.atan2(dx,dy))
+    def rotate(self, m_pos):
+        dx, dy = self.pos.x - m_pos.x, self.pos.y - m_pos.y
+        self.angle = math.degrees(math.atan2(dx, dy))
         self.rotatehead()
         self.rotatearms()
 
-    def render_bar(self,play_rect,play_img):
+    def render_bar(self, play_rect, play_img):
         x = play_rect.topleft[0] + 8
         if play_img == play_u:
             y = play_rect.topleft[1] + 8
@@ -1616,53 +1661,58 @@ class Menu_player(Entity):
         w = (play_rect.topright[0] - play_rect.topleft[0] - 16) * (self.energyval/self.energymax)
         h = play_rect.bottomleft[1] - play_rect.topleft[1] - 32
 
-        pygame.draw.rect(self.display,blue,pygame.Rect(x,y,w,h))
+        pygame.draw.rect(self.display, blue, pygame.Rect(x, y, w, h))
         
     def render(self):
-        self.display.blit(self.rot_image,self.rect)
-        self.display.blit(self.rot_arm,self.arm_rect)
+        self.display.blit(self.rot_image, self.rect)
+        self.display.blit(self.rot_arm, self.arm_rect)
         
     def sync(self):
         super().sync()
 
 class Interactable(pygame.sprite.DirtySprite):
-    def __init__(self,x,y,display,image1,image2):
+    def __init__(self, x, y, display, image1, image2):
         super().__init__()
         pygame.sprite.DirtySprite.__init__(self)
-        self.pos = pygame.math.Vector2((x,y))
+        self.pos = pygame.math.Vector2((x, y))
         self.display = display
         self.image1 = image1
         self.image2 = image2
         self.image = self.image1
-        self.rect1 = self.image1.get_rect(bottomleft = (round(x),round(y)))
-        self.rect2 = self.image2.get_rect(bottomleft = (round(x),round(y)))
+        self.rect1 = self.image1.get_rect(bottomleft = (round(x), round(y)))
+        self.rect2 = self.image2.get_rect(bottomleft = (round(x), round(y)))
         self.rect = self.rect1
-        self.hitbox = pygame.Rect(x-10,y-58,68,68)
+        self.hitbox = pygame.Rect(x-10, y-58, 68, 68)
         self.once = False
         self.type = "interactable"
         self.z = 2
         self.dirty = 1
         self.needs_key = False
-        self.info_textbox = textbox(d_width/2,d_height*0.88,20,white,display)
+        self.info_textbox = textbox(d_width/2, d_height*0.88, 20, white, display)
         
     def render_text(self):
         self.info_textbox.draw_c("Right click to interact")
 
     #def render(self):
-    #    self.display.blit(self.image,self.rect)
+    #    self.display.blit(self.image, self.rect)
 
 class Chest(Interactable):
-    def __init__(self,x,y,display,image1,image2,c_type):
-        super().__init__(x,y,display,image1,image2)
+    def __init__(self, x, y, display = display, image1 = wood_closed, image2 = wood_open, c_type = 1, state = False):
+        super().__init__(x, y, display, image1, image2)
         self.once = True
         self.c_type = c_type
         self.type = "chest"
+        self.open = state
+        self.check_image = True
 
-    def update(self,moves,player,c_group):
-        self.change_state(moves,player,c_group)
+    def update(self, moves, player, c_group, camera):
+        if self.check_image:
+            self.set_image()
+            self.check_image = False
+        self.change_state(moves, player, c_group, camera)
         #self.render()
 
-    # def change_state(self,moves,player,c_group):
+    # def change_state(self, moves, player, c_group):
     #     if moves[7] and player.hitbox.colliderect(self.hitbox):
     #         if self.image == self.image1:
     #             self.image = self.image2
@@ -1674,7 +1724,7 @@ class Chest(Interactable):
     #         else:
     #             pass
             
-    # def change_state(self,moves,player,c_group):
+    # def change_state(self, moves, player, c_group):
     #     if player.hitbox.colliderect(self.hitbox):
     #         self.render_text()
     #         if moves[7]:
@@ -1688,28 +1738,56 @@ class Chest(Interactable):
     #             else:
     #                 pass
                 
-    def change_state(self,moves,player,c_group):
-        if self.once == True:
-            if player.hitbox.colliderect(self.hitbox):
-                if self.image == self.image1:
+    # def change_state(self, moves, player, c_group, camera):
+    #     if self.once == True:
+    #         if player.hitbox.colliderect(self.hitbox):
+    #             if self.image == self.image1:
+    #                 self.render_text()
+    #                 if moves[7]:
+    #                     self.image = self.image2
+    #                     self.rect = self.rect2
+    #                     self.open = True
+    #                     self.action(c_group, camera)
+    #     else:
+    #         if player.hitbox.colliderect(self.hitbox):
+    #             self.render_text()
+    #             if moves[7]:
+    #                 if self.image == self.image1:
+    #                     self.image = self.image2
+    #                     self.rect = self.rect2
+    #                     self.open = True
+    #                     self.action(c_group, camera)
+    #                 else:
+    #                     self.image = self.image1
+    #                     self.rect = self.rect1
+    #                     self.open = False
+                        
+    def change_state(self, moves, player, c_group, camera):
+        if self.once:
+            if not self.open:
+                if player.hitbox.colliderect(self.hitbox):
                     self.render_text()
                     if moves[7]:
-                        self.image = self.image2
-                        self.rect = self.rect2
-                        self.action(c_group)
+                        self.open = True
+                        self.set_image()
+                        self.action(c_group, camera)
         else:
             if player.hitbox.colliderect(self.hitbox):
-                self.render_text()
-                if moves[7]:
-                    if self.image == self.image1:
-                        self.image = self.image2
-                        self.rect = self.rect2
-                        self.action(c_group)
-                    else:
-                        self.image = self.image1
-                        self.rect = self.rect1
+                    self.render_text()
+                    if moves[7]:
+                        self.open != self.open
+                        self.set_image()
+                        self.action(c_group, camera)
+                
+    def set_image(self):
+        if self.open:
+            self.image = self.image2
+            self.rect = self.rect2
+        else:
+            self.image = self.image1
+            self.rect = self.rect1
                         
-    # def player_collision(self,player):
+    # def player_collision(self, player):
     #     if player.hitbox.colliderect(self.hitbox):
     #         self.colliding = True
     #     else:
@@ -1719,23 +1797,23 @@ class Chest(Interactable):
     #     if self.colliding:
             
 
-    def action(self,c_group):
-        for n in range (0,self.c_type*5):
-            x = (self.hitbox.topleft[0] + random.randint(0,(self.hitbox.topright[0]-self.hitbox.topleft[0])))
-            y = (self.hitbox.topleft[1] + random.randint(0,(self.hitbox.bottomleft[1]-self.hitbox.topleft[1])))
-            num = random.randint(0,30)
+    def action(self, c_group, camera):
+        for n in range (0, self.c_type*5):
+            x = (self.hitbox.topleft[0] + random.randint(0, (self.hitbox.topright[0]-self.hitbox.topleft[0])))
+            y = (self.hitbox.topleft[1] + random.randint(0, (self.hitbox.bottomleft[1]-self.hitbox.topleft[1])))
+            num = random.randint(0, 30)
             if num == 30:
-                self.create_ammo(x,y,c_group)
+                self.create_ammo(x, y, c_group, camera)
             else:
-                self.create_coin(x,y,c_group)
+                self.create_coin(x, y, c_group, camera)
 
-    def create_coin(self,x,y,c_group):
-        coin = Coin(x,y,self.display,cn,1)
+    def create_coin(self, x, y, c_group, camera):
+        coin = Coin(x, y)
         c_group.add(coin)
         camera.add(coin)
 
-    def create_ammo(self,x,y,c_group):
-        ammo = Ammo(x,y,self.display,amo,30)
+    def create_ammo(self, x, y, c_group, camera):
+        ammo = Ammo(x, y)
         c_group.add(ammo)
         camera.add(ammo)
         
@@ -1744,31 +1822,45 @@ class Chest(Interactable):
 
     #def render(self):
     #    super().render()
+    
+class Iron_Chest(Chest):
+    def __init__(self, x, y, image1 = iron_closed, image2 = iron_open, c_type = 2):
+        super().__init__(x, y, image1 = image1, image2 = image2, c_type = c_type)
+        
+    def update(self, moves, player, c_group, camera):
+        super().update(moves, player, c_group, camera)
+        
+class Gold_Chest(Chest):
+    def __init__(self, x, y, image1 = gold_closed, image2 = gold_open, c_type = 3):
+        super().__init__(x, y, image1 = image1, image2 = image2, c_type = c_type)
+        
+    def update(self, moves, player, c_group, camera):
+        super().update(moves, player, c_group, camera)
 
-class Door(Interactable):
-    def __init__(self, x, y, display, image1, image2, d_type):
-        super().__init__(x, y, display, image1, image2)
+class Door():#Interactable):
+    def __init__(self, x, y, d_type, display = display, image = door):
+        # super().__init__(x, y, display)
         if d_type == "ur":
-            self.rect1 = self.image1.get_rect(bottomleft = (round(x),round(y)))
-            self.rect2 = self.image2.get_rect(bottomleft = (round(x),round(y)))
+            self.rect1 = self.image1.get_rect(bottomleft = (round(x), round(y)))
+            self.rect2 = self.image2.get_rect(bottomleft = (round(x), round(y)))
         elif d_type == "ul":
-            self.rect1 = self.image1.get_rect(bottomright = (round(x),round(y)))
-            self.rect2 = self.image2.get_rect(bottomright = (round(x),round(y)))
+            self.rect1 = self.image1.get_rect(bottomright = (round(x), round(y)))
+            self.rect2 = self.image2.get_rect(bottomright = (round(x), round(y)))
         elif d_type == "dr":
-            self.rect1 = self.image1.get_rect(topleft = (round(x),round(y)))
-            self.rect2 = self.image2.get_rect(topleft = (round(x),round(y)))
+            self.rect1 = self.image1.get_rect(topleft = (round(x), round(y)))
+            self.rect2 = self.image2.get_rect(topleft = (round(x), round(y)))
         elif d_type == "dl":
-            self.rect1 = self.image1.get_rect(topright = (round(x),round(y)))
-            self.rect2 = self.image2.get_rect(topright = (round(x),round(y)))
+            self.rect1 = self.image1.get_rect(topright = (round(x), round(y)))
+            self.rect2 = self.image2.get_rect(topright = (round(x), round(y)))
         self.rect = self.rect1
-        self.hitbox = pygame.Rect(self.rect.topleft[0]-10,self.rect.topleft[1]-10,self.rect.topright[0]-self.rect.topleft[0]+20,self.rect.bottomleft[1]-self.rect.topleft[1]+20)
+        self.hitbox = pygame.Rect(self.rect.topleft[0]-10, self.rect.topleft[1]-10, self.rect.topright[0]-self.rect.topleft[0]+20, self.rect.bottomleft[1]-self.rect.topleft[1]+20)
         self.type = "door"
  
-    def update(self,moves,player,x):
-        self.change_state(moves,player,x)
-        self.hitbox = pygame.Rect(self.rect.topleft[0]-10,self.rect.topleft[1]-10,self.rect.topright[0]-self.rect.topleft[0]+20,self.rect.bottomleft[1]-self.rect.topleft[1]+20)
+    def update(self, moves, player, x):
+        self.change_state(moves, player, x)
+        self.hitbox = pygame.Rect(self.rect.topleft[0]-10, self.rect.topleft[1]-10, self.rect.topright[0]-self.rect.topleft[0]+20, self.rect.bottomleft[1]-self.rect.topleft[1]+20)
 
-    # def change_state(self,moves,player):
+    # def change_state(self, moves, player):
     #     if moves[7] and player.hitbox.colliderect(self.hitbox):
     #         if self.image == self.image1:
     #             self.image = self.image2
@@ -1779,7 +1871,7 @@ class Door(Interactable):
     #         else:
     #             pass
             
-    def change_state(self,moves,player,c_group):
+    def change_state(self, moves, player, c_group):
         if self.once == True:
             if player.hitbox.colliderect(self.hitbox):
                 if self.image == self.image1:
@@ -1800,5 +1892,5 @@ class Door(Interactable):
                         self.image = self.image1
                         self.rect = self.rect1
                     
-    def action(self,x):
+    def action(self, x):
         pass
