@@ -1,4 +1,4 @@
-import pygame
+import pygame,math
 from pygame.locals import *
 from camera import *
 
@@ -29,6 +29,9 @@ white = 255,255,255
 yellow = 255,255,0
 black = 0,0,0
 grey = 88,88,88
+
+#useful numbers (might remove if not used for different moving methods)
+root_2 = math.sqrt(2)
 
 #settings level variables
 lvl_dir = "levels/"
@@ -166,6 +169,7 @@ weapon_swap_pressed = False
 game_stats = False
 game_paused = False
 use = False
+click = False
 
 game_state = "main_menu"
 
@@ -173,4 +177,5 @@ sim_dist = 800
 render_dist = (((d_width/2)**2 + (d_height/2)**2)**0.5) + (48*sprite_scale)
 camera = Camera(render_dist,sim_dist)
 
-count = 0
+player_count = 0
+timer = 0

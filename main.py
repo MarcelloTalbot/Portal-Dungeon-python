@@ -6,25 +6,25 @@ from pygame.locals import *
 from entity import *
 from button import *
 
-#clock for FPS
+#clock for fps
 clock = pygame.time.Clock()
 
 #icon
 pygame.display.set_icon(portal)
 
 #button creation
-play_btn = Button(d_width/2,d_height/2,play_u,play_d,display)
-ctrl_btn = Button(d_width/2,d_height/1.45,ctrl_u,ctrl_d,display)
-quit_btn = Button(d_width/2,d_height/1.13,quit_u,quit_d,display)
-back_btn = Button(d_width/2,d_height*0.92,back_u,back_d,display)
-main_btn = Button(d_width/2,d_height/1.45,main_u,main_d,display)
-yes_btn = Button(d_width*0.4,d_height/1.45,yes_u,yes_d,display)
-no_btn = Button(d_width*0.6,d_height/1.45,no_u,no_d,display)
-rtry_btn = Button(d_width/2,d_height/2,rtry_u,rtry_d,display)
-cont_btn = Button(d_width/2,d_height/2,cont_u,cont_d,display)
-rspn_btn = Button(d_width/2,d_height/2,rspn_u,rspn_d,display)
+play_btn = Button(d_width/2,d_height/2,play_u,play_d)#,display)
+ctrl_btn = Button(d_width/2,d_height/1.45,ctrl_u,ctrl_d)#,display)
+quit_btn = Button(d_width/2,d_height/1.13,quit_u,quit_d)#,display)
+back_btn = Button(d_width/2,d_height*0.92,back_u,back_d)#,display)
+main_btn = Button(d_width/2,d_height/1.45,main_u,main_d)#,display)
+yes_btn = Button(d_width*0.4,d_height/1.45,yes_u,yes_d)#,display)
+no_btn = Button(d_width*0.6,d_height/1.45,no_u,no_d)#,display)
+rtry_btn = Button(d_width/2,d_height/2,rtry_u,rtry_d)#,display)
+cont_btn = Button(d_width/2,d_height/2,cont_u,cont_d)#,display)
+rspn_btn = Button(d_width/2,d_height/2,rspn_u,rspn_d)#,display)
 
-#main menu images                                                               
+#main menu images
 title_rect = title_img.get_rect(center = (round(d_width/2),round(d_height/4)))
 menu_portal_rect = pygame.Rect((round(d_width/2) + 212),(round(d_height/4) + 30),32,56)
 
@@ -185,7 +185,7 @@ def load_sprites(e_group,s_group,i_group):
                 e_group.add(ghost)
                 camera.add(ghost)
             elif lines[r][c] == "g":
-                grave = Grave(tile_scale*(c+0.5),tile_scale*(r+0.5),display,grvstn,0)
+                grave = Grave(tile_scale*(c+0.5),tile_scale*(r+0.5),display,grvstn,0,0)
                 s_group.add(grave)
                 camera.add(grave)
             elif lines[r][c] == "D":#up to right
@@ -248,7 +248,7 @@ m_group.add(m_player)
 
 #camera.add(player)
 
-#text
+#textbox creation
 cash_txt = textbox(d_width - 260,(d_height * 0.92)-2,20,yellow,display)
 ammo_txt = textbox(d_width - 260,(d_height * 0.96)-2,20,yellow,display)
 playing_score_txt = textbox(5,5,20,white,display)
@@ -265,9 +265,9 @@ cash_rect = cn.get_rect(topleft = (round(d_width - 290),round((d_height * 0.92)-
 ammo_rect = amo.get_rect(topleft = (round(d_width - 297),round((d_height * 0.96)-5)))#pygame.Rect(d_width - 297, (d_height * 0.96)-5,18,18)
 
 #game clock + fps
-fps = 0
+current_fps = 0
 dt = 0
-ogframerate = 30#60
+max_fps = 30#60
 framerate = 60
 multiplier = 1
 
@@ -276,9 +276,9 @@ g_running = True
 while g_running:
     display.fill(grey)
     camera.display_surface.fill(grey)
-    clock.tick(ogframerate)
-    fps = clock.get_fps()
-    dt = fps/ogframerate
+    clock.tick(max_fps)
+    current_fps = clock.get_fps()
+    dt = current_fps/max_fps
     
     weapon_swap_pressed = False
     click = False
@@ -289,26 +289,26 @@ while g_running:
         if event.type == QUIT:
             g_running = False
         #inputs
-        if event.type == pygame.KEYDOWN:
+        elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_w or event.key == pygame.K_UP:
                 up_pressed = True
-            if event.key == pygame.K_s or event.key == pygame.K_DOWN:
+            elif event.key == pygame.K_s or event.key == pygame.K_DOWN:
                 down_pressed = True
-            if event.key == pygame.K_a or event.key == pygame.K_LEFT:
+            elif event.key == pygame.K_a or event.key == pygame.K_LEFT:
                 left_pressed = True
-            if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
+            elif event.key == pygame.K_d or event.key == pygame.K_RIGHT:
                 right_pressed = True
-            if event.key == pygame.K_1:
+            elif event.key == pygame.K_1:
                 player.weapon = 0
-            if event.key == pygame.K_2:
+            elif event.key == pygame.K_2:
                 player.weapon = 1
-            if event.key == pygame.K_LSHIFT:
+            elif event.key == pygame.K_LSHIFT:
                 dash_pressed = True
-            if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
+            elif event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
                 attack_pressed = True
-            if event.key == pygame.K_l:
+            elif event.key == pygame.K_l:
                 game_stats = True
-            if event.key == pygame.K_ESCAPE:
+            elif event.key == pygame.K_ESCAPE:
                 if game_state == "quit":
                     game_state = prev_state
                 elif game_state == "playing":
@@ -317,39 +317,39 @@ while g_running:
                     game_state = "playing"
                 else:
                     game_state = "quit"
-            if event.key == pygame.K_p:
+            elif event.key == pygame.K_p:
                 if game_state == "playing":
                     game_paused = not game_paused
                 
-        if event.type == pygame.MOUSEBUTTONDOWN:
+        elif event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
                 attack_pressed = True
                 click = True
-            if event.button == 3:
+            elif event.button == 3:
                 use = True
                 #dash_pressed = True
         
-        if event.type == pygame.KEYUP:
+        elif event.type == pygame.KEYUP:
             if event.key == pygame.K_w or event.key == pygame.K_UP:
                 up_pressed = False
-            if event.key == pygame.K_s or event.key == pygame.K_DOWN:
+            elif event.key == pygame.K_s or event.key == pygame.K_DOWN:
                 down_pressed = False
-            if event.key == pygame.K_a or event.key == pygame.K_LEFT:
+            elif event.key == pygame.K_a or event.key == pygame.K_LEFT:
                 left_pressed = False
-            if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
+            elif event.key == pygame.K_d or event.key == pygame.K_RIGHT:
                 right_pressed = False
-            if event.key == pygame.K_LSHIFT:
+            elif event.key == pygame.K_LSHIFT:
                 dash_pressed = False
-            if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
+            elif event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
                 attack_pressed = False
-            if event.key == pygame.K_l:
+            elif event.key == pygame.K_l:
                 game_stats = False
-            if event.key == pygame.K_q:
+            elif event.key == pygame.K_q:
                 weapon_swap_pressed = True
             #if event.key == pygame.K_e:
             #    heal = True
 
-        if event.type == pygame.MOUSEBUTTONUP:
+        elif event.type == pygame.MOUSEBUTTONUP:
             if event.button == 1:
                 attack_pressed = False
                 #click = True
@@ -357,7 +357,7 @@ while g_running:
             #    use = False
                 #dash_pressed = False
 
-        if event.type == pygame.MOUSEWHEEL:
+        elif event.type == pygame.MOUSEWHEEL:
             weapon_swap_pressed = True
 
     #mouse position
@@ -409,7 +409,7 @@ while g_running:
             game_state = "main_menu"
 
     elif game_state == "playing":
-        if count < 1:
+        if player_count < 1:
             player = Player(200*sprite_scale,200*sprite_scale,display,plrhd,plrrm)
             camera.add(player)
 
@@ -423,7 +423,7 @@ while g_running:
             load_level(level_group)
             load_sprites(enemy_group,spawner_group,interactable_group)
 
-            count += 1
+            player_count += 1
 
         prev_state = game_state
 
@@ -448,6 +448,7 @@ while g_running:
                 game_state = "quit"
 
         else:#not paused
+            timer += 1
             if camera.c_draw(player,moves,level_group,mx,my,enemy_group,spawner_group,collectable_group,bullet_group,footprint_group,interactable_group):
                 level += 1
                 prev_score = player.score
@@ -500,7 +501,7 @@ while g_running:
                 game_state = "You Died"
             
             if game_stats:
-                fps_txt.draw_l("FPS:"+str(int(fps))+"(max"+str(ogframerate)+")")
+                fps_txt.draw_l("FPS:"+str(int(current_fps))+" | Max:"+str(max_fps))
                 
             playing_score_txt.draw_l("Score: "+str(player.score))
             cash_txt.draw_l(str(player.cash))
@@ -534,14 +535,7 @@ while g_running:
                 
     elif game_state == "Game Over" or game_state == "You Win!":
         prev_state = game_state
-
-        top_large_txt.draw_c(game_state)
-        current_score_txt.draw_l("Score: "+str(player.score))
-        kills_txt.draw_l("Kills: "+str(player.kills))
-
-        if game_state == "You Win!":
-            lives_txt.draw_l("Lives: "+str(player.lives))
-
+        
         level = 0
         
         level_group.empty()
@@ -551,9 +545,17 @@ while g_running:
         footprint_group.empty()
         collectable_group.empty()
         camera.empty()
+                
         player.kill()
 
-        count = 0
+        player_count = 0
+        
+        top_large_txt.draw_c(game_state)
+        current_score_txt.draw_l("Score: "+str(player.score))
+        kills_txt.draw_l("Kills: "+str(player.kills))
+
+        if game_state == "You Win!":
+            lives_txt.draw_l("Lives: "+str(player.lives))
 
         #main_btn.render()
 

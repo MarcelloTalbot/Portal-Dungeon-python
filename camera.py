@@ -38,7 +38,7 @@ class Camera(pygame.sprite.Group):
         for sprite in sorted(self.sprites(),key = lambda sprite: sprite.z):
             
             #offset from player
-            try:#for all sprites with one rectangle
+            try:#for all sprites with one rectangle - change to if maybe
                 img_offset_pos = sprite.rect.topleft - self.offset
             except:#for portals as they have two rectangles
                 img_offset_pos_1 = sprite.rect_1.topleft - self.offset
@@ -56,7 +56,7 @@ class Camera(pygame.sprite.Group):
                 sprite.update(moves,player,collectable_group)
             elif sprite.type == "door":
                 self.display_surface.blit(sprite.image,img_offset_pos)
-                sprite.update(moves,player)
+                sprite.update(moves,player,None)
             elif sprite.type == "player":
                 arm_offset_pos = sprite.arm_rect.topleft - self.offset
                 sprite.render(arm_offset_pos,img_offset_pos)
@@ -68,7 +68,7 @@ class Camera(pygame.sprite.Group):
                 #sprite.render_weapon_show()
                 if sprite.update(moves,tiles,mx,my,bullet_group,footprint_group,enemy_group,spawner_group,interactable_group):
                     return True
-            #tile,portal,player should always be rendered and updating
+            #tile,portal,player should always be rendered and updating (not tile)
             else:
                 #calculates distance from the sprite to the player
                 dist = player.pos.distance_to(sprite.pos)
@@ -85,7 +85,7 @@ class Camera(pygame.sprite.Group):
                     elif sprite.type == "bullet":
                         self.display_surface.blit(sprite.scal_image,img_offset_pos)
                         if dist <= self.sim_dist:
-                            sprite.update(tiles,mx,my,player,enemy_group,spawner_group,interactable_group)
+                            sprite.update(tiles,player,enemy_group,spawner_group,interactable_group)
                     elif sprite.type == "spawner":
                         self.display_surface.blit(sprite.scal_image,img_offset_pos)
                         if dist <= self.sim_dist:
