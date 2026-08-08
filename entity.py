@@ -73,7 +73,7 @@ class Entity(Object):
         self.t = random.randint(0, 960)
         self.idle_vel = 1
         self.z = 4
-        self.next_pos = (0, 0)
+        self.next_pos = pygame.math.Vector2((0,0))
         self.collidable_tiles = []
         # self.save_vals.extend(['t', 'idle_vel', 'next_pos', 'collidable_tiles'])
 
@@ -93,9 +93,9 @@ class Entity(Object):
     def random_move(self):
         if self.idle == False:
             self.t = 0
-            next_x = random.randint(0, int(self.pos.x) + 200) - 100
-            next_y = random.randint(0, int(self.pos.y) + 200) - 100
-            self.next_pos = pygame.math.Vector2((next_x, next_y))
+            self.next_pos.x = random.randint(0, int(self.pos.x) + 200) - 100
+            self.next_pos.y = random.randint(0, int(self.pos.y) + 200) - 100
+            # self.next_pos.x, self.next_pos.y = next_x, next_y
             self.idle = True
         
         if self.t > 60 and self.t < 210:
@@ -274,7 +274,8 @@ class Grave(Spawner):#Object):
         self.e_count_max = 20
         self.s_spawn = False
         # self.num = num
-        self.spawn_list = [self.create_zombie, self.create_skeleton]
+        # self.spawn_list = [self.create_zombie, self.create_skeleton]
+        self.spawn_list = [super().create_zombie, super().create_skeleton]
         # self.save_vals.extend(['s_spawn'])
 
     def update(self, e_group, p, c_group, offset, camera):
@@ -299,6 +300,11 @@ class Grave(Spawner):#Object):
             random.choice(self.spawn_list)(e_group, camera)#randomly chooses which function to perform
             self.e_count += 1
             self.spawn_timer = 0
+            
+    def create_grave(self, s_group, camera):
+        grave = Grave(self.pos.x, self.pos.y)
+        s_group.add(grave)
+        camera.add(grave)
 
     # def create_zombie(self, e_group):
     #     zombie = Zombie(self.pos.x, self.pos.y, self.display, zmbhd, zmbrm, True, self.num)
@@ -310,11 +316,11 @@ class Grave(Spawner):#Object):
     #     e_group.add(skeleton)
     #     camera.add(skeleton)
     
-    def create_zombie(self, e_group, camera):
-        super().create_zombie(e_group, camera)
+    # def create_zombie(self, e_group, camera):
+    #     super().create_zombie(e_group, camera)
         
-    def create_skeleton(self, e_group, camera):
-        super().create_skeleton(e_group, camera)
+    # def create_skeleton(self, e_group, camera):
+    #     super().create_skeleton(e_group, camera)
 
     def render_bars(self, offset):
         #progress rectangle stats
@@ -788,7 +794,7 @@ class Skeleton(Enemy):
                 self.yvel = (self.yvel/self.vel_back) * abs_vel
 
     def create_bullet(self, b_group, camera):
-        bullet = Bullet(self.pos.x, self.pos.y, self.angle, b_type = "skeleton")
+        bullet = Bullet(self.pos.x, self.pos.y, angle = self.angle, b_type = "skeleton")
         b_group.add(bullet)
         camera.add(bullet)
 
@@ -1025,6 +1031,7 @@ class Player(Entity):
         self.energyval = 50
         self.energyregen = 0.2
         self.energymax = 50
+        self.regen_energy = False
         self.sprintvelmult = 2
         self.footprint_timer = 0
         self.score = 0
@@ -1046,11 +1053,22 @@ class Player(Entity):
         self.hp_textbox = textbox((d_width/2)-30, (d_height * 0.96)+1, 15, white, display)
         self.ep_textbox = textbox((d_width/2)-20, (d_height * 0.92)+1, 15, white, display)
         self.level = 0
-        
+        self.prev_score = 0
+        self.prev_kills = 0
+        self.prev_bullets = self.bullets
+        self.prev_cash = 0
+        self.deaths = 0
+        self.is_new_press = True
+        self.path = []
+        # my_list = []
+        # for num in range(0,0):
+        #     list.append(num)
+        # print(my_list)
         self.hrt_rects = []
         for i in range(0, self.lives):
             hrt_rect = hrt.get_rect(topleft = (round(d_width - 48 - (i*33)), 15))
             self.hrt_rects.append(hrt_rect)
+            # print(repr(self.hrt_rects))
             
         # self.save_vals = ['solid', 'health', 'healthmax', 'xvel', 'yvel', 'vel', 't', 'idle_vel', 'next_pos', 'collidable_tiles', 'weapon', 'angle', 'attack_timer', 'wait', 'healthregen', 'energyval', 'energyregen', 'energymax', 'sprintvelmult', 'footprint_timer', 'score', 'bullet_delay', 'cash', 'change_lvl', 'damage', 'kills', 'bullets', 'attack_dist', 'lives', 'portal_cost', 'respawn_protection', 'respawn_protection_timer']
 
@@ -1069,15 +1087,26 @@ class Player(Entity):
         #self.render()
         self.dirty = 1
         self.respawn()
-        return self.change_lvl
+        # return self.change_lvl
 
     def die(self):
         if self.health <= 0:
             self.lives -= 1
+            self.deaths += 1
             if len(self.hrt_rects) > 0:
                 del self.hrt_rects[-1]
             self.pos = pygame.math.Vector2((200*sprite_scale, 200*sprite_scale))
             self.respawn_protection = True
+            self.score = self.prev_score - 100
+            self.health = self.healthmax
+            self.energyval = self.energymax
+            self.bullets = self.prev_bullets
+            self.kills = self.prev_kills
+            self.cash = self.prev_cash - 50
+            if self.cash < 0:
+                self.cash = 0
+            if self.score < 0:
+                self.score = 0
             return True
         
     def respawn(self):
@@ -1107,16 +1136,18 @@ class Player(Entity):
                     if self.xvel > 0:
                         self.xvel = t.rect.left - self.hitbox.left
                         self.xvel = 0
+                        # self.pos.x = self.pos.x + self.xvel - (self.hitbox.right + self.xvel - t.rect.left)
+                        self.xvel = 0
                     elif self.xvel < 0:
-                        self.xvel = self.hitbox.right - t.rect.right
+                        # self.xvel = self.hitbox.right - t.rect.right
                         self.xvel = 0
                 #y axis collisions
                 elif t.rect.colliderect(self.hitbox.topleft[0], self.hitbox.topleft[1] + (self.yvel * sprite_scale * 1.1), self.hitbox.topright[0]-self.hitbox.topleft[0], self.hitbox.bottomleft[1]-self.hitbox.topleft[1]):
                     if self.yvel < 0:
-                        self.yvel = self.hitbox.bottom - t.rect.bottom
+                        # self.yvel = self.hitbox.bottom - t.rect.bottom
                         self.yvel = 0
                     elif self.yvel > 0:
-                        self.yvel = t.rect.top - self.hitbox.top
+                        # self.yvel = t.rect.top - self.hitbox.top
                         self.yvel = 0
                         
             elif t.t_type == "snowy_grass":
@@ -1146,12 +1177,25 @@ class Player(Entity):
             elif t.t_type == "b_portal" and moves[7]:
                 if t.rect.colliderect(self.hitbox):
                     self.change_lvl = True
+                    self.level += 1
+                    self.prev_score = self.score
+                    self.prev_kills = self.kills
+                    self.prev_bullets = self.bullets
+                    self.prev_cash = self.cash
+                    self.pos.x = self.pos.y = 200
             
             #collision of slowing tiles
             if t.speed_mult != 1:
                 if t.rect.collidepoint(self.pos):
                     self.xvel = self.xvel * t.speed_mult
                     self.yvel = self.yvel * t.speed_mult
+                    
+    # def tile_collisions(self, tiles):#new
+    #     for data in self.path:
+    #         if tiles[data[0]][data[1]] in self.collidable_tiles:
+    #             self.xvel *= data[2]
+    #             self.yvel *= data[2]
+    #             break
 
     def door_collisions(self, i_group):
         for d in i_group:
@@ -1205,7 +1249,7 @@ class Player(Entity):
         if moves[3]:
             self.xvel += self.vel
             
-        if abs(self.xvel) == abs(self.yvel) and self.xvel != 0:
+        if abs(self.xvel) == abs(self.yvel) and self.xvel != 0:#just do if self.xvel != 0 and self.yvel != 0
             abs_vel = (self.vel/root_2)
             self.xvel = (self.xvel/self.vel) * abs_vel
             self.yvel = (self.yvel/self.vel) * abs_vel
@@ -1216,6 +1260,190 @@ class Player(Entity):
         self.door_collisions(i_group)
 
         self.sync()
+        
+    def collisions(self):
+        # if self.xvel != 0 and self.yvel != 0:
+            self.calc_path()
+            
+            self.tile_collisions()
+        
+    # def calc_move_line(self):#i can either go from pos and use two grids or specify
+    #     # dist_to_next_pos = self.pos.distance_to(self.next_pos)
+        
+    #     self.move_line.clear()
+        
+    #     next_x = self.pos.x + self.xvel
+    #     next_y = self.pos.y + self.yvel
+        
+    #     #get the position where the sprite crosses the vertical grid lines
+    #     if self.xvel > 0:#moving right
+    #         start_x = (self.hitbox.right // tile_scale + 1) * tile_scale
+            
+    #         for x in range(start_x, self.hitbox.right + self.xvel + 1, tile_scale):#all x values that are a multiple of tile_scale that it will cross after moving
+    #             if self.yvel < 0:#moving up (-y)
+    #                 y = ((x-self.hitbox.right)/(next_x-self.hitbox.right)) * (self.hitbox.top-next_y)
+    #             elif self.yvel > 0:#moving down (+y)
+    #                 y = ((x-self.hitbox.right)/(next_x-self.hitbox.right)) * (next_y-self.hitbox.top)
+                    
+    #             self.move_line.append((x, y))
+    #     else:
+    #         start_x = (self.hitbox.left // tile_scale) * tile_scale
+    #         end_x = ((self.pos.x + self.xvel) // tile_scale + 1) * tile_scale
+            
+    #         for x in range(self.hitbox.left + self.xvel, start_x + 1, tile_scale):
+    #             self.move_line.append((x, self.pos.y + self.yvel))
+        
+    #     if self.yvel > 0:
+    #         start_y = (self.pos.y // tile_scale + 1) * tile_scale
+            
+    #         # for y in range(start_y, self.hitbox.bottom + self.xvel, tile_scale):
+    #         #     self.move_line.append((y, ))
+    #     else:
+    #         start_y = (self.pos.y // tile_scale) * tile_scale
+            
+    #         # for y in range(, tile_scale):
+    #         #     self.move_line.append((y, ))
+        
+    #     # self.move_line.append((start_x, start_y))
+            
+    #     for y in range(0, (self.yvel // tile_scale)):
+    #         self.move_line[y][1] = start_y * (y + 1)
+        
+    #     # for x in range(self.pos.x, self.pos.x + self.xvel, tile_scale):
+    #     #     self.move_line.append(pygame.math.Vector2((x, 0)))
+        
+    def calc_path(self):#can get x and y for each possible collision and check tile.rect.collidepoint or just use level matrix pos
+        # vertical_grid_lines = []
+        self.path.clear()
+        
+        # #position if velocity is not 0
+        # next_x = self.pos.x + self.xvel
+        # next_y = self.pos.y + self.yvel
+        
+        if self.xvel > 0 and self.yvel < 0:#moving right and up (+x, -y)
+            #first column on path
+            current_c = self.hitbox.right // tile_scale
+            if self.hitbox.right / tile_scale == current_c:#only needed if I set the position touching the tile
+                first_c = current_c
+            else:
+                first_c = current_c + 1
+                
+            #last row on path
+            # if (self.hitbox.top + self.yvel) / tile_scale == (self.hitbox.top + self.yvel) // tile_scale:#if already on a grid line
+            #     last_r = self.hitbox.top + self.yvel
+            # else:
+            last_r = (self.hitbox.top + self.yvel) // tile_scale + 1
+            
+            #calculates each column crossing on path
+            for x in range(first_c*tile_scale, self.hitbox.right + self.xvel, tile_scale):
+                dist = (x-self.hitbox.right)/(self.xvel)
+                r = (self.hitbox.top - (dist * self.yvel)) // tile_scale
+                c = x / tile_scale
+                self.path.append((r, c, dist))
+            
+            #calculates each row crossing on path
+            for y in range(last_r, self.hitbox.top, tile_scale):
+                dist = (self.hitbox.top-y)/(self.yvel)
+                # x =  (dist * self.xvel) + self.hitbox.right
+                r = (y / tile_scale) - 1
+                c = ((dist * self.xvel) + self.hitbox.right) // tile_scale
+                self.path.append((r, c, dist))
+                
+        elif self.xvel > 0 and self.yvel > 0:#moving right and down (+x, +y)
+            #first crossed vertical grid line
+            if self.hitbox.right / tile_scale == self.hitbox.right // tile_scale:#only needed if I set the position touching the tile
+                first_c = self.hitbox.right
+            else:
+                first_c = (self.hitbox.right // tile_scale + 1) * tile_scale
+                
+            #first crossed horizontal grid line
+            if self.hitbox.bottom / tile_scale == self.hitbox.bottom // tile_scale:#if already on a grid line
+                first_r = self.hitbox.bottom
+            else:
+                first_r = (self.hitbox.bottom // tile_scale + 1) * tile_scale
+            
+            #calculates each position where the sprite would cross a vertical grid line
+            for x in range(first_c, self.hitbox.right + self.xvel, tile_scale):
+                dist = (x-self.hitbox.right)/(self.xvel)
+                y = (dist * self.yvel) + self.hitbox.bottom
+                self.path.append((r, c, dist))
+            
+            #calculates each position where the sprite would cross a horizontal grid line
+            for y in range(first_r, self.hitbox.bottom + self.yvel, tile_scale):
+                dist = (y-self.hitbox.bottom)/(self.yvel)
+                x = (dist * self.xvel) + self.hitbox.right
+                self.path.append((r, c, dist))
+                
+        elif self.xvel < 0 and self.yvel < 0:#moving left and up (-x, -y)
+            #last crossed vertical grid line
+            last_c = ((self.hitbox.left + self.xvel) // tile_scale + 1) * tile_scale
+            
+            #last crossed horizontal grid line
+            last_r = ((self.hitbox.top + self.yvel) // tile_scale + 1) * tile_scale
+            
+            #calculates each position where the sprite would cross a vertical grid line
+            for x in range(last_c, self.hitbox.left, tile_scale):
+                y = (self.hitbox.left-x)/(self.xvel) * (self.yvel)
+                self.path.append((r, c, dist))
+                
+            #calculates each position where the sprite would cross a horizontal grid line
+            for y in range(last_r, self.hitbox.top, tile_scale):
+                x = (self.hitbox.top-y)/(self.yvel) * (self.xvel)
+                self.path.append((r, c, dist))
+                
+        elif self.xvel < 0 and self.yvel > 0:#moving left and down (-x, +y)
+            #last crossed vertical grid line
+            last_c = ((self.hitbox.left + self.xvel) // tile_scale + 1) * tile_scale#
+            
+            #first crossed horizontal grid line
+            if self.hitbox.bottom / tile_scale == self.hitbox.bottom // tile_scale:#if already on a grid line
+                first_r = self.hitbox.bottom
+            else:
+                first_r = (self.hitbox.bottom // tile_scale + 1) * tile_scale
+                
+            #calculates each position where the sprite would cross a vertical grid line
+            for x in range(last_c, self.hitbox.left, tile_scale):
+                y = (self.hitbox.left-x)/(self.xvel) * (self.yvel)
+                self.path.append((r, c, dist))
+                
+            #calculates each position where the sprite would cross a horizontal grid line
+            for y in range(first_r, self.hitbox.bottom + self.yvel, tile_scale):
+                x = (y-self.hitbox.bottom)/(self.yvel) * (self.xvel)
+                self.path.append((r, c, dist))
+                
+        self.path = sorted(self.path, key=lambda data: data[2])
+            
+    def calc_move_line_2(self):#don't use y = mx( + c) if velocities are calculated from angles
+        if self.xvel != 0 and self.yvel != 0:
+            m = self.yvel / self.xvel
+                    
+        #y = mx + c
+        c = self.pos.y - m * self.pos.x
+        
+    def calc_move_line_3(self):#try to do with self.angle
+        pass
+        
+    # def check_tile_collision(self):#probably not needed
+    #     if self.xvel != 0:
+    #         if self.xvel > 0 and self.hitbox.right + self.xvel > (self.hitbox.right // tile_scale + 1) * tile_scale:
+    #             x_collision = 0
+                
+    #         elif self.xvel < 0 and self.hitbox.left + self.xvel < (self.hitbox.left // tile_scale) * tile_scale:
+    #             x_collision = 1
+                
+    #         # if self.xvel > 0 and self.hitbox.collidepoint()
+        
+    #     if self.yvel != 0:
+    #         if self.yvel > 0 and self.hitbox.bottom + self.yvel > (self.hitbox.bottom // tile_scale + 1) * tile_scale:
+    #             y_collision = 0
+                
+    #         elif self.yvel < 0 and self.hitbox.top + self.yvel < (self.hitbox.top // tile_scale) * tile_scale:
+    #             y_collision = 1
+                
+    #         else:
+    #             y_collision = 0
+            
+    #     return x_collision, y_collision
 
     def rotatehead(self):
         self.rot_image = pygame.transform.rotate(self.scal_image, self.angle)
@@ -1235,8 +1463,8 @@ class Player(Entity):
         self.rotate()
 
     def render_text(self):
-        self.ep_textbox.draw_l(str(self.energyval)+"/"+str(self.energymax))
-        self.hp_textbox.draw_l(str(self.health)+"/"+str(self.healthmax))
+        self.ep_textbox.draw_l(str(round(self.energyval, 1))+"/"+str(self.energymax))
+        self.hp_textbox.draw_l(str(round(self.health, 1))+"/"+str(self.healthmax))
 
     def render_bars(self):
         #progress of each bar
@@ -1267,22 +1495,81 @@ class Player(Entity):
         rect = fist_show.get_rect(topleft = (round(d_width-140), round(d_height-140)))
         self.display.blit(w_show[self.weapon], rect)
     
-    def sprint(self, moves):
-        self.wait += 1
-        if self.wait >= 30:
+    # def sprint(self, moves):#original
+    #     self.wait += 1
+    #     if self.wait >= 30:
+    #         self.energyval += self.energyregen
+    #         if self.energyval >= self.energymax:
+    #             self.energyval = self.energymax
+    #             self.wait = 0
+    #     if moves[4] and self.energyval > 0 and (self.xvel != 0 or self.yvel != 0) and not self.regen_energy:
+    #         self.wait = 0
+    #         self.energyval -= 0.5
+    #         self.xvel = self.sprintvelmult * self.xvel
+    #         self.yvel = self.sprintvelmult * self.yvel
+    #         if self.energyval <= 0:
+    #             self.energyval = 0
+    #     self.energyval = round(self.energyval, 1)
+        
+    def sprint(self, moves):#new
+        if self.regen_energy:
             self.energyval += self.energyregen
             if self.energyval >= self.energymax:
                 self.energyval = self.energymax
-                self.wait = 0
-        if moves[4] and self.energyval > 0 and (self.xvel != 0 or self.yvel != 0):
-            self.wait = 0
+                # self.regen_energy = False
+            if moves[4] and self.is_new_press and (self.xvel != 0 or self.yvel != 0):
+                self.regen_energy = False
+                self.is_new_press = False
+            # elif self.xvel == 0 and self.yvel == 0:
+            #     self.regen_energy = False
+                # self.is_new_press = True
+                
+        elif moves[4] and (self.xvel != 0 or self.yvel != 0):
             self.energyval -= 0.5
             self.xvel = self.sprintvelmult * self.xvel
             self.yvel = self.sprintvelmult * self.yvel
             if self.energyval <= 0:
                 self.energyval = 0
-        self.energyval = round(self.energyval, 1)
-
+                self.regen_energy = True
+                
+        elif moves[4]:
+            self.regen_energy = True
+            self.is_new_press = True
+                
+        elif not moves[4]:
+            self.regen_energy = True
+            
+        # elif self.xvel != 0 or self.yvel != 0:
+        #     self.regen_energy = True
+        #     self.is_new_press = True
+                
+        # self.energyval = round(self.energyval, 1)
+        
+    # def sprint(self, moves):#test might use?
+    #     if moves[4]:
+    #         if self.regen_energy:
+    #             self.energyval += self.energyregen
+    #             if self.energyval >= self.energymax:
+    #                 self.energyval = self.energymax
+    #                 self.regen_energy = False
+                    
+    #         elif (self.xvel != 0 or self.yvel != 0):
+    #             self.energyval -= 0.5
+    #             self.xvel = self.sprintvelmult * self.xvel
+    #             self.yvel = self.sprintvelmult * self.yvel
+    #             if self.energyval <= 0:
+    #                 self.energyval = 0
+    #                 self.regen_energy = True
+                    
+    #     else:
+    #         if self.regen_energy:
+    #             self.energyval += self.energyregen
+    #             if self.energyval >= self.energymax:
+    #                 self.energyval = self.energymax
+    #                 self.regen_energy = False
+                    
+    #     self.energyval = round(self.energyval, 1)
+    
     def change_weapon(self):
         if self.weapon ==  0:
             self.weapon = 1
@@ -1325,7 +1612,7 @@ class Player(Entity):
         camera.add(footprint)
 
     def create_bullet(self, b_group, camera):
-        bullet = Bullet(self.pos.x, self.pos.y, self.angle, b_type = "player")
+        bullet = Bullet(self.pos.x, self.pos.y, angle = self.angle)
         b_group.add(bullet)
         camera.add(bullet)
 
@@ -1341,15 +1628,16 @@ class Player(Entity):
         super().sync()
 
 class Bullet(Object):
-    def __init__(self, x, y, angle, b_type = "player", display = display, image = blt):
+    def __init__(self, x, y, angle = 0, b_type = "player", display = display, image = blt):
         super().__init__(x, y, display, image)
         self.scal_image = pygame.transform.scale(self.image, (sprite_scale*4, sprite_scale*4))
         self.rot_image = self.scal_image
         self.rect = self.rot_image.get_rect(center = (round(self.pos.x), round(self.pos.y)))
         self.hitbox = self.scal_image.get_rect(center = (round(self.pos.x), round(self.pos.y)))
         self.angle = math.radians(angle) + math.pi
-        self.xvel = (10 * math.sin(self.angle)) + random.randint(0, 1) - 0.5
-        self.yvel = (10 * math.cos(self.angle)) + random.randint(0, 1) - 0.5
+        self.vel = 10
+        self.xvel = (self.vel * math.sin(self.angle)) + random.randint(0, 1) - 0.5
+        self.yvel = (self.vel * math.cos(self.angle)) + random.randint(0, 1) - 0.5
         self.damage = 2
         self.t = 0
         self.z = 1
@@ -1440,7 +1728,7 @@ class Footprint(Object):
         self.z = 1
 
     def update(self):
-        self.rotate()
+        # self.rotate()
         self.fade()
         #self.render()
 
@@ -1450,9 +1738,9 @@ class Footprint(Object):
             self.t = 0
             self.kill()
 
-    def rotate(self):
-        self.rot_image = pygame.transform.rotate(self.scal_image, self.angle)
-        self.rect = self.rot_image.get_rect(center = self.rect.center)
+    # def rotate(self):
+    #     self.rot_image = pygame.transform.rotate(self.scal_image, self.angle)
+    #     self.rect = self.rot_image.get_rect(center = self.rect.center)
 
     def render(self):
         self.display.blit(self.rot_image, self.rect)
@@ -1477,11 +1765,66 @@ class Collectable(Object):
         self.type = "collectable"
         self.value = value
         self.fade_timer = 0
+        self.pushed = False
 
     def fade(self):
         self.fade_timer += 1
         if self.fade_timer >= self.fade_limit:
             self.kill()
+            
+    # def tile_collisions(self, p, tiles):#move away from tile center continuously
+    #     for t in tiles:
+    #         if t.t_type in p.collidable_tiles:
+    #             if t.rect.colliderect(self.hitbox):
+    #                 if self.pos.x >= t.rect.center.x:
+    #                     self.pos.x += 1
+    #                 else:
+    #                     self.pos.x -= 1
+                        
+    #                 if self.pos.y >= t.rect.center.x:
+    #                     self.pos.y += 1
+    #                 else:
+    #                     self.pos.y -= 1
+    
+    def tile_collisions(self, p, tiles, i_group):#move towards player continuously - could try to do it by finding a good location once and moving there
+        if not self.pushed:
+            self.pushed = True
+            for t in tiles:
+                if t.t_type in p.collidable_tiles:
+                    if t.rect.colliderect(self.hitbox):
+                        self.pushed = False
+                        
+                        if self.pos.x < p.pos.x:
+                            self.pos.x += 1
+                        else:
+                            self.pos.x -= 1
+                        
+                        if self.pos.y < p.pos.y:
+                            self.pos.y += 1
+                        else:
+                            self.pos.y -= 1
+                            
+            for d in i_group:
+                if d.type == "door":
+                    if d.rect.colliderect(self.hitbox):
+                        self.pushed = False
+                        
+                        if self.pos.x < p.pos.x:
+                            self.pos.x += 1
+                        else:
+                            self.pos.x -= 1
+                        
+                        if self.pos.y < p.pos.y:
+                            self.pos.y += 1
+                        else:
+                            self.pos.y -= 1
+                            
+                            
+            self.rect.center = self.pos
+            self.hitbox.center = self.pos
+            
+    # def door_collisions(self, p, i_group):
+        
 
     #pushes them out of walls and portals
     #def push(self, tiles):
@@ -1494,7 +1837,8 @@ class Ammo(Collectable):
         self.scal_image = pygame.transform.scale(self.image, (sprite_scale*32, sprite_scale*32))
         self.rot_image = self.scal_image
 
-    def update(self, p):
+    def update(self, p, tiles, i_group):
+        super().tile_collisions(p, tiles, i_group)
         self.collect(p)
         self.fade()
 
@@ -1511,7 +1855,8 @@ class Coin(Collectable):
         super().__init__(x, y, display, image, value)
         self.fade_limit = random.randint(850, 950)
 
-    def update(self, p):
+    def update(self, p, tiles, i_group):
+        super().tile_collisions(p, tiles, i_group)
         self.collect(p)
         self.fade()
 
@@ -1671,20 +2016,31 @@ class Menu_player(Entity):
         super().sync()
 
 class Interactable(pygame.sprite.DirtySprite):
-    def __init__(self, x, y, display, image1, image2):
+    def __init__(self, x, y, state, images, display = display):
         super().__init__()
         pygame.sprite.DirtySprite.__init__(self)
         self.pos = pygame.math.Vector2((x, y))
         self.display = display
-        self.image1 = image1
-        self.image2 = image2
-        self.image = self.image1
-        self.rect1 = self.image1.get_rect(bottomleft = (round(x), round(y)))
-        self.rect2 = self.image2.get_rect(bottomleft = (round(x), round(y)))
-        self.rect = self.rect1
+        self.images = images
+        self.image = images[state]
+        # self.image1 = image1
+        # self.image2 = image2
+        # self.image = self.image1
+        # rect1 = images[1].get_rect(bottomleft = (round(x), round(y)))
+        # rect2 = images[2].get_rect(bottomleft = (round(x), round(y)))
+        # self.rects = [rect1, rect2]
+        self.rects = []
+        for i in images:
+            self.rects.append(i.get_rect(bottomleft = (round(x), round(y))))
+        self.rect = self.rects[state]
+        # self.rect = self.rect1
+        self.state = state
+        # self.image = locals()['self.image' + str(self.state)]
+        # self.rect = locals()['self.rect' + str(self.state)]
+        # exec('self.image = self.image' + str(self.state) + '\nself.rect = self.rect' + str(self.state))
         self.hitbox = pygame.Rect(x-10, y-58, 68, 68)
         self.once = False
-        self.type = "interactable"
+        # self.type = "interactable"
         self.z = 2
         self.dirty = 1
         self.needs_key = False
@@ -1697,18 +2053,18 @@ class Interactable(pygame.sprite.DirtySprite):
     #    self.display.blit(self.image, self.rect)
 
 class Chest(Interactable):
-    def __init__(self, x, y, display = display, image1 = wood_closed, image2 = wood_open, c_type = 1, state = False):
-        super().__init__(x, y, display, image1, image2)
+    def __init__(self, x, y, state, images = [wood_closed, wood_open], c_type = 1):
+        super().__init__(x, y, state, images)
         self.once = True
         self.c_type = c_type
         self.type = "chest"
-        self.open = state
-        self.check_image = True
+        # self.open = state
+        # self.check_image = True
 
     def update(self, moves, player, c_group, camera):
-        if self.check_image:
-            self.set_image()
-            self.check_image = False
+        # if self.check_image:
+        #     self.set_image()
+        #     self.check_image = False
         self.change_state(moves, player, c_group, camera)
         #self.render()
 
@@ -1762,30 +2118,53 @@ class Chest(Interactable):
     #                     self.rect = self.rect1
     #                     self.open = False
                         
+    # def change_state(self, moves, player, c_group, camera):
+    #     if self.once:
+    #         if not self.open:
+    #             if player.hitbox.colliderect(self.hitbox):
+    #                 self.render_text()
+    #                 if moves[7]:
+    #                     self.open = True
+    #                     self.set_image()
+    #                     self.action(c_group, camera)
+    #     else:
+    #         if player.hitbox.colliderect(self.hitbox):
+    #                 self.render_text()
+    #                 if moves[7]:
+    #                     self.open != self.open
+    #                     self.set_image()
+    #                     self.action(c_group, camera)
+                        
     def change_state(self, moves, player, c_group, camera):
         if self.once:
-            if not self.open:
+            if self.state == 0:
                 if player.hitbox.colliderect(self.hitbox):
                     self.render_text()
                     if moves[7]:
-                        self.open = True
-                        self.set_image()
+                        self.state = 1
+                        self.image = self.images[self.state]
+                        self.rect = self.rects[self.state]
                         self.action(c_group, camera)
+                        
         else:
             if player.hitbox.colliderect(self.hitbox):
-                    self.render_text()
-                    if moves[7]:
-                        self.open != self.open
-                        self.set_image()
-                        self.action(c_group, camera)
+                self.render_text()
+                if moves[7]:
+                    if self.state == 0:
+                        self.state = 1
+                    else:
+                        self.state = 0
+                    self.image = self.images[self.state]
+                    self.rect = self.rects[self.state]
+                    self.action(c_group, camera)
                 
-    def set_image(self):
-        if self.open:
-            self.image = self.image2
-            self.rect = self.rect2
-        else:
-            self.image = self.image1
-            self.rect = self.rect1
+    # def set_image(self):
+    #     if self.open:
+    #         self.image = self.image2
+    #         self.rect = self.rect2
+    #     else:
+    #         self.image = self.image1
+    #         self.rect = self.rect1
                         
     # def player_collision(self, player):
     #     if player.hitbox.colliderect(self.hitbox):
@@ -1824,40 +2203,70 @@ class Chest(Interactable):
     #    super().render()
     
 class Iron_Chest(Chest):
-    def __init__(self, x, y, image1 = iron_closed, image2 = iron_open, c_type = 2):
-        super().__init__(x, y, image1 = image1, image2 = image2, c_type = c_type)
+    def __init__(self, x, y, state, images = [iron_closed, iron_open], c_type = 2):
+        super().__init__(x, y, state, images = images, c_type = c_type)
         
     def update(self, moves, player, c_group, camera):
         super().update(moves, player, c_group, camera)
         
 class Gold_Chest(Chest):
-    def __init__(self, x, y, image1 = gold_closed, image2 = gold_open, c_type = 3):
-        super().__init__(x, y, image1 = image1, image2 = image2, c_type = c_type)
+    def __init__(self, x, y, state, images = [gold_closed, gold_open], c_type = 3):
+        super().__init__(x, y, state, images = images, c_type = c_type)
         
     def update(self, moves, player, c_group, camera):
         super().update(moves, player, c_group, camera)
 
-class Door():#Interactable):
-    def __init__(self, x, y, d_type, display = display, image = door):
-        # super().__init__(x, y, display)
-        if d_type == "ur":
-            self.rect1 = self.image1.get_rect(bottomleft = (round(x), round(y)))
-            self.rect2 = self.image2.get_rect(bottomleft = (round(x), round(y)))
-        elif d_type == "ul":
-            self.rect1 = self.image1.get_rect(bottomright = (round(x), round(y)))
-            self.rect2 = self.image2.get_rect(bottomright = (round(x), round(y)))
-        elif d_type == "dr":
-            self.rect1 = self.image1.get_rect(topleft = (round(x), round(y)))
-            self.rect2 = self.image2.get_rect(topleft = (round(x), round(y)))
-        elif d_type == "dl":
-            self.rect1 = self.image1.get_rect(topright = (round(x), round(y)))
-            self.rect2 = self.image2.get_rect(topright = (round(x), round(y)))
-        self.rect = self.rect1
-        self.hitbox = pygame.Rect(self.rect.topleft[0]-10, self.rect.topleft[1]-10, self.rect.topright[0]-self.rect.topleft[0]+20, self.rect.bottomleft[1]-self.rect.topleft[1]+20)
+class Door(pygame.sprite.DirtySprite):#Interactable):
+    def __init__(self, x, y, state, d_type = 'tr', image = wood_door, display = display):
+        # super().__init__(x, y, display, image1 = image1, image2 = image2)
+        super().__init__()
+        if d_type == 'tr':
+            image1 = image
+            image2 = pygame.transform.flip(pygame.transform.rotate(image, 90), True, False)
+            # images = [image1, image2]
+            rect1 = image1.get_rect(bottomleft = (round(x), round(y)))
+            rect2 = image2.get_rect(bottomleft = (round(x), round(y)))
+            # rects = [rect1, rect2]
+        elif d_type == 'tl':
+            image1 = pygame.transform.flip(image, True, False)
+            image2 = pygame.transform.rotate(image, 90)
+            # images = [image1, image2]
+            rect1 = image1.get_rect(bottomright = (round(x), round(y)))
+            rect2 = image2.get_rect(bottomright = (round(x), round(y)))
+        elif d_type == 'br':
+            image1 = pygame.transform.flip(image, False, True)
+            image2 = pygame.transform.rotate(image, 270)
+            # images = [image1, image2]
+            rect1 = image1.get_rect(topleft = (round(x), round(y)))
+            rect2 = image2.get_rect(topleft = (round(x), round(y)))
+        elif d_type == 'bl':
+            image1 = pygame.transform.flip(image, True, True)
+            image2 = pygame.transform.flip(pygame.transform.rotate(image, 90), False, True)
+            # images = [image1, image2]
+            rect1 = image1.get_rect(topright = (round(x), round(y)))
+            rect2 = image2.get_rect(topright = (round(x), round(y)))
+        # self.rect = self.rect1
+        # self.hitbox = pygame.Rect(self.rect.topleft[0]-10, self.rect.topleft[1]-10, self.rect.topright[0]-self.rect.topleft[0]+20, self.rect.bottomleft[1]-self.rect.topleft[1]+20)
+        self.images = [image1, image2]
+        self.image = self.images[state]
+        self.rects = [rect1, rect2]
+        self.rect = self.rects[state]
+        self.d_type = d_type
         self.type = "door"
+        self.pos = pygame.math.Vector2((x, y))
+        self.display = display
+        self.state = state#0 is vertical and 1 is horizontal
+        self.hitbox = pygame.Rect(x-10, y-58, 68, 68)
+        self.once = False
+        self.z = 2
+        self.dirty = 1
+        self.needs_key = False
+        self.info_textbox = textbox(d_width/2, d_height*0.88, 20, white, display)
+        # self.push_dist = self.rects[0].centerx - self.rects[0].left + 0.1
+        # super().__init__(x, y, state, images)
  
-    def update(self, moves, player, x):
-        self.change_state(moves, player, x)
+    def update(self, moves, player, e_group, c_group):
+        self.change_state(moves, player, e_group, c_group)
         self.hitbox = pygame.Rect(self.rect.topleft[0]-10, self.rect.topleft[1]-10, self.rect.topright[0]-self.rect.topleft[0]+20, self.rect.bottomleft[1]-self.rect.topleft[1]+20)
 
     # def change_state(self, moves, player):
@@ -1871,26 +2280,98 @@ class Door():#Interactable):
     #         else:
     #             pass
             
-    def change_state(self, moves, player, c_group):
-        if self.once == True:
-            if player.hitbox.colliderect(self.hitbox):
-                if self.image == self.image1:
+    # def change_state(self, moves, player, c_group):
+    #     if self.once == True:
+    #         if player.hitbox.colliderect(self.hitbox):
+    #             if self.image == self.image1:
+    #                 self.render_text()
+    #                 if moves[7]:
+    #                     self.image = self.image2
+    #                     self.rect = self.rect2
+    #                     self.action(c_group)
+    #     else:
+    #         if player.hitbox.colliderect(self.hitbox):
+    #             self.render_text()
+    #             if moves[7]:
+    #                 if self.image == self.image1:
+    #                     self.image = self.image2
+    #                     self.rect = self.rect2
+    #                     self.action(c_group)
+    #                 else:
+    #                     self.image = self.image1
+    #                     self.rect = self.rect1
+                        
+    def change_state(self, moves, player, e_group, c_group):
+        if self.once:
+            if self.state == 0:
+                if player.hitbox.colliderect(self.hitbox):
                     self.render_text()
                     if moves[7]:
-                        self.image = self.image2
-                        self.rect = self.rect2
-                        self.action(c_group)
+                        self.state = 1
+                        self.push_y(player, e_group, c_group)
+                        
         else:
             if player.hitbox.colliderect(self.hitbox):
                 self.render_text()
                 if moves[7]:
-                    if self.image == self.image1:
-                        self.image = self.image2
-                        self.rect = self.rect2
-                        self.action(c_group)
+                    if self.state == 0:
+                        self.state = 1
+                        self.push_y(player, e_group, c_group)
                     else:
-                        self.image = self.image1
-                        self.rect = self.rect1
+                        self.state = 0
+                        self.push_x(player, e_group, c_group)
                     
-    def action(self, x):
-        pass
+    def push_x(self, player, e_group, c_group):#maybe change to what the rect is before for more dynamic pushing
+        self.image = self.images[self.state]
+        self.rect = self.rects[self.state]
+        
+        if self.rect.colliderect(player.hitbox):
+            if player.pos.x >= self.rect.centerx:
+                player.pos.x = self.rect.right + (player.pos.x - player.hitbox.left) + 0.1
+            else:
+                player.pos.x = self.rect.left - (player.pos.x - player.hitbox.left) - 0.1
+                
+        for e in e_group:
+            if e.solid:
+                if self.rect.colliderect(e.hitbox):
+                    if e.pos.x >= self.rect.centerx:
+                        e.pos.x = self.rect.right + (e.pos.x - e.hitbox.left) + 0.1
+                    else:
+                        e.pos.x = self.rect.left - (e.pos.x - e.hitbox.left) - 0.1
+                        
+        for c in c_group:
+            if self.rect.colliderect(e.hitbox):
+                if c.pos.x >= self.rect.centerx:
+                    c.pos.x = self.rect.right + (c.pos.x - c.hitbox.left) + 0.1
+                else:
+                    c.pos.x = self.rect.left - (c.pos.x - c.hitbox.left) - 0.1
+        
+    def push_y(self, player, e_group, c_group):
+        self.image = self.images[self.state]
+        self.rect = self.rects[self.state]
+        
+        if self.rect.colliderect(player.hitbox):
+            if player.pos.y >= self.rect.centery:
+                player.pos.y = self.rect.bottom + (player.pos.y - player.hitbox.top) + 0.1
+            else:
+                player.pos.y = self.rect.top - (player.pos.y - player.hitbox.top) - 0.1
+                
+        for e in e_group:
+            if e.solid:
+                if self.rect.colliderect(e.hitbox):
+                    if e.pos.y >= self.rect.centery:
+                        e.pos.y = self.rect.bottom + (e.pos.y - e.hitbox.top) + 0.1
+                    else:
+                        e.pos.y = self.rect.top - (e.pos.y - e.hitbox.top) - 0.1
+                        
+        for c in c_group:
+            if self.rect.colliderect(e.hitbox):
+                if c.pos.y >= self.rect.centery:
+                    c.pos.y = self.rect.bottom + (c.pos.y - c.hitbox.top) + 0.1
+                else:
+                    c.pos.y = self.rect.top - (c.pos.y - c.hitbox.top) - 0.1
+                    
+    def render_text(self):
+        self.info_textbox.draw_c("Right click to interact")
+    # def action(self, x):
+    #     pass

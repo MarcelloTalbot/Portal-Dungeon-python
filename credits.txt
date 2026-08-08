@@ -1,0 +1,25 @@
+Images:
+
+Tree from leaf blower simulator
+
+Grass from I think motherfuckerwithacoolhairstyle or josuemoralesdream on tumblr.com but the acc doesn't exist anymore (it's an image on google). I found it I think by ghostboy-gamedev - https://www.tumblr.com/ghostboy-gamedev/616420579597238272/learn-log-4-grassy-grove
+
+Ammo box based from last-pixel on redbubble.com - https://www.redbubble.com/shop/ap/25661667
+
+Chests based from Leonardo Amora Leite on dreamstime.com or shutterstock.com - https://www.dreamstime.com/pixel-art-treasure-chests-perfect-your-game-levels-chest-treasure-chests-pixel-arte-image246590524 or https://www.shutterstock.com/image-illustration/pixel-art-treasure-chests-perfect-your-2152150041
+
+Dragon based on Elder Scrolls dragon
+
+Fist from patinya_p_ang on vecteezy.com - https://www.vecteezy.com/png/27190881-pixel-art-pucnhing-fist-hand-icon
+
+Gun from Sergey Markov on dreamstime.com - https://www.dreamstime.com/set-weapon-icons-perfect-pixel-art-style-rifle-pistol-assault-rifle-assault-rifle-machine-gun-other-firearms-your-image110233258
+
+Gameplay:
+
+Based on Gauntlet IV and dead cells
+
+Code:
+
+Camera (in V15 or lower) based from Clear Code (Cameras in Pygame) on YouTube - https://www.youtube.com/watch?v=u7LPRqrzry8
+
+Textbox from my A-level CS teacher - dunno if he got it from somewhere
