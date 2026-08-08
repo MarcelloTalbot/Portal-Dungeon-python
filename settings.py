@@ -36,11 +36,11 @@ grey = 88, 88, 88
 root_2 = math.sqrt(2)
 
 #settings level variables
-lvl_dir = "levels/"
-levels = {
-    lvl_0 := lvl_dir+"level_1.txt", 
-    lvl_1 := lvl_dir+"level_2.txt", 
-}
+# lvl_dir = "levels/"
+# levels = {
+#     lvl_0 := lvl_dir+"level_1.txt", 
+#     lvl_1 := lvl_dir+"level_2.txt", 
+# }
 
 
 

@@ -87,8 +87,3 @@ class Portal(pygame.sprite.DirtySprite):
         self.speed_mult = 1
         self.dirty = 1
         self.z = 1
-        #self.timer = 90
-
-    #def update(self):
-    #    if self.timer < 90:
-    #        self.timer += 1

@@ -1,0 +1,12 @@
+Changes:
+	Cleaned up all code (removed most useless comments, left in random move funcs in entity to look back on)
+
+	Added text to show when you don't have enough energy to go through a portal
+
+	Made all strings containing variables be f strings
+
+	Replaced tiles with level_matrix in all classes except entity (will do when fully working calc_path for player)
+
+	Started using dir instead of xvel and yvel (may replace with just vel as a vector)(need to fix all collisions)
+
+	Slightly adjusted the sprint func as it would allow energy to go a bit below zero (Tried to remake but couldn't so its the same with a little change)

@@ -1,14 +1,13 @@
 from settings import *
 
 class Main_Menu_Button():
-    def __init__(self, next_state, x, y, up, down):#, display):
+    def __init__(self, next_state, x, y, up, down):
         self.pos = pygame.math.Vector2((x, y))
         self.up = up
         self.down = down
         self.image = self.up
         self.rect = self.image.get_rect(center = (round(self.pos.x), round(self.pos.y)))
         self.group = [self.rect, self.image, self.up, self.down]
-        # self.display = display
         self.clicked = False
         self.next_state = next_state
 

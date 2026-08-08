@@ -29,9 +29,6 @@ class Game_State():
         # self.images = {}
         
     def update(self):
-        # self.game_state = self.own_state
-        
-        # self.input_detection()
         pass
         
     def input_detection(self):
@@ -108,13 +105,6 @@ class Main_Menu(Game_State):
         self.max_fps = 30
         self.current_fps = 0
         
-        # self.prev_state = prev_state
-        
-        # m_group = pygame.sprite.Group()#why does it not die??
-        # m_group.add(self.m_player)
-        
-        # self.game_state = "main_menu"
-        
         #input variables
         self.move_up = False
         self.move_down = False
@@ -122,28 +112,6 @@ class Main_Menu(Game_State):
         self.move_right = False
         self.sprint = False
         self.moves = [self.move_up, self.move_down, self.move_left, self.move_right, self.sprint]
-        
-        # self.own_state = 'Main_Menu'
-                
-    # def update(self):
-    #     # self.game_state = "main_menu"
-        
-    #     self.input_detection()
-        
-    #     for b in self.buttons:
-    #         if b.update(self.m_pos, self.click, self.m_player):
-    #             self.game_state = b.next_state
-    #             break
-
-    #     self.m_player.update(self.moves, self.m_pos, self.menu_portal_rect, self.play_btn.group, self.quit_btn.group, self.ctrl_btn.group)
-
-    #     if self.m_player.hitbox.colliderect(self.menu_portal_rect):
-    #         #m_player.kill()
-    #         self.game_state = "playing"
-            
-    #         self.moves = [False, False, False, False, False]# won't need if re-initialise on change state
-    #         self.m_player.pos = pygame.math.Vector2((d_width/10, d_height/10))#this can be changed with .kill when init for game states is done in loop or just removed?
-    #         self.m_player.energyval = self.m_player.energymax# won't need if re-initialise on change state
             
     def update(self):#does this need clock
         # super().load_images()
@@ -151,15 +119,8 @@ class Main_Menu(Game_State):
             self.clock.tick(self.max_fps)
             
             self.input_detection()
-            # if self.input_detection():
-            #     return self.next_state
             
             for b in self.buttons:
-                # try:
-                #     return b.update(self.m_pos, self.click, self.m_player)
-                # except:
-                #     pass
-                
                 if b.update(self.m_pos, self.click, self.m_player):
                     self.next_state = b.next_state
             
@@ -235,14 +196,7 @@ class Main_Menu(Game_State):
                 if event.button == 1:
                     self.click = True
                     
-            # elif event.type == VIDEOEXPOSE:
-            #     pass
-            
-            # elif event.type == VIDEORESIZE:
-            #     pass
-                    
         #mouse position
-        # self.m_pos = pygame.math.Vector2(pygame.mouse.get_pos())
         self.m_pos.x, self.m_pos.y = pygame.mouse.get_pos()
     
     def render(self):
@@ -283,20 +237,9 @@ class Control_Menu(Game_State):
         #image boxes
         self.ctrls_rect = ctrls_img.get_rect(topleft = (0, 0))
         
-        # self.own_state = 'Control_Menu'
-        
-        # self.game_state = "control_menu"
-        
     def update(self):
         while self.show:
-            # self.game_state = "control_menu"
-            
             self.input_detection()
-            
-            # for b in self.buttons:
-            #     if b.update(self.m_pos, self.click):
-            #         self.game_state = b.next_state
-            #         break
             
             for b in self.buttons:
                 if b.update(self.m_pos, self.click):
@@ -344,7 +287,7 @@ class Quit_Menu(Game_State):
         super().__init__(prev_state)
         #button creation
         self.yes_btn = Yes_Button("Quitting in 3...2...1...")
-        self.no_btn = No_Button(prev_state)#Main_Menu())
+        self.no_btn = No_Button(prev_state)
         self.buttons = [self.yes_btn, self.no_btn]
         
         #textbox creation
@@ -355,14 +298,8 @@ class Quit_Menu(Game_State):
     
     def update(self):
         while self.show:
-            # self.game_state = "quit_menu"
-            
             self.input_detection()
             
-            # for b in self.buttons:
-            #     if b.update(self.m_pos, self.click):
-            #         self.game_state = b.next_state
-            #         break
             for b in self.buttons:
                 if b.update(self.m_pos, self.click):
                     return b.next_state
@@ -408,6 +345,7 @@ class Quit_Menu(Game_State):
 class Death_Screen(Game_State):
     def __init__(self, prev_state):
         super().__init__(prev_state)
+        
         #button creation
         self.rspn_btn = Respawn_Button()
         self.main_btn = Main_Button()
@@ -421,18 +359,12 @@ class Death_Screen(Game_State):
         with open('stats.txt') as file:
             self.lines = file.readlines()
         
-        #self.game_state = "death_screen"
+        with open('stats.txt') as file:
+            self.lines = file.readlines()
         
     def update(self):
         while self.show:
-            # self.game_state = "death_screen"
-            
             self.input_detection()
-            
-            # for b in self.buttons:
-            #     if b.update(self.m_pos, self.click):
-            #         self.game_state = b.next_state
-            #         break
             
             for b in self.buttons:
                 if b.update(self.m_pos, self.click):
@@ -465,7 +397,7 @@ class Death_Screen(Game_State):
         #mouse position
         self.m_pos = pygame.math.Vector2(pygame.mouse.get_pos())
         
-    def render(self):#, player):
+    def render(self):
         display.fill(grey)
         
         #text
@@ -504,14 +436,7 @@ class Game_Over(Game_State):
         
     def update(self):
         while self.show:
-            # self.game_state = "game_over"
-            
             self.input_detection()
-            
-            # for b in self.buttons:
-            #     if b.update(self.m_pos, self.click):
-            #         self.game_state = b.next_state
-            #         break
             
             for b in self.buttons:
                     if b.update(self.m_pos, self.click):
@@ -544,7 +469,7 @@ class Game_Over(Game_State):
         #mouse position
         self.m_pos = pygame.math.Vector2(pygame.mouse.get_pos())
         
-    def render(self):#, player):
+    def render(self):
         display.fill(grey)
         
         #text
@@ -564,6 +489,7 @@ class Game_Over(Game_State):
 class Win_Screen(Game_State):
     def __init__(self, prev_state):
         super().__init__(prev_state)
+        
         #button creation
         self.rtry_btn = Retry_Button()
         self.main_btn = Main_Button()
@@ -583,14 +509,7 @@ class Win_Screen(Game_State):
         
     def update(self):
         while self.show:
-            # self.game_state = "win_screen"
-            
             self.input_detection()
-            
-            # for b in self.buttons:
-            #     if b.update(self.m_pos, self.click):
-            #         self.game_state = b.next_state
-            #         break
             
             for b in self.buttons:
                     if b.update(self.m_pos, self.click):
@@ -623,7 +542,7 @@ class Win_Screen(Game_State):
         #mouse position
         self.m_pos = pygame.math.Vector2(pygame.mouse.get_pos())
     
-    def render(self):#, player):
+    def render(self):
         display.fill(grey)
         
         #text
@@ -646,6 +565,7 @@ class Win_Screen(Game_State):
 class Paused(Game_State):
     def __init__(self, prev_state):
         super().__init__(prev_state)
+        
         #button creation
         self.cont_btn = Continue_Button()
         self.main_btn = Main_Button()
@@ -668,8 +588,6 @@ class Paused(Game_State):
     
     def update(self):
         while self.show:
-            # self.game_state = "paused"
-        
             self.input_detection()
             
             for b in self.buttons:
@@ -693,7 +611,7 @@ class Paused(Game_State):
             #key presses
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE or event.key == pygame.K_p:
-                    self.next_state = 'Playing'#Playing()
+                    self.next_state = 'Playing'
                     
             #mouse presses
             elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -703,9 +621,7 @@ class Paused(Game_State):
         #mouse position
         self.m_pos = pygame.math.Vector2(pygame.mouse.get_pos())
 
-    def render(self):#, player):
-        #overlay
-        #display.blit(white_ovly,self.overlay)
+    def render(self):
         display.fill(grey)
         
         #text
@@ -727,6 +643,7 @@ class Paused(Game_State):
 class Playing(Game_State):
     def __init__(self, prev_state):
         super().__init__(prev_state)
+        
         #button creation
         self.buttons = []
         
@@ -746,7 +663,7 @@ class Playing(Game_State):
         self.sim_dist = 800
         self.camera = Camera(self.sim_dist)
         
-        # self.game_state = "playing"
+        self.level_matrix = []
         
         self.level_matrix = []
         
@@ -783,8 +700,10 @@ class Playing(Game_State):
         
         #fps
         self.clock = pygame.time.Clock()
-        self.max_fps = 30
+        self.max_fps = 30#change to 60 maybe
+        self.base_fps = 30#change to 60 maybe
         self.current_fps = 0
+        self.dt = 0
         
         self.level = 0
         
@@ -809,8 +728,7 @@ class Playing(Game_State):
                 self.load_sprites()
             else:
                 self.load_save()
-        # self.load_save()
-        # self.load_sprites()
+                
         self.load_level()
         self.load_portals()
         
@@ -829,28 +747,16 @@ class Playing(Game_State):
             
             self.clock.tick(self.max_fps)
             self.current_fps = self.clock.get_fps()
-            # print(len(self.camera))
+            # self.dt = self.base_fps/self.current_fps
+            # raw_time = self.clock.get_rawtime()
+            # print(raw_time)
             self.input_detection()
             if not self.show:#immediately stop the loop when the game state is changed so player can't die in the same frame
                 break#could also just check if the player dies above the input detection and not bother doing this if statement (and changes level above I think)
             
             # self.render()
             
-            # if self.player_count < 1:
-            #     self.player = Player(200*sprite_scale, 200*sprite_scale)
-            #     self.camera.add(self.player)
-
-            #     prev_score = self.player.score
-            #     prev_health = self.player.health
-            #     prev_energy = self.player.energyval
-            #     prev_bullets = self.player.bullets
-            #     prev_cash = self.player.cash
-            #     prev_kills = self.player.kills
-
-            #     self.load_level()
-            #     self.load_sprites()
-
-            #     self.player_count += 1
+            self.camera.draw(self.player, self.moves, self.player_group, self.portal_group, self.level, self.level_matrix, self.level_group, self.m_pos, self.enemy_group, self.spawner_group, self.collectable_group, self.bullet_group, self.footprint_group, self.interactable_group, self.info_txt)
             
             # self.timer += 1
             # if self.camera.c_draw(self.player, self.moves, self.level_group, self.m_pos, self.enemy_group, self.spawner_group, self.collectable_group, self.bullet_group, self.footprint_group, self.interactable_group):
@@ -903,7 +809,7 @@ class Playing(Game_State):
                     
                     self.next_state = "Win_Screen"
                     self.show = False
-                    # break
+                    
                 else:
                     for t in self.level_group:
                         t.kill()
@@ -962,7 +868,6 @@ class Playing(Game_State):
                     # self.load_sprites()
                     self.next_state = "Death_Screen"
                     self.show = False
-                    # break
             
                 elif self.player.lives == 0:
                     with open('save.txt', 'r+') as file:
@@ -974,7 +879,6 @@ class Playing(Game_State):
                         
                     self.next_state = "Game_Over"
                     self.show = False
-                    # break
             
             for b in self.buttons:
                 if b.update(self.m_pos, self.click):
@@ -1036,10 +940,11 @@ class Playing(Game_State):
                     self.moves[5] = True
                 
                 #weapon selection
-                # elif event.key == pygame.K_1:
-                #     player.weapon = 0
-                # elif event.key == pygame.K_2:
-                #     player.weapon = 1
+                elif event.key == pygame.K_1:
+                    self.player.weapon = 0
+                    
+                elif event.key == pygame.K_2:
+                    self.player.weapon = 1
                     
                 #game statistics (like Minecraft's F3 but worse)
                 elif event.key == pygame.K_l:
@@ -1080,6 +985,7 @@ class Playing(Game_State):
                     self.player.is_new_press = True
                 elif event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
                     self.moves[5] = False
+                    
                 elif event.key == pygame.K_q:
                     self.moves[6] = True
             
@@ -1104,10 +1010,11 @@ class Playing(Game_State):
     def render(self):
         # display.fill(grey)
         
+    def render(self):
         if self.show_stats:
-            self.fps_txt.draw_l("FPS:" + str(round(self.current_fps)) + " | Max:" + str(self.max_fps))
+            self.fps_txt.draw_l(f"FPS:{round(self.current_fps)} | Max:{self.max_fps}")
             
-        self.score_txt.draw_l("Score: " + str(self.player.score))
+        self.score_txt.draw_l(f"Score: {self.player.score}")
         
         self.cash_txt.draw_l(str(self.player.cash))
         self.ammo_txt.draw_l(str(self.player.bullets))
@@ -1129,33 +1036,26 @@ class Playing(Game_State):
             file.write('self.player_group.add(self.player)\n')
             # file.write('\n')
             
-            # for group in self.save_groups:
-            #     for sprite in group.sprites():
-            #         file.write('sprite = ' + sprite.__class__.__name__ + '\n')
-            #         for attribute, value in sprite.__dict__.items():
-            #             if attribute in self.save_vals:
-            #                 file.write('sprite.' + attribute + '=' + str(value) + '\n')
-            #         file.write(str(group.) + '.add(sprite)\nself.camera.add(sprite)\n')
-                    # file.write('\n')
+            file.write('self.player_group.add(self.player)\n')
                     
             for name, value in self.save_groups.items():
                 for sprite in value.sprites():
-                    file.write('sprite = ' + sprite.__class__.__name__ + '(' + str(sprite.pos.x) + ', ' + str(sprite.pos.y) + ')\n')
+                    file.write(f'sprite = {sprite.__class__.__name__}({sprite.pos.x}, {sprite.pos.y})\n')
                     for attribute, value in sprite.__dict__.items():
                         if attribute in self.save_vals:
                             if type(value) == str:
-                                file. write('sprite.' + attribute + ' = "' + value + '"\n')
+                                file.write(f'sprite.{attribute} = "{value}"\n')
                             else:
                                 file.write('sprite.' + attribute + ' = ' + str(value) + '\n')
                     file.write(name + '.add(sprite)\n')#self.camera.add(sprite)\n')
                     
             for name, value in self.save_angle_groups.items():
                 for sprite in value.sprites():
-                    file.write('sprite = ' + sprite.__class__.__name__ + '(' + str(sprite.pos.x) + ', ' + str(sprite.pos.y) + ', ' + str(sprite.angle) + ')\n')
+                    file.write(f'sprite = {sprite.__class__.__name__}({sprite.pos.x}, {sprite.pos.y}, {sprite.angle})\n')
                     for attribute, value in sprite.__dict__.items():
                         if attribute in self.save_vals:
                             if type(value) == str:
-                                file. write('sprite.' + attribute + ' = "' + value + '"\n')
+                                file.write(f'sprite.{attribute} = "{value}"\n')
                             else:
                                 file.write('sprite.' + attribute + ' = ' + str(value) + '\n')
                     file.write(name + '.add(sprite)\n')#self.camera.add(sprite)\n')
@@ -1173,47 +1073,52 @@ class Playing(Game_State):
                             file.write('sprite.' + attribute + ' = ' + str(value) + '\n')
                 file.write('self.interactable_group.add(sprite)\n')#self.camera.add(sprite)\n')
                     
-    #loading the save
-    # def load_save(self):
-    #     with open('save.txt') as file:
-    #         attribute = ''
-    #         value = ''
-    #         lines = file.readlines()
-    #         for r in range(0, len(lines)):
-    #             try:
-    #                 obj = globals()[lines[r]](0,0,0,0,0)
-    #                 next
-    #             except:
-    #                 for c in range(0, len(lines[r])):
-    #                     if lines[r][c] != '=':
-    #                         attribute = attribute + lines[r][c]
+            for sprite in self.interactable_group.sprites():
+                if sprite.type == "chest":
+                    file.write(f'sprite = {sprite.__class__.__name__}({sprite.pos.x}, {sprite.pos.y}, {sprite.state})\n')
+                else:
+                    file.write(f'sprite = {sprite.__class__.__name__}({sprite.pos.x}, {sprite.pos.y}, {sprite.state}, "{sprite.d_type}")\n')
+                for attribute, value in sprite.__dict__.items():
+                    if attribute in self.save_vals:
+                        if type(value) == str:
+                            file.write(f'sprite.{attribute} = "{value}"\n')
+                        else:
+                            file.write(f'sprite.{attribute} = {value}\n')
+                file.write('self.interactable_group.add(sprite)\n')
+    
+    def load_save(self):
+        with open('save.txt') as file:
+            exec(file.read())
+        
+    def load_level(self):#load_level_matrix
+        self.level_matrix.clear()
+        
+        with open(f'levels/level_{self.level}.txt') as f:#'levels/test_level.txt'
+            lines = f.readlines()
+            
+            for r in range(len(lines)):
+                self.level_matrix.append([])
+                
+                for c in range(len(lines[r])):
+                    if lines[r][c] == " ":
+                        tile = random.choice(self.grass_list)(c, r)
+                        self.level_matrix[r].append(tile)
+                        self.level_group.add(tile)
                         
-    # def load_save_2(self):
-    #     with open('save.txt') as file:
-    #         lines = file.readlines()
-    #         for r in range(0, len(lines)):
-    #             line = lines[r][:-2]
-    #             is_attr = False
-    #             for c in range(0, len(line)):
-    #                 if line[c] == '=':
-    #                     is_attr = True
-    #                     eq_c = c
-    #                     attribute = ''
-    #                     value = ''
-    #                     break
+                    elif lines[r][c] == "W":
+                        tile = Tile("wall", wall, tile_scale*c, tile_scale*r)
+                        self.level_matrix[r].append(tile)
+                        self.level_group.add(tile)
                         
-    #             if not is_attr:
-    #                 obj = globals()[line](0,0,0,0,0)
-                    
-    #             else:
-    #                 eval(line)
-                    
-    #             # else:
-    #             #     for c in range(0, eq_c):
-    #             #         attribute += lines[r][c]
+                    elif lines[r][c] == "B":
+                        tile = Tile("b_portal", b_portal, tile_scale*c, tile_scale*r)
+                        self.level_matrix[r].append(tile)
+                        self.level_group.add(tile)
                         
-    #             #     for c in range(eq_c+1, len(lines[r])):
-    #             #         value += lines[r][c]
+                    elif lines[r][c] == "T":
+                        tile = Tile("tree", tree, tile_scale*c, tile_scale*r)
+                        self.level_matrix[r].append(tile)
+                        self.level_group.add(tile)
                         
     #             #     if value == "False" or "True":
     #             #         setattr(obj, attribute, bool(value))
@@ -1512,15 +1417,15 @@ class Playing(Game_State):
                     self.enemy_group.add(zombie)
                     # self.camera.add(zombie)
                 elif lines[r][c] == "S":
-                    skeleton = Skeleton(tile_scale*(c+0.5), tile_scale*(r+0.5))#, display, sklhd, sklrm, False, -1)
+                    skeleton = Skeleton(tile_scale*(c+0.5), tile_scale*(r+0.5))
                     self.enemy_group.add(skeleton)
                     # self.camera.add(skeleton)
                 elif lines[r][c] == "G":
-                    ghost = Ghost(tile_scale*(c+0.5), tile_scale*(r+0.5))#, display, gsthdV, gstrmV, gsttlAnim, False, -1)
+                    ghost = Ghost(tile_scale*(c+0.5), tile_scale*(r+0.5))
                     self.enemy_group.add(ghost)
                     # self.camera.add(ghost)
                 elif lines[r][c] == "g":
-                    grave = Grave(tile_scale*(c+0.5), tile_scale*(r+0.5))#, display, grvstn, 0, 0)
+                    grave = Grave(tile_scale*(c+0.5), tile_scale*(r+0.5))
                     self.spawner_group.add(grave)
                     # self.camera.add(grave)
                 elif lines[r][c] == "D":#up to right
