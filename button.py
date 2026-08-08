@@ -1,14 +1,14 @@
 from settings import *
 
 class Button():
-    def __init__(self,x,y,up,down,display):
+    def __init__(self,x,y,up,down):#display):
         self.pos = pygame.math.Vector2((x,y))
         self.up = up
         self.down = down
         self.image = self.up
         self.rect = self.image.get_rect(center = (round(self.pos.x),round(self.pos.y)))
         self.group = [self.rect,self.image,self.up,self.down]
-        self.display = display
+        # self.display = display
         self.clicked = False
 
     def update(self,mx,my,click,m_player):
@@ -36,5 +36,5 @@ class Button():
                     m_player.pos.y -= 16
 
     def render(self):
-        self.display.blit(self.image,self.rect)
+        display.blit(self.image,self.rect)
                     
