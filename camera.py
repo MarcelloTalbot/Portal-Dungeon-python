@@ -1,133 +1,129 @@
-import pygame
 from settings import *
 
-class Camera(pygame.sprite.Group):
-    def __init__(self, render_dist, sim_dist):
+class Camera():#tuple
+    def __init__(self, sim_dist):
         super().__init__()
         #surface to draw everything to
         self.display_surface = pygame.display.get_surface()
-        #distance required to display images
-        self.render_dist = render_dist
+        
         #distance required to update sprites
         self.sim_dist = sim_dist
         
         #camera offset
         self.offset = pygame.math.Vector2()
+        
         #midpoint of display
         self.half_w = self.display_surface.get_size()[0] // 2
         self.half_h = self.display_surface.get_size()[1] // 2
 
     def center_player_x(self, player):
-        self.offset.x = player.rect.centerx - self.half_w
+        self.offset.x = player.rect.centerx - self.half_w#could be player.pos?
 
     def center_player_y(self, player):
-        self.offset.y = player.rect.centery - self.half_h
-        
-    #for changing levels, player object should stay alive
-    def c_empty(self):
-        for sprite in self.sprites():
-            if sprite.type != "player":
-                sprite.kill()
-
-    def c_draw(self, player, moves, tiles, m_pos, enemy_group, spawner_group, collectable_group, bullet_group, footprint_group, interactable_group):
-        
-        # display.fill(88,88,88)
-        
-        self.center_player_x(player)
-        self.center_player_y(player)
-        
-        #loops through sprites in ascending order of their z attributes
-        for sprite in sorted(self.sprites(), key = lambda sprite: sprite.z):
-            
-            #offset from player
-            try:#for all sprites with one rectangle - change to if maybe
-                img_offset_pos = sprite.rect.topleft - self.offset
-            except:#for portals as they have two rectangles
-                img_offset_pos_1 = sprite.rect_1.topleft - self.offset
-                img_offset_pos_2 = sprite.rect_2.topleft - self.offset
-
-            #different objects have different parameters for updating
-            if sprite.type == "tile":
-                self.display_surface.blit(sprite.rot_image, img_offset_pos)
-            elif sprite.type == "portal":
-                self.display_surface.blit(sprite.scal_image, img_offset_pos_1)
-                self.display_surface.blit(sprite.scal_image, img_offset_pos_2)
-                #sprite.update()
-            elif sprite.type == "chest":
-                self.display_surface.blit(sprite.image, img_offset_pos)
-                sprite.update(moves, player, collectable_group, self)
-            elif sprite.type == "door":
-                self.display_surface.blit(sprite.image, img_offset_pos)
-                sprite.update(moves, player, None)
-            elif sprite.type == "player":
-                arm_offset_pos = sprite.arm_rect.topleft - self.offset
-                sprite.render(arm_offset_pos, img_offset_pos)
-                #self.display_surface.blit(sprite.rot_arm, arm_offset_pos)
-                #self.display_surface.blit(sprite.rot_image, img_offset_pos)
-                #sprite.render_bars()
-                #sprite.render_text()
-                #sprite.render_hearts()
-                #sprite.render_weapon_show()
-                if sprite.update(moves, tiles, m_pos, bullet_group, footprint_group, enemy_group, spawner_group, interactable_group, self):
-                    return True
-            #tile,portal,player should always be rendered and updating (not tile)
-            else:
-                #calculates distance from the sprite to the player
-                dist = player.pos.distance_to(sprite.pos)
-            
-                if dist <= self.render_dist:
-                    if sprite.type == "particle":
-                        self.display_surface.blit(sprite.rot_image, img_offset_pos)
-                        if dist <= self.sim_dist:
-                            sprite.update()
-                    elif sprite.type == "collectable":
-                        self.display_surface.blit(sprite.rot_image, img_offset_pos)
-                        if dist <= self.sim_dist:
-                            sprite.update(player)
-                    elif sprite.type == "bullet":
-                        self.display_surface.blit(sprite.scal_image, img_offset_pos)
-                        if dist <= self.sim_dist:
-                            sprite.update(tiles, player, enemy_group, spawner_group, interactable_group)
-                    elif sprite.type == "spawner":
-                        self.display_surface.blit(sprite.scal_image, img_offset_pos)
-                        if dist <= self.sim_dist:
-                            sprite.update(enemy_group, player, collectable_group, img_offset_pos, self)
-                    elif sprite.type == "tailed_entity":
-                        arm_offset_pos = sprite.arm_rect.topleft - self.offset
-                        tail_offset_pos = sprite.tail_rect.topleft - self.offset
-                        self.display_surface.blit(sprite.rot_tail, tail_offset_pos)
-                        self.display_surface.blit(sprite.rot_arm, arm_offset_pos)
-                        self.display_surface.blit(sprite.rot_image, img_offset_pos)
-                        if dist <= self.sim_dist:
-                            sprite.update(player, tiles, dist, collectable_group, spawner_group, img_offset_pos, self)
-                    elif sprite.type == "entity":
-                        arm_offset_pos = sprite.arm_rect.topleft - self.offset
-                        self.display_surface.blit(sprite.rot_arm, arm_offset_pos)
-                        self.display_surface.blit(sprite.rot_image, img_offset_pos)
-                        if dist <= self.sim_dist:
-                            sprite.update(player, tiles, dist, collectable_group, spawner_group, bullet_group, enemy_group, img_offset_pos, interactable_group, self)
-                    
-    def calc_offset(self, player):
-        self.center_player_x(player)
-        self.center_player_y(player)
-        
-        #loops through sprites in ascending order of their z attributes
-        for sprite in sorted(self.sprites(), key = lambda sprite: sprite.z):
-            
-            #offset from player
-            try:#for all sprites with one rectangle - change to if maybe
-                self.img_offset_pos = sprite.rect.topleft - self.offset
-            except:#for portals as they have two rectangles
-                self.img_offset_pos_1 = sprite.rect_1.topleft - self.offset
-                self.img_offset_pos_2 = sprite.rect_2.topleft - self.offset
+        self.offset.y = player.rect.centery - self.half_h#could be player.pos?
     
-    def update(self, player, moves, tiles, m_pos, enemy_group, spawner_group, collectable_group, bullet_group, footprint_group, interactable_group):
-        pass
+    def calc_screen_dims(self):
+        self.display_surface = pygame.display.get_surface()
+        self.half_w = self.display_surface.get_size()[0] // 2
+        self.half_h = self.display_surface.get_size()[1] // 2
+                
+    def draw(self, player, moves, player_group, portals, level, level_matrix, tiles, m_pos, enemy_group, spawner_group, collectable_group, bullet_group, footprint_group, interactable_group, infobox):
+        self.center_player_x(player)
+        self.center_player_y(player)
         
-    def render(self, player, moves, tiles, m_pos, enemy_group, spawner_group, collectable_group, bullet_group, footprint_group, interactable_group):
-        pass
+        self.display_rect = self.display_surface.get_rect(center = player.pos)
+        
+        #corner tiles that are on the screen
+        if self.offset.x >= 0:
+            top_x = int(self.offset.x / tile_scale)
+        else:
+            top_x = 0
+            
+        if self.offset.y >= 0:
+            top_y = int(self.offset.y / tile_scale)
+        else:
+            top_y = 0
+            
+        bottom_offset_x = player.rect.centerx + self.half_w#could be player.pos?
+        bottom_offset_y = player.rect.centery + self.half_h#could be player.pos?
+        
+        max_c = len(level_matrix[level])
+        max_r = len(level_matrix)
+        
+        if bottom_offset_x <= max_c:
+            bottom_x = int(bottom_offset_x / tile_scale)
+        else:
+            bottom_x = max_c
+            
+        if bottom_offset_y <= max_r:
+            bottom_y = int(bottom_offset_y / tile_scale)
+        else:
+            bottom_y = max_r
+        
+        #renders all tiles on the screen
+        for r in range(top_y, bottom_y):
+            for c in range(top_x, bottom_x):
+                self.display_surface.blit(level_matrix[r][c].rot_image, level_matrix[r][c].pos - self.offset)
+                
+        groups = [footprint_group, spawner_group, interactable_group, collectable_group, bullet_group, enemy_group, player_group]        
+        
+        for p in portals:
+            if self.display_rect.colliderect(p.rect_1):
+                img_offset_pos = p.rect_1.topleft - self.offset
+                self.display_surface.blit(p.scal_image, img_offset_pos)
+            if self.display_rect.colliderect(p.rect_2):
+                img_offset_pos = p.rect_2.topleft - self.offset
+                self.display_surface.blit(p.scal_image, img_offset_pos)
+        
+        #rendering sprites
+        for group in groups:
+            for sprite in group.sprites():
+                if self.display_rect.colliderect(sprite.rect):
+                    img_offset_pos = sprite.rect.topleft - self.offset
                     
-            
-            
-
+                    if sprite.type == 'collectable':
+                        self.display_surface.blit(sprite.rot_image, img_offset_pos)
+                        sprite.update(player, level_matrix, interactable_group)
+                        
+                    elif sprite.type == 'particle':
+                        self.display_surface.blit(sprite.rot_image, img_offset_pos)
+                        sprite.update()
+                        
+                    elif sprite.type == 'chest':
+                        self.display_surface.blit(sprite.image, img_offset_pos)
+                        sprite.update(moves, player, collectable_group, infobox)
+                        
+                    elif sprite.type == 'door':
+                        self.display_surface.blit(sprite.image, img_offset_pos)
+                        sprite.update(moves, player, enemy_group, collectable_group, infobox)
+                        
+                    elif sprite.type == 'bullet':
+                        self.display_surface.blit(sprite.scal_image, img_offset_pos)#maybe should be sprite.rot_image
+                        sprite.update(level_matrix, player, enemy_group, spawner_group, interactable_group)
+                        
+                    elif sprite.type == 'spawner':
+                        self.display_surface.blit(sprite.scal_image, img_offset_pos)
+                        sprite.update(enemy_group, player, collectable_group, img_offset_pos)
+                        
+                    else:
+                        arm_offset_pos = sprite.arm_rect.topleft - self.offset
+                            
+                        dist = player.pos.distance_to(sprite.pos)
+                        
+                        if sprite.type == 'entity':
+                            self.display_surface.blit(sprite.rot_arm, arm_offset_pos)
+                            self.display_surface.blit(sprite.rot_image, img_offset_pos)
+                            sprite.update(player, tiles, level_matrix, dist, collectable_group, spawner_group, bullet_group, enemy_group, img_offset_pos, interactable_group)
+                        
+                        elif sprite.type == 'tailed_entity':
+                            tail_offset_pos = sprite.tail_rect.topleft - self.offset
+                            
+                            self.display_surface.blit(sprite.rot_tail, tail_offset_pos)
+                            self.display_surface.blit(sprite.rot_arm, arm_offset_pos)
+                            self.display_surface.blit(sprite.rot_image, img_offset_pos)
+                            sprite.update(player, level_matrix, dist, collectable_group, spawner_group, portals, img_offset_pos)
+                            
+                        elif sprite.type == 'player':
+                            sprite.render(arm_offset_pos, img_offset_pos)
+                            sprite.update(moves, level_matrix, m_pos, portals, bullet_group, footprint_group, enemy_group, spawner_group, interactable_group, infobox)
         

@@ -1,14 +1,13 @@
 from settings import *
 
 class Main_Menu_Button():
-    def __init__(self, next_state, x, y, up, down):#, display):
+    def __init__(self, next_state, x, y, up, down):
         self.pos = pygame.math.Vector2((x, y))
         self.up = up
         self.down = down
         self.image = self.up
         self.rect = self.image.get_rect(center = (round(self.pos.x), round(self.pos.y)))
         self.group = [self.rect, self.image, self.up, self.down]
-        # self.display = display
         self.clicked = False
         self.next_state = next_state
 
@@ -128,7 +127,7 @@ class Back_Button(Button):
         super().render()
 
 class Continue_Button(Button):
-    def __init__(self, next_state, x = d_width/2, y = d_height/2, up = cont_u, down = cont_d):
+    def __init__(self, next_state = 'Playing', x = d_width/2, y = d_height/2, up = cont_u, down = cont_d):
         super().__init__(next_state, x, y, up, down)
     
     def update(self, m_pos, click):
@@ -158,7 +157,7 @@ class Quit_Button_2(Button):
         super().render()
         
 class Respawn_Button(Button):
-    def __init__(self, next_state, x = d_width/2, y = d_height/2, up = rspn_u, down = rspn_d):
+    def __init__(self, next_state = 'Playing', x = d_width/2, y = d_height/2, up = rspn_u, down = rspn_d):
         super().__init__(next_state, x, y, up, down)
     
     def update(self, m_pos, click):
@@ -168,7 +167,7 @@ class Respawn_Button(Button):
         super().render()
         
 class Retry_Button(Button):
-    def __init__(self, next_state, x = d_width/2, y = d_height/2, up = rtry_u, down = rtry_d):
+    def __init__(self, next_state = 'Playing', x = d_width/2, y = d_height/2, up = rtry_u, down = rtry_d):
         super().__init__(next_state, x, y, up, down)
     
     def update(self, m_pos, click):
