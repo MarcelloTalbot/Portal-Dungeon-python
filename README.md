@@ -1,2 +1,46 @@
 # Portal-Dungeon-python
 A small top-down 2D dungeon crawler game made in python with pygame.
+
+## Changes
+Finished creating new tile matrix, calc_path (and almost tile_collisions)
+
+Not done - Changed up, down, left and right _pressed into 2 x_dir and y_dir
+
+Made improved on display text classes
+
+Fixed sprint against walls by making calc path be before it
+
+Moved it back because I should add righted, lefted, upped, and downed for stuff maybe (if this done remove "ratio *" from the calc_path func for top_r and bottom_num
+
+Added portals back in and fixed changing levels
+
+Started a new Tile classes
+
+Changed portal image to be transparent instead of have grass as background
+
+Removed render distance
+
+Cleaned up the image directories
+
+Added text to show you can interact with chests, doors and portals
+
+Made an improved enemy movement so they can go directly to the player
+
+Improved player bar rendering and bar text
+
+Improved central text drawing
+
+Improved tile_collisions to use tile_matrix and made mud and snow slow you down again with footprints
+
+Tried to make more calc_path functions to test improvements
+
+Moved level back into Playing class out of Player class
+
+Made the player spawn where the 'P' is in the level file
+
+## Bugs
+Going perfectly diagonal on collidable tiles corners allows you to go through them (with calc_path no _better)
+
+Going diagonal whilst touching a line of walls make you pause in some directions at boundaries (with calc_path_better)
+
+When enemies are near edge of screen they move weirdly
