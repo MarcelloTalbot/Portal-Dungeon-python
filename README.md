@@ -3,10 +3,15 @@ A small top-down 2D dungeon crawler game made in python 3.11 with pygame.
 
 ## Controls
 Movement: W, A, S, D
+
 Sprint: Left Shift
+
 Attack: Left Click, Space
+
 Change weapon: Scroll Wheel, Q
+
 Interact: Right Click
+
 Pause/Quit/go back: Escape
 
 ## Run
