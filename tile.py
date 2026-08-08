@@ -15,6 +15,12 @@ class Tile(pygame.sprite.DirtySprite):
         if t_type == "grass" or t_type == "flower_grass" or t_type == "snowy_grass" or t_type == "mud":
             self.rot_image = pygame.transform.rotate(self.scal_image,(90*random.randint(0,3)))
         self.rect = self.scal_image.get_rect(topleft = (round(self.pos.x), round(self.pos.y)))
+        if t_type == "mud":
+            self.speed_mult = 0.5
+        elif t_type == "snowy_grass":
+            self.speed_mult = 2/3
+        else:
+            self.speed_mult = 1
         self.dirty = 1
         self.z = 0
 
@@ -31,6 +37,7 @@ class Portal(pygame.sprite.DirtySprite):
         self.scal_image = pygame.transform.scale(self.image,(tile_scale,tile_scale))
         self.rect_1 = self.scal_image.get_rect(topleft = (round(self.pos_1.x),round(self.pos_1.y)))
         self.rect_2 = self.scal_image.get_rect(topleft = (round(self.pos_2.x),round(self.pos_2.y)))
+        self.speed_mult = 1
         self.dirty = 1
         self.z = 1
         #self.timer = 90

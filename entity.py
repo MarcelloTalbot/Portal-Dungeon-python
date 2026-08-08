@@ -1505,14 +1505,19 @@ class Menu_player(Entity):
         self.die(m_p_rect)
 
     def move(self,moves,play_group,quit_group,ctrl_group):
-        if moves[0] and not moves[1]:
-            self.yvel = -self.vel
-        elif moves[1] and not moves[0]:
-            self.yvel = self.vel
-        elif moves[0] and moves[1]:
-            self.yvel = 0
-        else:
-            self.yvel = 0
+        # if moves[0] and not moves[1]:
+        #     self.yvel = -self.vel
+        # elif moves[1] and not moves[0]:
+        #     self.yvel = self.vel
+        # elif moves[0] and moves[1]:
+        #     self.yvel = 0
+        # else:
+        #     self.yvel = 0
+        self.yvel = 0
+        if moves[0]:
+            self.yvel -= self.vel
+        if moves[1]:
+            self.yvel += self.vel
             
         if moves[2] and not moves[3]:
             self.xvel = -self.vel
