@@ -1,4 +1,5 @@
 import pygame
+
 def text_objects(text, font, c):
     textSurface = font.render(text, True, c)
     return textSurface, textSurface.get_rect()
