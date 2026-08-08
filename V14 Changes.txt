@@ -1,0 +1,55 @@
+Changes:
+	Test 1:
+		Made new Main_Menu_Button which may be removed to have collision in Menu_Player class
+
+		Made the menu player and buttons use m_pos instead of mx and my
+
+		Continued making each game state as a class:
+			- Control_Menu
+			- Quit_Menu
+			- Death_Screen
+			- Game_over
+			- Win_screen
+			- Paused
+			- Playing
+
+		Made sure every comma has a space after it...the pain:
+			- so people can read code easier i guess
+
+		Made a Game_State class to allow creation of new game_states easier (should've done this first :( )
+
+		Made a Game class which the main loop is inside its update function:
+			- In main.py only import and Game class creation and update are done in a try and except
+
+
+	Test 2 & 3:
+		Finished all game states except playing:
+			- Each have a separate while loop in their update function
+			- In 3 - combined all game states into one file
+
+		Made a better Game class update function that doesn't need to be changed when new game states will be added
+
+		Found a better way to move the player when in V_13_input_test_change so needs to be added (in menu player for y now)
+
+	Test France holiday:
+		I don't remember what I did but it's on my surface somewhere
+
+	Test 4:
+		Used the better move method from V_13_input_test_change in both menu_player and player
+		
+		Finished playing class:
+			- Removed camera being created and render and sim dists in the settings
+			- Made the player class store which level your on instead of the game
+			- Made it so the checking of player.die happens in an elif so the player cannot die after they change level on the same frame by the previous level enemies
+			- Moved game over if to elif inside the player.die elif combining it with death screen if statement
+			- Put save method after pausing and quitting, and breaking loop instantly
+		
+		Added saves(necessary for the way I implemented the game states
+
+		Changed the init methods for entity classes to have attr = val so it's easier to create them:
+			- Added new classes for different chests
+	!!!!!!!	Finish	- Made there only be one door image(got no clue why I had one for every rotation??
+
+		Started changing the camera to have update and render separately:
+			- Need to change how the changing level works
+			- And fix make rendering stuff outside camera work correctly
