@@ -89,7 +89,7 @@ class Text():
             raise TypeError()
     
     def __str__(self):
-        return f'"{self.text}" in size {self.s} and colour {self.c} {self.font} at ({self.x}, {self.y}) on {self.gd}'
+        return '"' + self.text + f'" in size {self.s} and colour {self.c} {self.font} at ({self.x}, {self.y}) on {self.gd}'
     
 # class str():
 #     def __init__(self) -> None:

@@ -22,8 +22,9 @@ class Object(pygame.sprite.DirtySprite):
         self.rot_image = self.scal_image
         self.rect = self.rot_image.get_rect(center = (round(self.pos.x), round(self.pos.y)))
         self.hitbox = self.scal_image.get_rect(center = (round(self.pos.x), round(self.pos.y)))
+        # self.save_vals = ['solid', 'health', 'healthmax', 'xvel', 'yvel', 'vel']
         
-    def die(self, p, c_group):
+    def die(self, p, c_group):#, camera):
         if self.health <= 0:
             p.score += self.healthmax
             for n in range(0, (self.healthmax//2 - random.randint(0, self.healthmax//4))):
@@ -31,27 +32,27 @@ class Object(pygame.sprite.DirtySprite):
                 y = (self.hitbox.topleft[1] + random.randint(0, (self.hitbox.bottomleft[1]-self.hitbox.topleft[1])))
                 num = random.randint(0, 30)
                 if num == 30:
-                    self.create_ammo(x, y, c_group)
+                    self.create_ammo(x, y, c_group)#, camera)
                 else:
-                    self.create_coin(x, y, c_group)
+                    self.create_coin(x, y, c_group)#, camera)
             p.kills += 1
             self.kill()
             
-    def create_coin(self, x, y, c_group):
+    def create_coin(self, x, y, c_group):#, camera):
         coin = Coin(x, y)
         c_group.add(coin)
+        # camera.add(coin)
 
-    def create_ammo(self, x, y, c_group):
+    def create_ammo(self, x, y, c_group):#, camera):
         ammo = Ammo(x, y)
         c_group.add(ammo)
+        # camera.add(ammo)
 
     def sync(self):
-        # self.pos += self.dir * self.vel * sprite_scale
-        self.pos += self.vel
-        # self.pos.x += (self.xvel * sprite_scale)
-        # self.pos.y += (self.yvel * sprite_scale)
-        self.hitbox.center = self.pos
-        self.rect.center = self.pos
+        self.pos.x += (self.xvel * sprite_scale)
+        self.pos.y += (self.yvel * sprite_scale)
+        self.hitbox.center = self.pos.x, self.pos.y#just do self.pos
+        self.rect.center = self.pos.x, self.pos.y
         
     def push(self):
         pass
@@ -72,14 +73,14 @@ class Entity(Object):
         self.collidable_tiles = []
         self.dir = pygame.math.Vector2((0, 0))
 
-    def die(self, p, c_group, s_group):
-        super().die(p, c_group)
+    def die(self, p, c_group, s_group):#, camera):
+        super().die(p, c_group)#, camera)
 
-    def create_coin(self, x, y, c_group):
-        super().create_coin(x, y, c_group)
+    def create_coin(self, x, y, c_group):#, camera):
+        super().create_coin(x, y, c_group)#, camera)
 
-    def create_ammo(self, x, y, c_group):
-        super().create_ammo(x, y, c_group)
+    def create_ammo(self, x, y, c_group):#, camera):
+        super().create_ammo(x, y, c_group)#, camera)
 
     def sync(self):
         super().sync()
@@ -90,7 +91,7 @@ class Entity(Object):
             self.t = 0
             self.next_pos.x = random.randint(0, int(self.pos.x) + 200) - 100
             self.next_pos.y = random.randint(0, int(self.pos.y) + 200) - 100
-            
+            # self.next_pos.x, self.next_pos.y = next_x, next_y
             self.idle = True
         
         if self.t > 60 and self.t < 210:
@@ -234,17 +235,20 @@ class Spawner(Object):
        self.num = num
        self.type = 'spawner'
        
-    def create_zombie(self, e_group):
-        zombie = Zombie(self.pos.x, self.pos.y)
+    def create_zombie(self, e_group):#, camera):
+        zombie = Zombie(self.pos.x, self.pos.y)#, self.display, zmbhd, zmbrm, True, self.num)
         e_group.add(zombie)
+        # camera.add(zombie)
 
-    def create_skeleton(self, e_group):
-        skeleton = Skeleton(self.pos.x, self.pos.y)
+    def create_skeleton(self, e_group):#, camera):
+        skeleton = Skeleton(self.pos.x, self.pos.y)#, self.display, sklhd, sklrm, True, self.num)
         e_group.add(skeleton)
+        # camera.add(skeleton)
         
-    def create_ghost(self, e_group):
-        ghost = Ghost(self.pos.x, self.pos.y)
+    def create_ghost(self, e_group):#, camera):
+        ghost = Ghost(self.pos.x, self.pos.y, self.display, gsthdV, gstrmV, gsttlAnim)
         e_group.add(ghost)
+        # camera.add(ghost)
 
 # def create_enemy(self):
 #    self.spawn_timer += 1
@@ -263,32 +267,54 @@ class Grave(Spawner):
         self.healthmax = 50
         self.e_count_max = 20
         self.s_spawn = False
+        # self.num = num
+        # self.spawn_list = [self.create_zombie, self.create_skeleton]
         self.spawn_list = [super().create_zombie, super().create_skeleton]
-        self.healthbarborder = 0
-        self.healthbar = 0
-        self.spawnbarborder = 0
-        self.spawnbar = 0
+        # self.save_vals.extend(['s_spawn'])
 
-    def update(self, e_group, p, c_group, offset):
-        self.die(p, c_group)
-        self.create(e_group)
+    def update(self, e_group, p, c_group, offset):#, camera):
+        self.die(p, c_group)#, camera)
+        self.create(e_group)#, camera)
+        #self.render()
         self.render_bars(offset)
 
-    def create_coin(self, x, y, c_group):
-        super().create_coin(x, y, c_group)
-        
-    def create_ammo(self, x, y, c_group):
-        super().create_ammo(x, y, c_group)
+    def create_coin(self, x, y, c_group):#, camera):
+        super().create_coin(x, y, c_group)#, camera)
 
-    def die(self, p, c_group):
-        super().die(p, c_group)
+    def create_ammo(self, x, y, c_group):#, camera):
+        super().create_ammo(x, y, c_group)#, camera)
 
-    def create(self, e_group):
+    def die(self, p, c_group):#, camera):
+        super().die(p, c_group)#, camera)
+
+    def create(self, e_group):#, camera):
         self.spawn_timer += 1
         if self.spawn_timer >= 300 and self.e_count < self.e_count_max:
-            random.choice(self.spawn_list)(e_group)
+            # spawn_list = [self.create_zombie, self.create_skeleton]
+            random.choice(self.spawn_list)(e_group)#, camera)#randomly chooses which function to perform
             self.e_count += 1
             self.spawn_timer = 0
+            
+    # def create_grave(self, s_group, camera):
+    #     grave = Grave(self.pos.x, self.pos.y)
+    #     s_group.add(grave)
+    #     camera.add(grave)
+
+    # def create_zombie(self, e_group):
+    #     zombie = Zombie(self.pos.x, self.pos.y, self.display, zmbhd, zmbrm, True, self.num)
+    #     e_group.add(zombie)
+    #     camera.add(zombie)
+
+    # def create_skeleton(self, e_group):
+    #     skeleton = Skeleton(self.pos.x, self.pos.y, self.display, sklhd, sklrm, True, self.num)
+    #     e_group.add(skeleton)
+    #     camera.add(skeleton)
+    
+    # def create_zombie(self, e_group, camera):
+    #     super().create_zombie(e_group, camera)
+        
+    # def create_skeleton(self, e_group, camera):
+    #     super().create_skeleton(e_group, camera)
 
     def render_bars(self, offset):
         #progress rectangle stats
@@ -337,14 +363,16 @@ class Enemy(Entity):
         self.rect.center = self.pos
         self.arm_rect.center = self.pos
 
-    def die(self, p, c_group, s_group):
-        super().die(p, c_group, s_group)
+    def die(self, p, c_group, s_group):#, camera):
+        super().die(p, c_group, s_group)#, camera)
+        #if self.s_spawn:
+        #    s_group[self.s_num].e_count -= 1
 
-    def create_coin(self, x, y, c_group):
-        super().create_coin(x, y, c_group)
+    def create_coin(self, x, y, c_group):#, camera):
+        super().create_coin(x, y, c_group)#, camera)
 
-    def create_ammo(self, x, y, c_group):
-        super().create_ammo(x, y, c_group)
+    def create_ammo(self, x, y, c_group):#, camera):
+        super().create_ammo(x, y, c_group)#, camera)
 
     def tile_collisions(self, tiles, level_matrix):
         current_tile = (int(self.pos.x/tile_scale), int(self.pos.y/tile_scale))
@@ -535,12 +563,12 @@ class Enemy(Entity):
     def push(self, p):
         dist = self.pos.distance_to(p.pos)
         if dist < 12:
-            self.dir.y += 1
+            self.yvel += 1
             
     def move_to_player(self, p):
-        self.dir = (p.pos - self.pos).normalize()
-        # self.dir.x =  direction[0] * self.vel
-        # self.dir.y = direction[1] * self.vel
+        direction = (p.pos - self.pos).normalize()
+        self.xvel =  direction[0] * self.vel
+        self.yvel = direction[1] * self.vel
                     
 #ghost
 class Ghost(Enemy):
@@ -569,10 +597,11 @@ class Ghost(Enemy):
         self.healthbarborder = 0
         self.healthbar = 0
         
-    def update(self, p, level_matrix, dist, c_group, s_group, portals, offset):
+    def update(self, p, tiles, dist, c_group, s_group, offset):#, camera):
         self.dirty = 1
-        self.die(p, c_group, s_group)
-        self.move(p, level_matrix, dist, portals)
+        self.die(p, c_group, s_group)#, camera)
+        #self.timer()
+        self.move(p, tiles, dist)
         self.tail_anim()
         self.attack(p, dist)
         self.render_bars(offset)
@@ -646,6 +675,26 @@ class Ghost(Enemy):
 
     def idle_move(self):
         self.random_move()
+
+    # def move_to_player(self, p):#change to a better movement
+    #     if (p.pos.x + 3) >= self.pos.x and (p.pos.x - 3) <= self.pos.x:
+    #         self.xvel = 0
+    #     elif (p.pos.x - 3) > self.pos.x:
+    #         self.xvel = self.vel
+    #     elif (p.pos.x + 3) < self.pos.x:
+    #         self.xvel = -self.vel
+            
+    #     if (p.pos.y + 3) >= self.pos.y and (p.pos.y - 3) <= self.pos.y:
+    #         self.yvel = 0
+    #     elif (p.pos.y - 3) > self.pos.y:
+    #         self.yvel = self.vel
+    #     elif (p.pos.y + 3) < self.pos.y:
+    #         self.yvel = -self.vel
+            
+    #     if abs(self.xvel) ==  abs(self.yvel) and self.xvel != 0:
+    #         abs_vel = (self.vel/root_2)
+    #         self.xvel = (self.xvel/self.vel) * abs_vel
+    #         self.yvel = (self.yvel/self.vel) * abs_vel
             
     def move_to_player(self, p):
         super().move_to_player(p)
@@ -702,14 +751,14 @@ class Ghost(Enemy):
     def square_move(self):
         super().square_move()
         
-    def die(self, p, c_group, s_group):
-        super().die(p, c_group, s_group)
+    def die(self, p, c_group, s_group):#, camera):
+        super().die(p, c_group, s_group)#, camera)
         
-    def create_coin(self, x, y, c_group):
-        super().create_coin(x, y, c_group)
+    def create_coin(self, x, y, c_group):#, camera):
+        super().create_coin(x, y, c_group)#, camera)
 
-    def create_ammo(self, x, y, c_group):
-        super().create_ammo(x, y, c_group)
+    def create_ammo(self, x, y, c_group):#, camera):
+        super().create_ammo(x, y, c_group)#, camera)
 
     def sync(self):
         super().sync()
@@ -731,11 +780,11 @@ class Skeleton(Enemy):
         self.vel_back = 2
         self.collidable_tiles = ['wall', 'tree']
 
-    def update(self, p, tiles, level_matrix, dist, c_group, s_group, b_group, e, offset, i_group):
+    def update(self, p, tiles, dist, c_group, s_group, b_group, e, offset, i_group):#, camera):
         self.dirty = 1
-        self.die(p, c_group, s_group)
-        self.move(p, tiles, level_matrix, dist, e, i_group)
-        self.attack(p, dist, b_group)
+        self.die(p, c_group, s_group)#, camera)
+        self.move(p, tiles, dist, e, i_group)
+        self.attack(p, dist, b_group)#, camera)
         self.render_bars(offset)
         
     def move(self, p, tiles, level_matrix, dist, e, i_group):
@@ -753,12 +802,12 @@ class Skeleton(Enemy):
         
         self.sync()
 
-    def attack(self, p, dist, b_group):
+    def attack(self, p, dist, b_group):#, camera):
         if dist <= self.attack_dist and not(p.respawn_protection):
             self.attack_timer += 1
             if self.attack_timer >= 20:
                 self.attack_timer = 0
-                self.create_bullet(b_group)
+                self.create_bullet(b_group)#, camera)
 
     def idle_move(self):
         self.random_move()
@@ -793,9 +842,10 @@ class Skeleton(Enemy):
                 self.xvel = (self.xvel/self.vel_back) * abs_vel
                 self.yvel = (self.yvel/self.vel_back) * abs_vel
 
-    def create_bullet(self, b_group):
-        bullet = Bullet(self.pos.x, self.pos.y, angle = self.angle, b_type = 'skeleton')
+    def create_bullet(self, b_group):#, camera):
+        bullet = Bullet(self.pos.x, self.pos.y, angle = self.angle, b_type = "skeleton")
         b_group.add(bullet)
+        # camera.add(bullet)
 
     def rotatehead(self):
         self.rot_image = pygame.transform.rotate(self.scal_image, self.angle)
@@ -840,14 +890,14 @@ class Skeleton(Enemy):
     def square_move(self):
         super().square_move()
         
-    def create_coin(self, x, y, c_group):
-        super().create_coin(x, y, c_group)
+    def create_coin(self, x, y, c_group):#, camera):
+        super().create_coin(x, y, c_group)#, camera)
 
-    def create_ammo(self, x, y, c_group):
-        super().create_ammo(x, y, c_group)
+    def create_ammo(self, x, y, c_group):#, camera):
+        super().create_ammo(x, y, c_group)#, camera)
 
-    def die(self, p, c_group, s_group):
-        super().die(p, c_group, s_group)
+    def die(self, p, c_group, s_group):#, camera):
+        super().die(p, c_group, s_group)#, camera)
 
     def player_collision(self, p):
         super().player_collision(p)
@@ -879,10 +929,10 @@ class Zombie(Enemy):
         self.sight = 700 * sprite_scale
         self.collidable_tiles = ['wall', 'tree']
         
-    def update(self, p, tiles, level_matrix, dist, c_group, s_group, b_group, e, offset, i_group):
+    def update(self, p, tiles, dist, c_group, s_group, b_group, e, offset, i_group):#, camera):
         self.dirty = 1
-        self.die(p, c_group, s_group)
-        self.move(p, tiles, level_matrix, dist, e, i_group)
+        self.die(p, c_group, s_group)#, camera)
+        self.move(p, tiles, dist, e, i_group)
         self.attack(p, dist)
         self.render_bars(offset)
         
@@ -910,8 +960,8 @@ class Zombie(Enemy):
                 self.rotate()
                 p.health -= self.damage
 
-    def die(self, p, c_group, s_group):
-        super().die(p, c_group, s_group)
+    def die(self, p, c_group, s_group):#, camera):
+        super().die(p, c_group, s_group)#, camera)
 
     def tile_collisions(self, tiles, level_matrix):
         super().tile_collisions(tiles, level_matrix)
@@ -921,6 +971,26 @@ class Zombie(Enemy):
 
     def idle_move(self):
         self.random_move()
+
+    # def move_to_player(self, p):#change to a better movement
+    #     if (p.pos.x + 3) >= self.pos.x and (p.pos.x - 3) <= self.pos.x:
+    #         self.xvel = 0
+    #     elif (p.pos.x - 3) > self.pos.x:
+    #         self.xvel = self.vel
+    #     elif (p.pos.x + 3) < self.pos.x:
+    #         self.xvel = -self.vel
+            
+    #     if (p.pos.y + 3) >= self.pos.y and (p.pos.y - 3) <= self.pos.y:
+    #         self.yvel = 0
+    #     elif (p.pos.y - 3) > self.pos.y:
+    #         self.yvel = self.vel
+    #     elif (p.pos.y + 3) < self.pos.y:
+    #         self.yvel = -self.vel
+            
+    #     if abs(self.xvel) == abs(self.yvel) and self.xvel != 0:
+    #         abs_vel = (self.vel/root_2)
+    #         self.xvel = (self.xvel/self.vel) * abs_vel
+    #         self.yvel = (self.yvel/self.vel) * abs_vel
             
     def move_to_player(self, p):
         super().move_to_player(p)
@@ -971,11 +1041,11 @@ class Zombie(Enemy):
     def square_move(self):
         super().square_move()
         
-    def create_coin(self, x, y, c_group):
-        super().create_coin(x, y, c_group)
+    def create_coin(self, x, y, c_group):#, camera):
+        super().create_coin(x, y, c_group)#, camera)
 
-    def create_ammo(self, x, y, c_group):
-        super().create_ammo(x, y, c_group)
+    def create_ammo(self, x, y, c_group):#, camera):
+        super().create_ammo(x, y, c_group)#, camera)
 
     def player_collision(self, p):
         super().player_collision(p)
@@ -1022,43 +1092,52 @@ class Player(Entity):
         self.portal_cost = 10
         self.respawn_protection = False
         self.respawn_protection_timer = 0
-        self.collidable_tiles = ['wall', 'tree']
-        self.vel = pygame.math.Vector2((0, 0))
-        self.base_speed = 4
-        self.speed = 4
-        self.dir = pygame.math.Vector2((0, 0))
+        self.collidable_tiles = ["wall", "tree"]
+        self.vel = 4
         self.hp_textbox = textbox((d_width*0.5), (d_height * 0.96), int(d_height*0.02), white, display)
         self.ep_textbox = textbox((d_width*0.5), (d_height * 0.92), int(d_height*0.02), white, display)
+        # self.level = 0
         self.prev_score = 0
         self.prev_kills = 0
         self.prev_bullets = self.bullets
         self.prev_cash = 0
         self.deaths = 0
         self.is_new_press = True
+        self.dir = pygame.math.Vector2(0,0)
+        # self.path = []
+        # my_list = []
+        # for num in range(0,0):
+        #     list.append(num)
+        # print(my_list)
         self.hrt_rects = []
         for i in range(0, self.lives):
             hrt_rect = hrt.get_rect(topleft = (round(d_width - 48 - (i*33)), 15))
             self.hrt_rects.append(hrt_rect)
             # print(repr(self.hrt_rects))
-        
+            
+        # self.save_vals = ['solid', 'health', 'healthmax', 'xvel', 'yvel', 'vel', 't', 'idle_vel', 'next_pos', 'collidable_tiles', 'weapon', 'angle', 'attack_timer', 'wait', 'healthregen', 'energyval', 'energyregen', 'energymax', 'sprintvelmult', 'footprint_timer', 'score', 'bullet_delay', 'cash', 'change_lvl', 'damage', 'kills', 'bullets', 'attack_dist', 'lives', 'portal_cost', 'respawn_protection', 'respawn_protection_timer']
+
         self.healthbarborder = pygame.Rect(d_width*0.2 - 3, d_height*0.96 - 3, d_width*0.6 + 6, d_height*0.02 + 6)
         self.healthbar = pygame.Rect(d_width*0.2, d_height*0.96, d_width*0.6, d_height*0.02)
         self.energybarborder = pygame.Rect(d_width*0.2 - 3, d_height*0.92 - 3, d_width*0.6 + 6, d_height*0.02 + 6)
         self.energybar = pygame.Rect(d_width*0.2, d_height*0.92, d_width*0.6, d_height*0.02)
         
-    def update(self, moves, level_matrix, m_pos, portals, b_group, f_group, e_group, s_group, i_group, infobox):
+    def update(self, moves, tiles, m_pos, portals, b_group, f_group, e_group, s_group, i_group, infobox):#, camera):
+        # self.change_lvl = False
+        #self.die()
         self.rotate_to_mouse(m_pos)
-        self.move(moves, level_matrix, f_group, i_group, portals, infobox)
+        self.move(moves, tiles, f_group, i_group, portals, infobox)#, camera)
         if self.bullet_delay < 7:
             self.bullet_delay += 1
         if moves[6]:
             self.change_weapon()
         self.attack_timer += 1
         if moves[5]:
-            self.attack(b_group, e_group, s_group)
-            
+            self.attack(m_pos, b_group, e_group, s_group)#, camera)
+        #self.render()
         self.dirty = 1
         self.respawn()
+        # return self.change_lvl
 
     def die(self):
         if self.health <= 0:
@@ -1066,7 +1145,7 @@ class Player(Entity):
             self.deaths += 1
             if len(self.hrt_rects) > 0:
                 del self.hrt_rects[-1]
-                
+            # self.pos = pygame.math.Vector2((200*sprite_scale, 200*sprite_scale))
             self.respawn_protection = True
             self.score = self.prev_score - 100
             self.health = self.healthmax
@@ -1097,36 +1176,45 @@ class Player(Entity):
                     pass
                 elif c.c_type == 'consumable':
                     pass
+
+    # def tile_collisions(self, portals, moves, tiles, infobox):
+    #     for p in portals:
+    #         if moves[7] and self.energyval >= self.portal_cost:
+    #             if p.rect_1.colliderect(self.hitbox):
+    #                 self.pos = p.pos_2 + (tile_scale/2, tile_scale/2)
+    #                 self.energyval -= self.portal_cost
+    #             elif p.rect_2.colliderect(self.hitbox):
+    #                 self.pos = p.pos_1 + (tile_scale/2, tile_scale/2)
+    #                 self.energyval -= self.portal_cost
+    #     for t in tiles:
+    #         if t.t_type == "b_portal" and moves[7]:
+    #             if t.rect.colliderect(self.hitbox):
+    #                 self.change_lvl = True
+    #                 self.level += 1
+    #                 self.prev_score = self.score
+    #                 self.prev_kills = self.kills
+    #                 self.prev_bullets = self.bullets
+    #                 self.prev_cash = self.cash
+    #                 self.pos.x = self.pos.y = 200
                     
-    def tile_collisions(self, portals, moves, infobox, level_matrix, f_group):
+    def tile_collisions(self, portals, moves, infobox, tiles, f_group):
         for p in portals:
             if p.rect_1.colliderect(self.hitbox):
-                if self.energyval >= self.portal_cost:
-                    infobox.draw_c('Right click to travel')
-                    if moves[7]:
-                        self.pos = p.pos_2 + (tile_scale/2, tile_scale/2)
-                        self.energyval -= self.portal_cost
-                        
-                else:
-                    infobox.draw_c(f"Can't travel (Need {self.portal_cost} energy)")
-                    
+                infobox.draw_c("Right click to travel")
+                if moves[7] and self.energyval >= self.portal_cost:
+                    self.pos = p.pos_2 + (tile_scale/2, tile_scale/2)
+                    self.energyval -= self.portal_cost
             elif p.rect_2.colliderect(self.hitbox):
-                if self.energyval >= self.portal_cost:
-                    infobox.draw_c('Right click to travel')
-                    if moves[7]:
-                        self.pos = p.pos_1 + (tile_scale/2, tile_scale/2)
-                        self.energyval -= self.portal_cost
-                        
-                else:
-                    infobox.draw_c(f"Can't travel (Need {self.portal_cost} energy)")
+                infobox.draw_c("Right click to travel")
+                if moves[7] and self.energyval >= self.portal_cost:
+                    self.pos = p.pos_1 + (tile_scale/2, tile_scale/2)
+                    self.energyval -= self.portal_cost
         
         #calculates which tile we are on
         tile_pos = self.pos//tile_scale
-        tile = level_matrix[int(tile_pos.y)][int(tile_pos.x)]
-        
-        # self.xvel *= tile.speed_mult
-        # self.yvel *= tile.speed_mult
-        self.speed *= tile.speed_mult
+        tile = tiles[int(tile_pos.y)][int(tile_pos.x)]
+        self.xvel *= tile.speed_mult
+        self.yvel *= tile.speed_mult
         
         if tile.t_type == "mud":
             if tile.rect.colliderect(self.hitbox):
@@ -1146,10 +1234,133 @@ class Player(Entity):
             infobox.draw_c("Right click to go to next level")
             if moves[7]:
                 self.change_lvl = True
+                # self.level += 1
                 self.prev_score = self.score
                 self.prev_kills = self.kills
                 self.prev_bullets = self.bullets
                 self.prev_cash = self.cash
+                # self.pos.x = self.pos.y = 200
+        
+        # for t in tile_group:
+        #     if t.t_type == "b_portal" and t.rect.colliderect(self.hitbox):
+        #         infobox.draw_c("Right click to go to next level")
+        #         if moves[7]:
+        #             self.change_lvl = True
+        #             self.level += 1
+        #             self.prev_score = self.score
+        #             self.prev_kills = self.kills
+        #             self.prev_bullets = self.bullets
+        #             self.prev_cash = self.cash
+        #             self.pos.x = self.pos.y = 200
+                    
+    # def tile_collisions(self, tiles, moves, f_group):#, camera):
+    #     for t in tiles:
+    #         #collision of impassible tiles
+    #         if t.t_type in self.collidable_tiles:
+    #             #x axis collisions
+    #             if t.rect.colliderect(self.hitbox.topleft[0] + (self.xvel * sprite_scale * 1.1), self.hitbox.topleft[1], self.hitbox.topright[0]-self.hitbox.topleft[0], self.hitbox.bottomleft[1]-self.hitbox.topleft[1]):
+    #                 if self.xvel > 0:
+    #                     self.xvel = t.rect.left - self.hitbox.left
+    #                     self.xvel = 0
+    #                     # self.pos.x = self.pos.x + self.xvel - (self.hitbox.right + self.xvel - t.rect.left)
+    #                     self.xvel = 0
+    #                 elif self.xvel < 0:
+    #                     # self.xvel = self.hitbox.right - t.rect.right
+    #                     self.xvel = 0
+    #             #y axis collisions
+    #             elif t.rect.colliderect(self.hitbox.topleft[0], self.hitbox.topleft[1] + (self.yvel * sprite_scale * 1.1), self.hitbox.topright[0]-self.hitbox.topleft[0], self.hitbox.bottomleft[1]-self.hitbox.topleft[1]):
+    #                 if self.yvel < 0:
+    #                     # self.yvel = self.hitbox.bottom - t.rect.bottom
+    #                     self.yvel = 0
+    #                 elif self.yvel > 0:
+    #                     # self.yvel = t.rect.top - self.hitbox.top
+    #                     self.yvel = 0
+                        
+    #         elif t.t_type == "snowy_grass":
+                # if t.rect.colliderect(self.hitbox):
+                #     self.footprint_timer += 1
+                #     if self.footprint_timer >= 15:
+                #         self.footprint_timer = 0
+                #         self.create_s_footprint(f_group)#, camera)
+                        
+    #         elif t.t_type == "mud":
+                # if t.rect.colliderect(self.hitbox):
+                #     self.footprint_timer += 1
+                #     if self.footprint_timer >= 15:
+                #         self.footprint_timer = 0
+                #         self.create_m_footprint(f_group)#, camera)
+                        
+    #         elif t.t_type == "portal" and moves[7] and self.energyval >= 10:#t.timer == 90:
+                # if t.rect_1.colliderect(self.hitbox):
+                #     self.pos = t.pos_2 + (tile_scale/2, tile_scale/2)
+                #     self.energyval -= self.portal_cost
+                #     #t.timer = 0
+                # elif t.rect_2.colliderect(self.hitbox):
+                #     self.pos = t.pos_1 + (tile_scale/2, tile_scale/2)
+                #     self.energyval -= self.portal_cost
+                #     #t.timer = 0
+                    
+            # elif t.t_type == "b_portal" and moves[7]:
+            #     if t.rect.colliderect(self.hitbox):
+            #         self.change_lvl = True
+            #         self.level += 1
+            #         self.prev_score = self.score
+            #         self.prev_kills = self.kills
+            #         self.prev_bullets = self.bullets
+            #         self.prev_cash = self.cash
+            #         self.pos.x = self.pos.y = 200
+            
+    #         #collision of slowing tiles
+    #         if t.speed_mult != 1:
+    #             if t.rect.collidepoint(self.pos):
+    #                 self.xvel = self.xvel * t.speed_mult
+    #                 self.yvel = self.yvel * t.speed_mult
+                    
+    # def tile_collisions(self, tiles):#this adds all of them to list and sorts them, then checks if collidable until it is
+    #     for data in self.path:
+    #         if tiles[data[0]][data[1]].t_type in self.collidable_tiles:#or tiles[data[2]][data[3]].t_type in self.collidable_tiles:and *= data[4]
+    #             # print(tiles[data[0]][data[1]].t_type)
+    #             self.xvel *= data[2]
+    #             self.yvel *= data[3]
+    #             # print(f"Hitting tile {data[0]} {data[1]}")
+    #             break
+            
+    # def tile_collisions(self, tiles):
+    #     for pos in range(len(self.path)):
+    #         if tiles[self.path[pos][0]][self.path[pos][1]].t_type in self.collidable_tiles:
+    #             self.xvel *= self.path[pos][2]
+    #             self.yvel *= self.path[pos][3]
+    #             # try:
+    #             #     if self.path[pos][4] == self.path[pos+1][4]:
+    #             #         self.yvel *= self.path[pos][4]
+    #             # except:
+    #             #     pass
+    #             break
+    
+    # def tile_collisions(self, r, c, ratio, tiles):#maybe add r2 and c2 #checks all if collidable, if it is then adds to list and sorts
+    #     if tiles[r][c].t_type in self.collidable_tiles:#or tiles[r2][c2].t_type in self.collidable_tiles:
+    #         self.path.append(ratio)
+    
+    # def x_tile_collisions(self, tiles):
+    #     for data in self.path:
+    #         if tiles[data[0]][data[1]].t_type in self.collidable_tiles:
+    #             self.xvel *= data[2]
+    #             break
+                
+    # def y_tile_collisions(self, tiles):
+    #     for data in self.path:
+    #         if tiles[data[0]][data[1]].t_type in self.collidable_tiles:
+    #             self.yvel *= data[2]
+    #             break
+    
+    # def x_tile_collisions(self, r, c, ratio, tiles):
+    #     if tiles[r][c].t_type in self.collidable_tiles:
+    #         self.xvel *= ratio
+    #         # break
+            
+    # def y_tile_collision(self, r, c, ratio, tiles):
+    #     if tiles[r][c].t_type in self.collidable_tiles:
+    #         self.yvel *= ratio
 
     def door_collisions(self, i_group):
         for d in i_group:
@@ -1166,22 +1377,32 @@ class Player(Entity):
                         self.vel.x = 0
                         
                 #y axis collisions
-                if d.rect.colliderect(self.hitbox.topleft[0], self.hitbox.topleft[1] + (self.vel.y * sprite_scale * 1.1), self.hitbox.topright[0]-self.hitbox.topleft[0], self.hitbox.bottomleft[1]-self.hitbox.topleft[1]):
-                    # if self.dir.y < 0:
-                    #     # self.yvel = self.hitbox.bottom - d.rect.bottom
-                    #     self.dir.y = 0
-                    # elif self.dir.y > 0:
-                    #     # self.yvel = d.rect.top - self.hitbox.top
-                    #     self.dir.y = 0
-                    if self.dir.x != 0:
-                        self.vel.x = 0
+                if d.rect.colliderect(self.hitbox.topleft[0], self.hitbox.topleft[1] + (self.yvel * sprite_scale * 1.1), self.hitbox.topright[0]-self.hitbox.topleft[0], self.hitbox.bottomleft[1]-self.hitbox.topleft[1]):
+                    if self.yvel < 0:
+                        self.yvel = self.hitbox.bottom - d.rect.bottom
+                        self.yvel = 0
+                    elif self.yvel > 0:
+                        self.yvel = d.rect.top - self.hitbox.top
+                        self.yvel = 0
 
-    def move(self, moves, level_matrix, f_group, i_group, portals, infobox):#this should be moved after all speed changes if speed is set to a specific value by something
-        # self.yvel = 0#this should change if I have ice tiles
-        self.dir.x = self.dir.y = 0
-        self.speed = self.base_speed
-        # self.vel.x = self.vel.y = 0
-        # self.vel = self.base_vel
+    def move(self, moves, tiles, f_group, i_group, portals, infobox):#, camera):#this should be moved after all speed changes if speed is set to a specific value by something
+        # if moves[0] and not moves[1]:
+        #     self.yvel = -self.vel
+        # elif moves[1] and not moves[0]:
+        #     self.yvel = self.vel
+        # elif moves[0] and moves[1]:
+        #     self.yvel = 0
+        # else:
+        #     self.yvel = 0
+            
+        # if moves[2] and not moves[3]:
+        #     self.xvel = -self.vel
+        # elif moves[3] and not moves[2]:
+        #     self.xvel = self.vel
+        # elif moves[2] and moves[3]:
+        #     self.xvel = 0
+        # else:
+        #     self.xvel = 0
         
         if moves[0]:
             self.dir.y -= 1
@@ -1194,34 +1415,278 @@ class Player(Entity):
         if moves[3]:
             self.dir.x += 1
             
-        # if self.dir.x != 0 and self.dir.y != 0:#abs(self.xvel) == abs(self.yvel) and self.xvel != 0:#or if self.dir.is_normalized() / self.dir.mag != 0
-            # abs_vel = (self.vel/root_2)
-            # self.xvel = (self.xvel/self.vel) * abs_vel
-            # self.yvel = (self.yvel/self.vel) * abs_vel
-            # self.dir = self.dir.normalize()
-            # self.dir.normalize_ip()
-            
-        self.dir.normalize_ip()
+        if abs(self.xvel) == abs(self.yvel) and self.xvel != 0:#just do if self.xvel != 0 and self.yvel != 0
+            abs_vel = (self.vel/root_2)
+            self.xvel = (self.xvel/self.vel) * abs_vel
+            self.yvel = (self.yvel/self.vel) * abs_vel
+        # self.xvel = 4
+        # self.yvel = -4
 
-        # if self.dir.x != 0 or self.dir.y != 0:#self.dir.magnitude() != 0: or self.dir.magnitude() == 1:
-        #     self.speed = self.base_speed
-        
+        # self.collisions(tiles)
+
         self.sprint(moves)
-        
-        self.tile_collisions(portals, moves, infobox, level_matrix, f_group)
-        
-        # self.vel = self.vel(1 - tile.friction) + self.dir * self.speed
-        # self.vel = self.speed(1- friction) + self.dir * self.speed
-        # self.vel = self.speed()
-        self.vel = self.dir * self.speed
-        
-        self.calc_path_better(level_matrix)
-        
+        self.tile_collisions(portals, moves, infobox, tiles, f_group)
+        # self.tile_collisions(tiles, moves, f_group, camera)
+        # self.collisions(tiles)
+        self.calc_path_better(tiles)
+        # self.collisions(tiles)
         self.door_collisions(i_group)
 
         self.sync()
+        
+    # def collisions(self, tiles):
+    #     # if self.xvel != 0 and self.yvel != 0:
+    #     self.calc_path()
+            
+    #     self.tile_collisions(tiles)
     
     #calculates the matrix position for tiles that will be collided and puts them in a list, in order of dist to the tile
+    # def calc_path(self):#might be able to just use pos instead of rect sides if vel is always bigger than half the hitbox width
+    #     self.path.clear()
+        
+    #     if self.xvel > 0:
+    #         #first column crossing on path
+    #         current_c = int(self.hitbox.right / tile_scale)#could also just do from left // tile_scale + 1 or do (self.hitbox.right - 1) // tile_scale + 1
+    #         if self.hitbox.right / tile_scale == current_c:#if right of hitbox is on a column (only needed if I set the position to be touching the tile)
+    #             first_c = current_c
+    #         else:
+    #             first_c = current_c + 1
+                
+    #         #calculates tile matrix pos for column crossing on path
+    #         for x in range(first_c * tile_scale, int(self.hitbox.right + self.xvel)+1, tile_scale):
+    #                 # print()
+    #                 ratio = (x - self.hitbox.right) / self.xvel
+    #                 top_r = int(((ratio * self.yvel) + self.hitbox.top) / tile_scale)#+1 on middle if 48 vel doesn't work
+    #                 num = ((ratio * self.yvel) + self.hitbox.bottom) / tile_scale#could just do (height/tile_scale) + top_r if not int?
+    #                 bottom_r = int(num)
+    #                 if num != bottom_r:
+    #                     bottom_r += 1
+    #                 c = int(x / tile_scale)
+    #                 for r in range(top_r, bottom_r):#maybe instead do from top_r to int(height / tile_scale + 1)
+    #                     self.path.append((r, c, ratio, 1, ratio))
+                    
+    #         #moving right and up (+x, -y)
+    #         if self.yvel < 0:#last row crossing on path
+    #             last_r = int((self.hitbox.top + self.yvel) / tile_scale + 1)#maybe do no +1 and \/
+                
+    #             #if it doesn't work do this and do * tile_scale above and do if does work
+    #             # if first_c > self.hitbox.right + self.xvel:
+                
+    #             #if does work maybe do and/or do * tile_scale above
+    #             # ratio = (first_c-self.hitbox.right)/self.xvel
+    #             # self.path.append(((self.hitbox.top - (ratio * self.yvel)) // tile_scale, first_c, ratio))
+                
+    #             #calculates tile matrix pos for column crossing on path
+    #             # for x in range(first_c * tile_scale, int(self.hitbox.right + self.xvel)+1, tile_scale):#+1 on middle if 48 vel doesn't work
+    #             #     ratio = (x - self.hitbox.right) / self.xvel
+    #             #     top_r = int((self.hitbox.top + (ratio * self.yvel)) / tile_scale)
+    #             #     num = (self.hitbox.bottom + (ratio * self.yvel)) / tile_scale#could just do (height/tile_scale) + top_r if not int?
+    #             #     bottom_r = int(num)
+    #             #     if num != bottom_r:
+    #             #         bottom_r += 1
+    #             #     c = int(x / tile_scale)
+    #             #     for r in range(top_r, bottom_r):#maybe instead do from top_r to int(height / tile_scale + 1)
+    #             #         self.path.append((r, c, ratio, 1, ratio))
+                    
+                
+    #             #calculates tile matrix pos for row crossing on path
+    #             for y in range(last_r * tile_scale, int(self.hitbox.top)+1, tile_scale):#maybe check for if top is already touching ,+1 on middle if 48+ vel doesn't work or do from bottom
+    #                 ratio = (y - self.hitbox.top) / self.yvel
+    #                 r = int((y / tile_scale) - 1)#and maybe do no -1
+    #                 left_c = int(((ratio * self.xvel) + self.hitbox.left) / tile_scale)
+    #                 num = ((ratio * self.xvel) + self.hitbox.right) / tile_scale
+    #                 right_c = int(num)
+    #                 if num != right_c:
+    #                     right_c += 1
+    #                 for c in range(left_c, right_c):#this should then be width // tile_scale + 1
+    #                     self.path.append((r, c, 1, ratio, ratio))
+        
+    #         #moving right and down (+x, +y)
+    #         elif self.yvel > 0:
+    #             #first row crossing on path
+    #             current_r = int(self.hitbox.bottom / tile_scale)
+    #             if self.hitbox.bottom / tile_scale == current_r:
+    #                 first_r = current_r
+    #             else:
+    #                 first_r = current_r + 1
+    #             # print(first_r)
+    #             #calculates tile matrix pos for column crossing on path
+    #             # for x in range(first_c * tile_scale, int(self.hitbox.right + self.xvel)+1, tile_scale):
+    #             #     # print()
+    #             #     ratio = (x - self.hitbox.right) / self.xvel
+    #             #     top_r = int(((ratio * self.yvel) + self.hitbox.top) / tile_scale)
+    #             #     num = ((ratio * self.yvel) + self.hitbox.bottom) / tile_scale
+    #             #     bottom_r = int(num)
+    #             #     if num != bottom_r:
+    #             #         bottom_r += 1
+    #             #     c = int(x / tile_scale)
+    #             #     for r in range(top_r, bottom_r):
+    #             #         self.path.append((r, c, ratio, 1, ratio))
+                
+    #             #calculates tile matrix pos for row crossing on path
+    #             for y in range(first_r * tile_scale, int(self.hitbox.bottom + self.yvel)+1, tile_scale):
+    #                 ratio = (y - self.hitbox.bottom) / self.yvel
+    #                 r = int(y / tile_scale)
+    #                 left_c = int(((ratio * self.xvel) + self.hitbox.left) / tile_scale)
+    #                 num = ((ratio * self.xvel) + self.hitbox.right) / tile_scale
+    #                 right_c = int(num)
+    #                 if num != right_c:
+    #                     right_c += 1
+    #                 for c in range(left_c, right_c):
+    #                     # for pos in range(len(self.path)):
+    #                     #     if ratio == self.path[pos][2]:
+    #                     #         self.path[pos][3] = ratio
+    #                     #     else:
+    #                     self.path.append((r, c, 1, ratio, ratio))
+                 
+    #         #moving right (+x, 0)   
+    #         else:
+    #             #top row crossing path
+    #             top_r = int(self.hitbox.top / tile_scale)
+                
+    #             #bottom row crossing path
+    #             num = self.hitbox.bottom / tile_scale
+    #             bottom_r = int(num)
+    #             if num != bottom_r:
+    #                 bottom_r += 1
+                    
+    #             #calculates tile matrix pos for column crossing on path
+    #             for x in range(first_c * tile_scale, int(self.hitbox.right + self.xvel)+1, tile_scale):
+    #                 ratio = (x - self.hitbox.right) / self.xvel
+    #                 c = int(x / tile_scale)
+    #                 # print(c)
+    #                 for r in range(top_r, bottom_r):
+    #                     self.path.append((r, c, ratio, 1, ratio))
+                    
+    #         self.path.sort(key=lambda data: data[4])
+        
+    #     elif self.xvel < 0:
+    #         #last column crossing on path
+    #         last_c = int((self.hitbox.left + self.xvel) / tile_scale + 1)
+                
+    #         #moving left and up (-x, -y)
+    #         if self.yvel < 0:
+    #             #last row crossing on path
+    #             last_r = int((self.hitbox.top + self.yvel) / tile_scale + 1)
+                
+    #             #calculates tile matrix pos for column crossing on path
+    #             for x in range(last_c * tile_scale, int(self.hitbox.left)+1, tile_scale):
+    #                 ratio = (x - self.hitbox.left) / self.xvel
+    #                 top_r = int((self.hitbox.top + (ratio * self.yvel)) / tile_scale)
+    #                 num = (self.hitbox.bottom + (ratio * self.yvel)) / tile_scale
+    #                 bottom_r = int(num)
+    #                 if num != bottom_r:
+    #                     bottom_r += 1
+    #                 c = int((x / tile_scale) - 1)
+    #                 for r in range(top_r, bottom_r):
+    #                     self.path.append((r, c, ratio, 1, ratio))
+                    
+    #             #calculates tile matrix pos for row crossing on path
+    #             for y in range(last_r * tile_scale, int(self.hitbox.top)+1, tile_scale):
+    #                 ratio = (y - self.hitbox.top) / self.yvel
+    #                 r = int((y / tile_scale) - 1)
+    #                 left_c = int((self.hitbox.left + (ratio * self.xvel)) / tile_scale)
+    #                 num = (self.hitbox.right + (ratio * self.xvel)) / tile_scale
+    #                 right_c = int(num)
+    #                 if num != right_c:
+    #                     right_c += 1
+    #                 for c in range(left_c, right_c):
+    #                     self.path.append((r, c, 1, ratio, ratio))
+        
+    #         #moving left and down (-x, +y)
+    #         elif self.yvel > 0:
+    #             #first row crossing on path
+    #             current_r = int(self.hitbox.bottom / tile_scale)
+    #             if self.hitbox.bottom / tile_scale == current_r:#if already on a grid line include current x in path
+    #                 first_r = current_r
+    #             else:
+    #                 first_r = current_r + 1
+                    
+    #             #calculates tile matrix pos for column crossing on path
+    #             for x in range(last_c * tile_scale, int(self.hitbox.left)+1, tile_scale):
+    #                 ratio = (x - self.hitbox.left) / self.xvel
+    #                 top_r = int(((ratio * self.yvel) + self.hitbox.top) / tile_scale)
+    #                 num = ((ratio * self.yvel) + self.hitbox.bottom) / tile_scale
+    #                 bottom_r = int(num)
+    #                 if num != bottom_r:
+    #                     bottom_r += 1
+    #                 c = int((x / tile_scale) - 1)
+    #                 for r in range(top_r, bottom_r):
+    #                     self.path.append((r, c, ratio, 1, ratio))
+                    
+    #             #calculates tile matrix pos for row crossing on path
+    #             for y in range(first_r * tile_scale, int(self.hitbox.bottom + self.yvel)+1, tile_scale):
+    #                 ratio = (y - self.hitbox.bottom) / self.yvel
+    #                 r = int(y / tile_scale)
+    #                 left_c = int((self.hitbox.left + (ratio * self.xvel)) / tile_scale)
+    #                 num = (self.hitbox.right + (ratio * self.xvel)) / tile_scale
+    #                 right_c = int(num)
+    #                 if num != right_c:
+    #                     right_c += 1
+    #                 for c in range(left_c, right_c):
+    #                     self.path.append((r, c, 1, ratio, ratio))
+                    
+    #         #moving left (-x, 0)
+    #         else:
+    #             #top row crossing path
+    #             top_r = int(self.hitbox.top / tile_scale)
+                
+    #             #bottom row crossing path
+    #             num = self.hitbox.bottom / tile_scale
+    #             bottom_r = int(num)
+    #             if num != bottom_r:
+    #                 bottom_r += 1
+                
+    #             #calculates tile matrix pos for column crossing on path
+    #             for x in range(last_c * tile_scale, int(self.hitbox.left)+1, tile_scale):
+    #                 ratio = (x - self.hitbox.left) / self.xvel
+    #                 # print(ratio)
+    #                 c = int((x / tile_scale) - 1)
+    #                 for r in range(top_r, bottom_r):
+    #                     self.path.append((r, c, ratio, 1, ratio))
+                
+    #         self.path.sort(key=lambda data: data[4])
+            
+    #     else:
+    #         #left column crossing path
+    #         left_c = int(self.hitbox.left / tile_scale)
+            
+    #         #right column crossing path
+    #         num = self.hitbox.right / tile_scale
+    #         right_c = int(num)
+    #         if num != right_c:
+    #             right_c += 1
+                
+    #         if self.yvel < 0:#moving up (0, -y)
+    #             #last row crossing on path
+    #             last_r = int((self.hitbox.top + self.yvel) / tile_scale + 1)
+                
+    #             #calculates tile matrix pos for row crossing on path
+    #             for y in range(last_r * tile_scale, int(self.hitbox.top)+1, tile_scale):
+    #                 ratio = (y - self.hitbox.top) / self.yvel
+    #                 # print(ratio)
+    #                 r = int((y / tile_scale) - 1)
+    #                 for c in range(left_c, right_c):
+    #                     self.path.append((r, c, 1, ratio, ratio))
+                    
+    #         elif self.yvel > 0:#moving down (0, +y)
+    #             #first row crossing on path
+    #             current_r = int(self.hitbox.bottom / tile_scale)
+    #             if self.hitbox.bottom / tile_scale == current_r:
+    #                 first_r = current_r
+    #             else:
+    #                 first_r = current_r + 1
+                
+    #             #calculates tile matrix pos for row crossing on path
+    #             for y in range(first_r * tile_scale, int(self.hitbox.bottom + self.yvel)+1, tile_scale):
+    #                 ratio = (y - self.hitbox.bottom) / self.yvel
+                    
+    #                 r = int(y / tile_scale)
+    #                 for c in range(left_c, right_c):
+    #                     self.path.append((r, c, 1, ratio, ratio))
+                    
+    #         self.path.sort(key=lambda data: data[4])
+    
     def calc_path_better(self, tiles):
         # tile_pos = self.pos//tile_scale
         # current_tile = tiles[int(tile_pos.y)][int(tile_pos.x)]
@@ -1284,6 +1749,7 @@ class Player(Entity):
         current_left_column = int(self.hitbox.left/tile_scale)
         current_top_row = int(self.hitbox.top/tile_scale)
         current_bottom_row = int((self.hitbox.bottom-1)/tile_scale)
+        # print(current_left_column, current_right_column)
         # ns = []
         possible_col = []
         possible_row = []
@@ -1292,53 +1758,51 @@ class Player(Entity):
             # next_x = self.pos.x + self.xvel + (self.hitbox.width/2)
             # possible_x.append(next_x)
             
-        if self.dir.x > 0:
-            for n in range(current_left_column, int((self.hitbox.left + self.vel.x)/tile_scale)+1):
+        if self.xvel > 0:
+            for n in range(current_left_column, int((self.hitbox.left + self.xvel)/tile_scale)+1):
                 possible_col.append(n)
                 
-            for n in range(current_right_column, int((self.hitbox.right + self.vel.x)/tile_scale)+1):
+            for n in range(current_right_column, int((self.hitbox.right + self.xvel)/tile_scale)+1):
                 possible_col.append(n)
         
-        elif self.dir.x < 0:
-            for n in range(int((self.hitbox.left + self.vel.x)/tile_scale), current_left_column+1):
+        elif self.xvel < 0:
+            for n in range(int((self.hitbox.left + self.xvel)/tile_scale), current_left_column+1):
                 possible_col.append(n)
                 
-            for n in range(int((self.hitbox.right + self.vel.x)/tile_scale), current_right_column+1):
+            for n in range(int((self.hitbox.right + self.xvel)/tile_scale), current_right_column+1):
                 possible_col.append(n)
+                
+            # possible_col.reverse()
             
         else:
-            # for n in range(current_left_column, current_right_column):
             possible_col.append(current_left_column)
             possible_col.append(current_right_column)
                 
-        if self.dir.y > 0:
-            for n in range(current_top_row, int((self.hitbox.top + self.vel.y)/tile_scale)+1):
+        if self.yvel > 0:
+            for n in range(current_top_row, int((self.hitbox.top + self.yvel)/tile_scale)+1):
                 possible_row.append(n)
                 
-            for n in range(current_bottom_row, int((self.hitbox.bottom + self.vel.y)/tile_scale)+1):
+            for n in range(current_bottom_row, int((self.hitbox.bottom + self.yvel)/tile_scale)+1):
                 possible_row.append(n)
                 
-        elif self.dir.y < 0:
-            for n in range(int((self.hitbox.top + self.vel.y)/tile_scale), current_top_row+1):
+        elif self.yvel < 0:
+            for n in range(int((self.hitbox.top + self.yvel)/tile_scale), current_top_row+1):
                 possible_row.append(n)
                 
-            for n in range(int((self.hitbox.bottom + self.vel.y)/tile_scale), current_bottom_row+1):
+            for n in range(int((self.hitbox.bottom + self.yvel)/tile_scale), current_bottom_row+1):
                 possible_row.append(n)
+                
+            # possible_row.reverse()
             
         else:
             possible_row.append(current_top_row)
             possible_row.append(current_bottom_row)
         
         possible_tiles = []
-        for c in possible_col:#possible_tiles.apend([])
+        for c in possible_col:
             for r in possible_row:
                 possible_tiles.append(tiles[r][c])
-        
-        # for c in possible_col:
-        #     for r in possible_row:
-        #         if tiles[r][c].t_type in self.collidable_tiles:
-                    
-        
+                
         # tiless = []
         # for n in range(len(possible_tiles)):
         #     tiless.append(possible_tiles[n].t_type + str(possible_tiles[n].pos))
@@ -1365,18 +1829,13 @@ class Player(Entity):
         possible_tiles.sort(key = lambda tile: tile.pos.distance_to(self.pos))
         for tile in possible_tiles:
             if tile.t_type in self.collidable_tiles:
-                if tile.rect.left >= self.hitbox.right and self.dir.x > 0:
-                    # ratio = (tile.rect.left - self.hitbox.right)/self.vel.x
-                    # self.vel *= ratio
-                    #self.dir.x *= ratio
-                    self.hitbox.right = tile.rect.left
-                    self.vel.x = 0
+                if tile.rect.left >= self.hitbox.right and self.xvel > 0:
+                    ratio = (tile.rect.left - self.hitbox.right)/self.xvel
+                    self.xvel *= ratio
                 
-                elif tile.rect.right <= self.hitbox.left and self.dir.x < 0:
-                    # ratio = (tile.rect.right - self.hitbox.left)/self.vel.x
-                    # self.vel *= ratio
-                    self.hitbox.left = tile.rect.right
-                    self.vel.x = 0
+                elif tile.rect.right <= self.hitbox.left and self.xvel < 0:
+                    ratio = (tile.rect.right - self.hitbox.left)/self.xvel
+                    self.xvel *= ratio
                     
                 # elif tile.rect.top >= self.hitbox.bottom and self.yvel > 0:
                 #     ratio = (tile.rect.top - self.hitbox.bottom)/self.yvel
@@ -1390,19 +1849,18 @@ class Player(Entity):
             
         for tile in possible_tiles:
             if tile.t_type in self.collidable_tiles:
-                if tile.rect.top >= self.hitbox.bottom and self.dir.y > 0:
-                    # ratio = (tile.rect.top - self.hitbox.bottom)/self.vel.y
-                    # self.vel *= ratio
-                    self.hitbox.bottom = tile.rect.top
-                    self.vel.y = 0
+                if tile.rect.top >= self.hitbox.bottom and self.yvel > 0:
+                    ratio = (tile.rect.top - self.hitbox.bottom)/self.yvel
+                    self.yvel *= ratio
                     
-                elif tile.rect.bottom <= self.hitbox.top and self.dir.y < 0:
-                    # ratio = (tile.rect.bottom - self.hitbox.top)/self.vel.y
-                    # self.vel *= ratio
-                    self.hitbox.top = tile.rect.bottom
-                    self.vel.y = 0
+                elif tile.rect.bottom <= self.hitbox.top and self.yvel < 0:
+                    ratio = (tile.rect.bottom - self.hitbox.top)/self.yvel
+                    self.yvel *= ratio
                     
                 break
+                        
+            
+        # print(tested_tiles)
             
     def calc_path(self, tiles):#new
         # self.calc_path_better(tiles)
@@ -1656,12 +2114,12 @@ class Player(Entity):
         self.energybar.width = d_width*0.6*(self.energyval/self.energymax)
         
         #energy bar
-        pygame.draw.rect(self.display, dark_blue, self.energybarborder)
-        pygame.draw.rect(self.display, blue, self.energybar)
+        pygame.draw.rect(self.display, dark_blue, self.energybarborder)#pygame.Rect(energybar_b_left, energybar_b_top, energybar_b_width, energybar_b_height))
+        pygame.draw.rect(self.display, blue, self.energybar)#pygame.Rect(energybar_p_left, energybar_p_top, energybar_p_width, energybar_p_height))
 
         #hp bar
-        pygame.draw.rect(self.display, dark_green, self.healthbarborder)
-        pygame.draw.rect(self.display, green, self.healthbar)
+        pygame.draw.rect(self.display, dark_green, self.healthbarborder)#pygame.Rect(hpbar_b_left, hpbar_b_top, hpbar_b_width, hpbar_b_height))
+        pygame.draw.rect(self.display, green, self.healthbar)#pygame.Rect(hpbar_p_left, hpbar_p_top, hpbar_p_width, hpbar_p_height))
 
     def render_hearts(self):
         for i in range(0, len(self.hrt_rects)):
@@ -1670,22 +2128,41 @@ class Player(Entity):
     def render_weapon_show(self):
         rect = fist_show.get_rect(topleft = (round(d_width-140), round(d_height-140)))
         self.display.blit(w_show[self.weapon], rect)
+    
+    # def sprint(self, moves):#original
+    #     self.wait += 1
+    #     if self.wait >= 30:
+    #         self.energyval += self.energyregen
+    #         if self.energyval >= self.energymax:
+    #             self.energyval = self.energymax
+    #             self.wait = 0
+    #     if moves[4] and self.energyval > 0 and (self.xvel != 0 or self.yvel != 0) and not self.regen_energy:
+    #         self.wait = 0
+    #         self.energyval -= 0.5
+    #         self.xvel = self.sprintvelmult * self.xvel
+    #         self.yvel = self.sprintvelmult * self.yvel
+    #         if self.energyval <= 0:
+    #             self.energyval = 0
+    #     self.energyval = round(self.energyval, 1)
         
-    def sprint(self, moves):
-        if self.regen_energy:#might make this its own function called regen_energy or something
+    def sprint(self, moves):#new
+        if self.regen_energy:
             self.energyval += self.energyregen
             if self.energyval >= self.energymax:
                 self.energyval = self.energymax
-                
-            if moves[4] and self.is_new_press and (self.dir.x != 0 or self.dir.y != 0):
+                # self.regen_energy = False
+            if moves[4] and self.is_new_press and (self.xvel != 0 or self.yvel != 0):
                 self.regen_energy = False
                 self.is_new_press = False
+            # elif self.xvel == 0 and self.yvel == 0:
+            #     self.regen_energy = False
+                # self.is_new_press = True
                 
-        elif moves[4] and (self.dir.x != 0 or self.dir.y != 0) and self.energyval >= self.sprintenergycost:
-            self.energyval -= self.sprintenergycost
-            self.speed *= self.sprintvelmult
-            # self.yvel *= self.sprintvelmult
-            if self.energyval <= self.sprintenergycost:
+        elif moves[4] and (self.xvel != 0 or self.yvel != 0):
+            self.energyval -= 0.5
+            self.xvel *= self.sprintvelmult
+            self.yvel *= self.sprintvelmult
+            if self.energyval <= 0:
                 self.energyval = 0
                 self.regen_energy = True
                 
@@ -1696,30 +2173,36 @@ class Player(Entity):
         elif not moves[4]:
             self.regen_energy = True
             
-    # def sprint(self, moves):
-    #     if moves[4] and (self.dir.x != 0 or self.dir.y != 0) and self.energyval >= self.sprintenergycost and not self.regen_energy:
-    #         self.energyval -= self.sprintenergycost
-    #         self.vel *= self.sprintvelmult
-    #         if self.energyval <= self.sprintenergycost:
-    #             self.regen_energy = True
-    #         if self.is_new_press:
-    #             self.is_new_press = False
+        # elif self.xvel != 0 or self.yvel != 0:
+        #     self.regen_energy = True
+        #     self.is_new_press = True
+                
+        # self.energyval = round(self.energyval, 1)
         
-    #     # elif self.energyval < self.energymax:#might make this its own function called regen_energy or something
-    #         # self.energyval += self.energyregen
-    #         # if self.energyval > self.energymax:
-    #         #     self.energyval = self.energymax
-            
-    #     # if not moves[4]:
-    #     #     self.is_new_press = True
-        
-    #     if self.regen_energy:
-    #         self.energyval += self.energyregen
-    #         if self.energyval > self.energymax:
-    #             self.energyval = self.energymax
-    #             self.regen_energy = False
-    #         if moves[4] and (self.dir.x != 0 or self.dir.y != 0) and self.energyval >= self.sprintenergycost:
-    #             self.regen_energy = False
+    # def sprint(self, moves):#test might use?
+    #     if moves[4]:
+    #         if self.regen_energy:
+    #             self.energyval += self.energyregen
+    #             if self.energyval >= self.energymax:
+    #                 self.energyval = self.energymax
+    #                 self.regen_energy = False
+                    
+    #         elif (self.xvel != 0 or self.yvel != 0):
+    #             self.energyval -= 0.5
+    #             self.xvel = self.sprintvelmult * self.xvel
+    #             self.yvel = self.sprintvelmult * self.yvel
+    #             if self.energyval <= 0:
+    #                 self.energyval = 0
+    #                 self.regen_energy = True
+                    
+    #     else:
+    #         if self.regen_energy:
+    #             self.energyval += self.energyregen
+    #             if self.energyval >= self.energymax:
+    #                 self.energyval = self.energymax
+    #                 self.regen_energy = False
+                    
+    #     self.energyval = round(self.energyval, 1)
     
     def change_weapon(self):
         if self.weapon ==  0:
@@ -1729,7 +2212,7 @@ class Player(Entity):
         else:
             pass
 
-    def attack(self, b_group, e_group, s_group):#needs improving, click and hold rotates player back and forth
+    def attack(self, m_pos, b_group, e_group, s_group):#, camera):#needs improving, click and hold rotates player back and forth
         if self.weapon == 0:
             if self.attack_timer >= 15:
                 self.angle += 20
@@ -1749,20 +2232,23 @@ class Player(Entity):
             if self.bullets > 0:
                 if self.bullet_delay >= 7:
                     self.bullets -= 1
-                    self.create_bullet(b_group)
+                    self.create_bullet(b_group)#, camera)
                     self.bullet_delay = 0
 
-    def create_s_footprint(self, f_group):
+    def create_s_footprint(self, f_group):#, camera):
         footprint = Snow_Footprint(self.pos.x, self.pos.y, self.angle)
         f_group.add(footprint)
+        # camera.add(footprint)
 
-    def create_m_footprint(self, f_group):
+    def create_m_footprint(self, f_group):#, camera):
         footprint = Mud_Footprint(self.pos.x, self.pos.y, self.angle)
         f_group.add(footprint)
+        # camera.add(footprint)
 
-    def create_bullet(self, b_group):
+    def create_bullet(self, b_group):#, camera):
         bullet = Bullet(self.pos.x, self.pos.y, angle = self.angle)
         b_group.add(bullet)
+        # camera.add(bullet)
 
     def render(self, arm_offset_pos, img_offset_pos):
         self.display.blit(self.rot_arm, arm_offset_pos)#order matters as arms look weird if drawn over head
@@ -1784,9 +2270,8 @@ class Bullet(Object):
         self.hitbox = self.scal_image.get_rect(center = (round(self.pos.x), round(self.pos.y)))
         self.angle = math.radians(angle) + math.pi
         self.vel = 10
-        self.dir = pygame.math.Vector2((math.sin(self.angle), math.cos(self.angle)))
-        # self.xvel = (self.vel * math.sin(self.angle)) + random.randint(0, 1) - 0.5
-        # self.yvel = (self.vel * math.cos(self.angle)) + random.randint(0, 1) - 0.5
+        self.xvel = (self.vel * math.sin(self.angle)) + random.randint(0, 1) - 0.5
+        self.yvel = (self.vel * math.cos(self.angle)) + random.randint(0, 1) - 0.5
         self.damage = 2
         self.t = 0
         self.z = 1
@@ -1876,6 +2361,7 @@ class Footprint(Object):
         self.z = 1
 
     def update(self):
+        # self.rotate()
         self.fade()
 
     def fade(self):
@@ -1883,6 +2369,10 @@ class Footprint(Object):
         if self.t >= 600:
             self.t = 0
             self.kill()
+
+    # def rotate(self):
+    #     self.rot_image = pygame.transform.rotate(self.scal_image, self.angle)
+    #     self.rect = self.rot_image.get_rect(center = self.rect.center)
 
     def render(self):
         self.display.blit(self.rot_image, self.rect)
@@ -1913,27 +2403,64 @@ class Collectable(Object):#should come from entity as it will have vel when magn
         self.fade_timer += 1
         if self.fade_timer >= self.fade_limit:
             self.kill()
+            
+    # def tile_collisions(self, p, tiles):#move away from tile center continuously
+    #     for t in tiles:
+    #         if t.t_type in p.collidable_tiles:
+    #             if t.rect.colliderect(self.hitbox):
+    #                 if self.pos.x >= t.rect.center.x:
+    #                     self.pos.x += 1
+    #                 else:
+    #                     self.pos.x -= 1
+                        
+    #                 if self.pos.y >= t.rect.center.x:
+    #                     self.pos.y += 1
+    #                 else:
+    #                     self.pos.y -= 1
     
-    def tile_collisions(self, p, level_matrix, i_group):#move towards player continuously - could try to do it by finding a good location once and moving there
+    def tile_collisions(self, p, tiles, i_group):#move towards player continuously - could try to do it by finding a good location once and moving there
         if not self.pushed:
             self.pushed = True
-            
-            current_tile = (int(self.pos.x/tile_scale), int(self.pos.y/tile_scale))
-            
-            if level_matrix[current_tile[1]][current_tile[0]].t_type in p.collidable_tiles:
-                self.pushed = False
-                
-                self.pos += (p.pos - self.pos).normalize()
+            for t in tiles:
+                if t.t_type in p.collidable_tiles:
+                    if t.rect.colliderect(self.hitbox):
+                        self.pushed = False
+                        
+                        if self.pos.x < p.pos.x:
+                            self.pos.x += 1
+                        else:
+                            self.pos.x -= 1
+                        
+                        if self.pos.y < p.pos.y:
+                            self.pos.y += 1
+                        else:
+                            self.pos.y -= 1
                             
             for d in i_group:
                 if d.type == "door":
                     if d.rect.colliderect(self.hitbox):
                         self.pushed = False
                         
-                        self.pos += (p.pos - self.pos).normalize()
+                        if self.pos.x < p.pos.x:
+                            self.pos.x += 1
+                        else:
+                            self.pos.x -= 1
+                        
+                        if self.pos.y < p.pos.y:
+                            self.pos.y += 1
+                        else:
+                            self.pos.y -= 1
+                            
                             
             self.rect.center = self.pos
             self.hitbox.center = self.pos
+            
+    # def door_collisions(self, p, i_group):
+        
+
+    #pushes them out of walls and portals
+    #def push(self, tiles):
+    #    pass
 
 class Ammo(Collectable):
     def __init__(self, x, y, display = display, image = amo, value = 30):
@@ -1942,8 +2469,8 @@ class Ammo(Collectable):
         self.scal_image = pygame.transform.scale(self.image, (sprite_scale*32, sprite_scale*32))
         self.rot_image = self.scal_image
 
-    def update(self, p, level_matrix, i_group):
-        super().tile_collisions(p, level_matrix, i_group)
+    def update(self, p, tiles, i_group):
+        super().tile_collisions(p, tiles, i_group)
         self.collect(p)
         self.fade()
 
@@ -1960,8 +2487,8 @@ class Coin(Collectable):
         super().__init__(x, y, display, image, value)
         self.fade_limit = random.randint(850, 950)
 
-    def update(self, p, level_matrix, i_group):
-        super().tile_collisions(p, level_matrix, i_group)
+    def update(self, p, tiles, i_group):
+        super().tile_collisions(p, tiles, i_group)
         self.collect(p)
         self.fade()
 
@@ -2107,19 +2634,36 @@ class Interactable(pygame.sprite.DirtySprite):
         self.display = display
         self.images = images
         self.image = images[state]
+        # self.image1 = image1
+        # self.image2 = image2
+        # self.image = self.image1
+        # rect1 = images[1].get_rect(bottomleft = (round(x), round(y)))
+        # rect2 = images[2].get_rect(bottomleft = (round(x), round(y)))
+        # self.rects = [rect1, rect2]
         self.rects = []
         for i in images:
             self.rects.append(i.get_rect(bottomleft = (round(x), round(y))))
         self.rect = self.rects[state]
+        # self.rect = self.rect1
         self.state = state
+        # self.image = locals()['self.image' + str(self.state)]
+        # self.rect = locals()['self.rect' + str(self.state)]
+        # exec('self.image = self.image' + str(self.state) + '\nself.rect = self.rect' + str(self.state))
         self.hitbox = pygame.Rect(x-10, y-58, 68, 68)
         self.once = False
+        # self.type = "interactable"
         self.z = 2
         self.dirty = 1
         self.needs_key = False
+        # self.info_textbox = textbox(d_width/2, d_height*0.88, 20, white, display)
+        # self.info_text = Text(d_width/2, d_height*0.88, 20, white, display, 'Right click to interact', has_bg=True)
         
     def render_text(self, textbox):
         textbox.draw_c("Right click to interact")
+        # self.info_text.draw_l()
+
+    #def render(self):
+    #    self.display.blit(self.image, self.rect)
 
 class Chest(Interactable):
     def __init__(self, x, y, state, images = [wood_closed, wood_open], c_type = 1):
@@ -2127,11 +2671,84 @@ class Chest(Interactable):
         self.once = True
         self.c_type = c_type
         self.type = "chest"
+        # self.open = state
+        # self.check_image = True
 
-    def update(self, moves, player, c_group, textbox):
-        self.change_state(moves, player, c_group, textbox)
+    def update(self, moves, player, c_group, textbox):#, camera):
+        # if self.check_image:
+        #     self.set_image()
+        #     self.check_image = False
+        self.change_state(moves, player, c_group, textbox)#, camera)
+        #self.render()
+
+    # def change_state(self, moves, player, c_group):
+    #     if moves[7] and player.hitbox.colliderect(self.hitbox):
+    #         if self.image == self.image1:
+    #             self.image = self.image2
+    #             self.rect = self.rect2
+    #             self.action(c_group)
+    #         elif self.image == self.image2 and self.once == False:
+    #             self.image = self.image1
+    #             self.rect = self.rect1
+    #         else:
+    #             pass
+            
+    # def change_state(self, moves, player, c_group):
+    #     if player.hitbox.colliderect(self.hitbox):
+    #         self.render_text()
+    #         if moves[7]:
+    #             if self.image == self.image1:
+    #                 self.image = self.image2
+    #                 self.rect = self.rect2
+    #                 self.action(c_group)
+    #             elif self.image == self.image2 and self.once == False:
+    #                 self.image = self.image1
+    #                 self.rect = self.rect1
+    #             else:
+    #                 pass
+                
+    # def change_state(self, moves, player, c_group, camera):
+    #     if self.once == True:
+    #         if player.hitbox.colliderect(self.hitbox):
+    #             if self.image == self.image1:
+    #                 self.render_text()
+    #                 if moves[7]:
+    #                     self.image = self.image2
+    #                     self.rect = self.rect2
+    #                     self.open = True
+    #                     self.action(c_group, camera)
+    #     else:
+    #         if player.hitbox.colliderect(self.hitbox):
+    #             self.render_text()
+    #             if moves[7]:
+    #                 if self.image == self.image1:
+    #                     self.image = self.image2
+    #                     self.rect = self.rect2
+    #                     self.open = True
+    #                     self.action(c_group, camera)
+    #                 else:
+    #                     self.image = self.image1
+    #                     self.rect = self.rect1
+    #                     self.open = False
                         
-    def change_state(self, moves, player, c_group, textbox):
+    # def change_state(self, moves, player, c_group, camera):
+    #     if self.once:
+    #         if not self.open:
+    #             if player.hitbox.colliderect(self.hitbox):
+    #                 self.render_text()
+    #                 if moves[7]:
+    #                     self.open = True
+    #                     self.set_image()
+    #                     self.action(c_group, camera)
+    #     else:
+    #         if player.hitbox.colliderect(self.hitbox):
+    #                 self.render_text()
+    #                 if moves[7]:
+    #                     self.open != self.open
+    #                     self.set_image()
+    #                     self.action(c_group, camera)
+                        
+    def change_state(self, moves, player, c_group, textbox):#, camera):
         if self.once:
             if self.state == 0:
                 if player.hitbox.colliderect(self.hitbox):
@@ -2140,7 +2757,7 @@ class Chest(Interactable):
                         self.state = 1
                         self.image = self.images[self.state]
                         self.rect = self.rects[self.state]
-                        self.action(c_group)
+                        self.action(c_group)#, camera)
                         
         else:
             if player.hitbox.colliderect(self.hitbox):
@@ -2152,68 +2769,97 @@ class Chest(Interactable):
                         self.state = 0
                     self.image = self.images[self.state]
                     self.rect = self.rects[self.state]
-                    self.action(c_group)
-                    
-    def action(self, c_group):
+                    self.action(c_group)#, camera)
+                
+    # def set_image(self):
+    #     if self.open:
+    #         self.image = self.image2
+    #         self.rect = self.rect2
+    #     else:
+    #         self.image = self.image1
+    #         self.rect = self.rect1
+                        
+    # def player_collision(self, player):
+    #     if player.hitbox.colliderect(self.hitbox):
+    #         self.colliding = True
+    #     else:
+    #         self.colliding = False
+                                    
+    # def show_text(self):
+    #     if self.colliding:
+            
+
+    def action(self, c_group):#, camera):
         for n in range (0, self.c_type*5):
             x = (self.hitbox.topleft[0] + random.randint(0, (self.hitbox.topright[0]-self.hitbox.topleft[0])))
             y = (self.hitbox.topleft[1] + random.randint(0, (self.hitbox.bottomleft[1]-self.hitbox.topleft[1])))
             num = random.randint(0, 30)
             if num == 30:
-                self.create_ammo(x, y, c_group)
+                self.create_ammo(x, y, c_group)#, camera)
             else:
-                self.create_coin(x, y, c_group)
+                self.create_coin(x, y, c_group)#, camera)
 
-    def create_coin(self, x, y, c_group):
+    def create_coin(self, x, y, c_group):#, camera):
         coin = Coin(x, y)
         c_group.add(coin)
+        # camera.add(coin)
 
-    def create_ammo(self, x, y, c_group):
+    def create_ammo(self, x, y, c_group):#, camera):
         ammo = Ammo(x, y)
         c_group.add(ammo)
+        # camera.add(ammo)
         
     def render_text(self, infobox):
         super().render_text(infobox)
+
+    #def render(self):
+    #    super().render()
     
 class Iron_Chest(Chest):
     def __init__(self, x, y, state, images = [iron_closed, iron_open], c_type = 2):
         super().__init__(x, y, state, images = images, c_type = c_type)
         
-    def update(self, moves, player, c_group, infobox):
-        super().update(moves, player, c_group, infobox)
+    def update(self, moves, player, c_group, infobox):#, camera):
+        super().update(moves, player, c_group, infobox)#, camera)
         
 class Gold_Chest(Chest):
     def __init__(self, x, y, state, images = [gold_closed, gold_open], c_type = 3):
         super().__init__(x, y, state, images = images, c_type = c_type)
         
-    def update(self, moves, player, c_group, infobox):
-        super().update(moves, player, c_group, infobox)
+    def update(self, moves, player, c_group, infobox):#, camera):
+        super().update(moves, player, c_group, infobox)#, camera)
 
-class Door(pygame.sprite.DirtySprite):
+class Door(pygame.sprite.DirtySprite):#Interactable):
     def __init__(self, x, y, state, d_type = 'tr', image = wood_door, display = display):
+        # super().__init__(x, y, display, image1 = image1, image2 = image2)
         super().__init__()
         if d_type == 'tr':
             image1 = image
             image2 = pygame.transform.flip(pygame.transform.rotate(image, 90), True, False)
+            # images = [image1, image2]
             rect1 = image1.get_rect(bottomleft = (round(x), round(y)))
             rect2 = image2.get_rect(bottomleft = (round(x), round(y)))
-            
+            # rects = [rect1, rect2]
         elif d_type == 'tl':
             image1 = pygame.transform.flip(image, True, False)
             image2 = pygame.transform.rotate(image, 90)
+            # images = [image1, image2]
             rect1 = image1.get_rect(bottomright = (round(x), round(y)))
             rect2 = image2.get_rect(bottomright = (round(x), round(y)))
         elif d_type == 'br':
             image1 = pygame.transform.flip(image, False, True)
             image2 = pygame.transform.rotate(image, 270)
+            # images = [image1, image2]
             rect1 = image1.get_rect(topleft = (round(x), round(y)))
             rect2 = image2.get_rect(topleft = (round(x), round(y)))
         elif d_type == 'bl':
             image1 = pygame.transform.flip(image, True, True)
             image2 = pygame.transform.flip(pygame.transform.rotate(image, 90), False, True)
+            # images = [image1, image2]
             rect1 = image1.get_rect(topright = (round(x), round(y)))
             rect2 = image2.get_rect(topright = (round(x), round(y)))
-        
+        # self.rect = self.rect1
+        # self.hitbox = pygame.Rect(self.rect.topleft[0]-10, self.rect.topleft[1]-10, self.rect.topright[0]-self.rect.topleft[0]+20, self.rect.bottomleft[1]-self.rect.topleft[1]+20)
         self.images = [image1, image2]
         self.image = self.images[state]
         self.rects = [rect1, rect2]
@@ -2228,10 +2874,45 @@ class Door(pygame.sprite.DirtySprite):
         self.z = 2
         self.dirty = 1
         self.needs_key = False
+        # self.info_textbox = textbox(d_width/2, d_height*0.88, 20, white, display)
+        # self.push_dist = self.rects[0].centerx - self.rects[0].left + 0.1
+        # super().__init__(x, y, state, images)
  
     def update(self, moves, player, e_group, c_group, textbox):
         self.change_state(moves, player, e_group, c_group, textbox)
         self.hitbox = pygame.Rect(self.rect.topleft[0]-10, self.rect.topleft[1]-10, self.rect.topright[0]-self.rect.topleft[0]+20, self.rect.bottomleft[1]-self.rect.topleft[1]+20)
+
+    # def change_state(self, moves, player):
+    #     if moves[7] and player.hitbox.colliderect(self.hitbox):
+    #         if self.image == self.image1:
+    #             self.image = self.image2
+    #             self.rect = self.rect2
+    #         elif self.image == self.image2 and self.once == False:
+    #             self.image = self.image1
+    #             self.rect = self.rect1
+    #         else:
+    #             pass
+            
+    # def change_state(self, moves, player, c_group):
+    #     if self.once == True:
+    #         if player.hitbox.colliderect(self.hitbox):
+    #             if self.image == self.image1:
+    #                 self.render_text()
+    #                 if moves[7]:
+    #                     self.image = self.image2
+    #                     self.rect = self.rect2
+    #                     self.action(c_group)
+    #     else:
+    #         if player.hitbox.colliderect(self.hitbox):
+    #             self.render_text()
+    #             if moves[7]:
+    #                 if self.image == self.image1:
+    #                     self.image = self.image2
+    #                     self.rect = self.rect2
+    #                     self.action(c_group)
+    #                 else:
+    #                     self.image = self.image1
+    #                     self.rect = self.rect1
                         
     def change_state(self, moves, player, e_group, c_group, textbox):
         if self.once:
@@ -2253,7 +2934,7 @@ class Door(pygame.sprite.DirtySprite):
                         self.state = 0
                         self.push_x(player, e_group, c_group)
                     
-    def push_x(self, player, e_group, c_group):#maybe change to what the rect is before for more dynamic pushing (this should be split and put into enemy and player classes)
+    def push_x(self, player, e_group, c_group):#maybe change to what the rect is before for more dynamic pushing
         self.image = self.images[self.state]
         self.rect = self.rects[self.state]
         
@@ -2278,7 +2959,7 @@ class Door(pygame.sprite.DirtySprite):
                 else:
                     c.pos.x = self.rect.left - (c.pos.x - c.hitbox.left) - 0.1
         
-    def push_y(self, player, e_group, c_group):#maybe change to what the rect is before for more dynamic pushing (this should be split and put into enemy and player classes)
+    def push_y(self, player, e_group, c_group):
         self.image = self.images[self.state]
         self.rect = self.rects[self.state]
         
@@ -2305,3 +2986,5 @@ class Door(pygame.sprite.DirtySprite):
                     
     def render_text(self, textbox):
         textbox.draw_c("Right click to interact")
+    # def action(self, x):
+    #     pass

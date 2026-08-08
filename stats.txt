@@ -1,3 +1,2 @@
-Score: 10
-Kills: 1
-Lives: 3
+Score: 0
+Kills: 0

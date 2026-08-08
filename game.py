@@ -8,6 +8,39 @@ class Game():#might be able to be just one function with __init__ as section jus
         self.game_state = Main_Menu(None)
         
         self.game_running = True
+        
+        # self.computer = pygame.display.Info()
+        
+        # #display resolution variables
+        # self.d_width = computer.current_w#1200
+        # self.d_height = computer.current_h#800
+        
+        # #sets the disply resolution
+        # self.display = pygame.display.set_mode(flags=FULLSCREEN)#(d_width, d_height), FULLSCREEN)
+        # # print(display.get_height())
+        
+        # set_global_vars()
+        # my_list = [(4,3), (7,5), (1,8)]
+        # sorted_list = sorted(my_list, key=lambda pos: pos[1])
+        # print(sorted_list)
+        
+    def update_1(self):#if game actually crashes then I won't know exactly what happened only which state it was in
+        while self.game_running:
+            try:
+                self.game_state = globals()[self.game_state.update()](self.game_state.__class__.__name__)
+            except KeyError:
+                print(self.game_state)
+                self.game_running = False
+    
+    def update_1_1(self):#similar approach to update_1 but with a check instead of purposeful crash maybe? need to remove prev_state to initialisation I think
+        while self.game_running:
+            self.next_state = self.game_state.update()
+            # print(type(globals()[self.next_state]))
+            if type(globals()[self.next_state]) == type(type):#globals()[self.next_state]:#(self.game_state.__class__.__name__)) == __class__:
+                self.game_state = globals()[self.next_state](self.game_state.__class__.__name__)
+            else:
+                print(self.next_state)
+                self.game_running = False
                 
     def update(self):#working version of update_1_1, I don't know why it never equalled __class__
         while self.game_running:
@@ -17,6 +50,9 @@ class Game():#might be able to be just one function with __init__ as section jus
             except:
                 print(self.next_state)
                 self.game_running = False
+                
+    def update_3(self):#instead of initialising each game state every change I can just initialise all of them at the beginning and update in the update
+        pass
                 
 def set_global_vars():#with this settings can be removed
     global screen, d_width, d_height, display, img_dir#, m_pos

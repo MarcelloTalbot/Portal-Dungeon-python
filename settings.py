@@ -1,5 +1,9 @@
 import pygame, math
 from pygame.locals import *
+# from camera import *
+# import os
+
+# pygame.init()
 
 #get data of the monitor being used
 computer = pygame.display.Info()
@@ -10,8 +14,8 @@ d_height = computer.current_h#864
 
 #sets the disply resolution
 display = pygame.display.set_mode((d_width, d_height), FULLSCREEN)#(d_width+2, d_height+2), RESIZABLE)
+# print(display)
 # pygame.display.toggle_fullscreen()
-
 #display name
 pygame.display.set_caption('Portal Dungeon')
 
@@ -38,6 +42,8 @@ root_2 = math.sqrt(2)
 #     lvl_1 := lvl_dir+"level_2.txt", 
 # }
 
+
+
 #loading all the images
 img_dir = "images/"#directories for correct path
 
@@ -48,6 +54,7 @@ misc_imgs = {
     hrt := pygame.image.load(misc_dir+"heart.png").convert_alpha(), 
     fist_show := pygame.image.load(misc_dir+"fist_show.png").convert_alpha(), 
     gun_show := pygame.image.load(misc_dir+"gun_show.png").convert_alpha(), 
+    #white_ovly := pygame.transform.scale(pygame.image.load(img_dir+misc_dir+"white_overlay.png").convert_alpha(64), (d_width, d_height)), 
 }
 
 w_show = [fist_show, gun_show]
@@ -136,14 +143,14 @@ interactable_imgs = {
     iron_open := pygame.image.load(int_dir+"iron_chest_open.png").convert_alpha(), 
     gold_closed := pygame.image.load(int_dir+"gold_chest_closed.png").convert_alpha(), 
     gold_open := pygame.image.load(int_dir+"gold_chest_open.png").convert_alpha(), 
-    # door_anticlock_right := pygame.image.load(int_dir+"door_anticlockwise_right.png").convert_alpha(), 
-    # door_clock_up := pygame.image.load(int_dir+"door_clockwise_up.png").convert_alpha(), 
-    # door_clock_left := pygame.image.load(int_dir+"door_clockwise_left.png").convert_alpha(), 
-    # door_anticlock_up := pygame.image.load(int_dir+"door_anticlockwise_up.png").convert_alpha(), 
-    # door_clock_right := pygame.image.load(int_dir+"door_clockwise_right.png").convert_alpha(), 
-    # door_anticlock_down := pygame.image.load(int_dir+"door_anticlockwise_down.png").convert_alpha(), 
-    # door_clock_down := pygame.image.load(int_dir+"door_clockwise_down.png").convert_alpha(), 
-    # door_anticlock_left := pygame.image.load(int_dir+"door_anticlockwise_left.png").convert_alpha(), 
+    # door_anticlock_right := pygame.image.load(img_dir+int_dir+"door_anticlockwise_right.png").convert_alpha(), 
+    # door_clock_up := pygame.image.load(img_dir+int_dir+"door_clockwise_up.png").convert_alpha(), 
+    # door_clock_left := pygame.image.load(img_dir+int_dir+"door_clockwise_left.png").convert_alpha(), 
+    # door_anticlock_up := pygame.image.load(img_dir+int_dir+"door_anticlockwise_up.png").convert_alpha(), 
+    # door_clock_right := pygame.image.load(img_dir+int_dir+"door_clockwise_right.png").convert_alpha(), 
+    # door_anticlock_down := pygame.image.load(img_dir+int_dir+"door_anticlockwise_down.png").convert_alpha(), 
+    # door_clock_down := pygame.image.load(img_dir+int_dir+"door_clockwise_down.png").convert_alpha(), 
+    # door_anticlock_left := pygame.image.load(img_dir+int_dir+"door_anticlockwise_left.png").convert_alpha(), 
     wood_door := pygame.image.load(int_dir+"wood_door.png").convert_alpha(),
 }
 wpn_dir = img_dir + "weapons/"
@@ -249,37 +256,3 @@ timer = 0
 
 # print(int(current_x/tile_scale), ns)
 
-# import pygame
-# import numpy as np
-
-# pygame.init()
-
-# class Particle(pygame.sprite.Sprite):
-#     def __init__(self):
-#         self.hp = 100
-#         self.funcs = (self.kill, self.fade)
-        
-#     def fade(self):
-#         self.hp -= 1
-        
-# # particle_group = #pygame.sprite.Group()
-
-# # for _ in range(100):
-# #     particle_group.add(Particle())
-    
-# # particle_hps = np.empty()
-
-# # for particle in particle_group:
-# #     particle_hps.add(particle.hp)
-
-# particle_group = [Particle() for _ in range(100)]
-
-# particle_hps = np.array([p.hp for p in particle_group])
-    
-# converted = (particle_hps > 0).astype(int)
-
-# # for n in range(len(converted)):
-# #     particle_group[n].funcs[converted[n]]()
-
-# for p, idx in zip(particle_group, converted):
-#     p.funcs[idx]()

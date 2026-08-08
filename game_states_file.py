@@ -1,7 +1,7 @@
 from button import *
 from textbox import *
 from settings import *
-from camera import *
+from new_camera import *
 from entity import *
 from tile import *
 # import pickle
@@ -16,8 +16,17 @@ class Game_State():
         #mouse inputs
         self.m_pos = pygame.math.Vector2((0, 0))
         self.click = False
+        # self.sprites = pygame.sprite.Group()
+        # self.bob = Menu_Player(d_width/10, d_height/10, display, plrhd, plrrm)
+        # self.sprites.add(self.bob)
+        # self.txt = textbox(d_width/2, d_height/2, 150, white, display)
+        # self.classes = [self.txt]
+        
+        # self.classes_2 = [self.bob, self.txt]
         
         self.prev_state = prev_state
+        
+        # self.images = {}
         
     def update(self):
         pass
@@ -57,11 +66,31 @@ class Main_Menu(Game_State):
     def __init__(self, prev_state):
         super().__init__(prev_state)
         
+        # misc_dir = img_dir+'misc/'
+        # btn_dir = img_dir+'buttons/'
+        # plr_dir = img_dir+'player/'
+        # self.images = {'title_img':misc_dir+'title.png',
+        #               'play_u':btn_dir+'play_up.png',
+        #               'play_d':btn_dir+'play_down.png',
+        #               'ctrl_u':btn_dir+'control_up.png',
+        #               'ctrl_d':btn_dir+'control_down.png',
+        #               'quit_u':btn_dir+'quit_up.png',
+        #               'quit_d':btn_dir+'quit_down.png',
+        #               'plrhd':plr_dir+'playerHead.png',
+        #               'plrrm':plr_dir+'playerArms.png',
+        # }
+        
+        # super().load_images()
+        
         #button creation
         self.play_btn = Play_Button()
         self.ctrl_btn = Control_Button()
         self.quit_btn = Quit_Button()
         self.buttons = [self.play_btn, self.ctrl_btn, self.quit_btn]
+        
+        # self.test = eval(repr(self.play_btn))
+        # exec(repr(self.play_btn))
+        # print(repr(self.play_btn))
     
         #image boxes
         self.title_rect = title_img.get_rect(center = (round(d_width/2), round(d_height/4)))
@@ -85,6 +114,7 @@ class Main_Menu(Game_State):
         self.moves = [self.move_up, self.move_down, self.move_left, self.move_right, self.sprint]
             
     def update(self):#does this need clock
+        # super().load_images()
         while self.show:
             self.clock.tick(self.max_fps)
             
@@ -131,7 +161,20 @@ class Main_Menu(Game_State):
                     
                 #leaving
                 elif event.key == pygame.K_ESCAPE:
-                    self.next_state = 'Quit_Menu'
+                    # self.game_state = "quit_menu"
+                    # return Quit_Menu()#this one hopefully
+                    # return True
+                    self.next_state = 'Quit_Menu'#Quit_Menu(Main_Menu())
+                # elif event.key == pygame.K_b:#this needs to go
+                #     self.next_state = 'Win_Screen'
+                
+                # elif event.key == pygame.K_F11:
+                #     self.change_display = True
+                #     height = display.get_height()
+                #     if height == computer.current_h:
+                #         pygame.VIDEORESIZE((d_width, d_height-60))
+                #     else:
+                #         pygame.VIDEORESIZE((d_width, d_height))
 
             elif event.type == pygame.KEYUP:
                 #movement
@@ -178,6 +221,15 @@ class Control_Menu(Game_State):
     def __init__(self, prev_state):
         super().__init__(prev_state)
         
+        # misc_dir = img_dir+'misc/'
+        # btn_dir = img_dir+'buttons/'
+        # self.images = {'ctrls_img':misc_dir+'control_menu.png',
+        #                'back_u':btn_dir+'back_up.png',
+        #                'back_d':btn_dir+'back_down.png',
+        # }
+        
+        # super().load_images()
+        
         #button creation
         self.back_btn = Back_Button(prev_state, d_width/2, d_height*0.92, back_u, back_d)
         self.buttons = [self.back_btn]
@@ -210,7 +262,7 @@ class Control_Menu(Game_State):
             #key presses
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    self.next_state = self.prev_state
+                    self.next_state = self.prev_state#Main_Menu()
                     
             #mouse presses
             elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -240,6 +292,9 @@ class Quit_Menu(Game_State):
         
         #textbox creation
         self.top_large_txt = textbox(d_width/2, 50, 150, white, display)
+        
+        # self.game_state = "quit_menu"
+        # self.prev_state = prev_state
     
     def update(self):
         while self.show:
@@ -304,6 +359,9 @@ class Death_Screen(Game_State):
         with open('stats.txt') as file:
             self.lines = file.readlines()
         
+        with open('stats.txt') as file:
+            self.lines = file.readlines()
+        
     def update(self):
         while self.show:
             self.input_detection()
@@ -346,6 +404,10 @@ class Death_Screen(Game_State):
         self.top_large_txt.draw_c("You Died")
         
         self.lives_txt.draw_l(self.lines[0])
+        # if player.lives == 1:
+        #     self.lives_txt.draw_l(str(player.lives)+" life remaining")
+        # else:
+        #     self.lives_txt.draw_l(str(player.lives)+" lives remaining")
             
         #buttons
         self.rspn_btn.render()
@@ -369,6 +431,8 @@ class Game_Over(Game_State):
         
         with open('stats.txt') as file:
             self.lines = file.readlines()
+        
+        # self.game_state = "game_over"
         
     def update(self):
         while self.show:
@@ -413,6 +477,8 @@ class Game_Over(Game_State):
         
         self.score_txt.draw_l(self.lines[0][:-1])
         self.kills_txt.draw_l(self.lines[1])
+        # self.score_txt.draw_l("Score: " + str(player.score))
+        # self.kills_txt.draw_l("Kills: " + str(player.kills))
         
         #buttons
         self.rtry_btn.render()
@@ -438,6 +504,8 @@ class Win_Screen(Game_State):
         
         with open('stats.txt') as file:
             self.lines = file.readlines()
+        
+        # self.game_state = "win_screen"
         
     def update(self):
         while self.show:
@@ -483,6 +551,10 @@ class Win_Screen(Game_State):
         self.score_txt.draw_l(self.lines[0][:-1])
         self.kills_txt.draw_l(self.lines[1][:-1])
         self.deaths_txt.draw_l(self.lines[2])
+            
+        # self.score_txt.draw_l("Score: " + str(player.score))
+        # self.kills_txt.draw_l("Kills: " + str(player.kills))
+        # self.deaths_txt.draw_l("Deaths: " + str(player.deaths))
         
         #buttons
         self.rtry_btn.render()
@@ -508,6 +580,11 @@ class Paused(Game_State):
         
         with open('stats.txt') as file:
             self.lines = file.readlines()
+        
+        #image boxes
+        #self.overlay = white_ovly.get_rect(topleft = (0,0))
+        
+        # self.game_state = "paused"
     
     def update(self):
         while self.show:
@@ -553,6 +630,9 @@ class Paused(Game_State):
         self.score_txt.draw_l(self.lines[0][:-1])
         self.kills_txt.draw_l(self.lines[1][:-1])
         self.lives_txt.draw_l(self.lines[2])
+        # self.score_txt.draw_l("Score: " + str(player.score))
+        # self.kills_txt.draw_l("Kills: " + str(player.kills))
+        # self.lives_txt.draw_l("Lives: " + str(player.lives))
         
         #buttons
         self.cont_btn.render()
@@ -579,8 +659,11 @@ class Playing(Game_State):
         self.ammo_rect = amo.get_rect(topleft = (round(d_width - 297), round((d_height * 0.96)-5)))
         
         #camera for following player
+        # self.render_dist = (((d_width/2)**2 + (d_height/2)**2)**0.5) + 48
         self.sim_dist = 800
         self.camera = Camera(self.sim_dist)
+        
+        self.level_matrix = []
         
         self.level_matrix = []
         
@@ -596,7 +679,7 @@ class Playing(Game_State):
         self.portal_group = pygame.sprite.Group()
         
         self.save_groups = {'self.bullet_group': self.bullet_group, 'self.enemy_group': self.enemy_group, 'self.spawner_group': self.spawner_group, 'self.collectable_group': self.collectable_group}#, 'self.interactable_group': self.interactable_group}
-        self.save_angle_groups = {'self.footprint_group': self.footprint_group}#probably can combine with save_groups
+        self.save_angle_groups = {'self.footprint_group': self.footprint_group}
         #specific save values might be better for each class not in one long list
         self.save_vals = ['once', 'c_type', 'needs_key', 'fade_limit', 'fade_timer', 'value', 'b_type', 'vel_back', 'anim_spd', 'idle_start_time', 'sight', 'spawn_timer', 'num', 'e_count_max', 'e_count', 's_spawn', 's_type', 'solid', 'health', 'healthmax', 'xvel', 'yvel', 'vel', 't', 'idle_vel', 'collidable_tiles', 'angle', 'attack_timer', 'wait', 'healthregen', 'footprint_timer', 'bullet_delay', 'damage', 'attack_dist']
         self.player_save_vals = ['prev_cash', 'prev_bullets', 'prev_kills', 'prev_score', 'solid', 'health', 'healthmax', 'xvel', 'yvel', 'vel', 't', 'idle_vel', 'collidable_tiles', 'weapon', 'attack_timer', 'wait', 'healthregen', 'energyval', 'energyregen', 'energymax', 'sprintvelmult', 'footprint_timer', 'score', 'bullet_delay', 'cash', 'change_lvl', 'damage', 'kills', 'bullets', 'attack_dist', 'portal_cost', 'respawn_protection', 'respawn_protection_timer']
@@ -610,8 +693,8 @@ class Playing(Game_State):
         self.attack = False
         self.swap_weapon = False
         self.interact = False
-        
-        self.moves = [self.move_up, self.move_down, self.move_left, self.move_right, self.sprint, self.attack, self.swap_weapon, self.interact]
+        # self.is_new_press = True
+        self.moves = [self.move_up, self.move_down, self.move_left, self.move_right, self.sprint, self.attack, self.swap_weapon, self.interact]#, self.is_next_press]
         
         self.show_stats = False
         
@@ -624,12 +707,22 @@ class Playing(Game_State):
         
         self.level = 0
         
+        # self.player_count = 0
+        # self.player = Player(0, 0)
+        # self.player_group.add(self.player)
+        # self.camera.add(self.player)
+        
+        # self.timer = 0
+        
         self.grass_list = [self.grass_obj, self.grass_obj, self.grass_obj, self.grass_obj, self.grass_obj, self.grass_obj, self.f_grass_obj]
     
     def update(self):
         with open('save.txt') as file:
             lines = file.readlines()
             if len(lines) == 0:
+                # self.player = Player(200*sprite_scale, 200*sprite_scale)
+                # self.player_group.add(self.player)
+                # self.camera.add(self.player)
                 self.player = Player(0, 0)
                 self.player_group.add(self.player)
                 self.load_sprites()
@@ -640,8 +733,16 @@ class Playing(Game_State):
         self.load_portals()
         
         self.player.sync()
+        # print(len(self.portal_group))
+        # for p in self.portal_group:
+        #     print(f'1:({p.pos_1.x}, {p.pos_1.y})')
+        #     print(f'2:({p.pos_2.x}, {p.pos_2.y})')
+        # prev_score = self.player.score
+        # prev_bullets = self.player.bullets
+        # prev_cash = self.player.cash
+        # prev_kills = self.player.kills
         
-        while self.show:
+        while self.show:#render then flip then input then update? This will need a
             display.fill(grey)
             
             self.clock.tick(self.max_fps)
@@ -653,9 +754,48 @@ class Playing(Game_State):
             if not self.show:#immediately stop the loop when the game state is changed so player can't die in the same frame
                 break#could also just check if the player dies above the input detection and not bother doing this if statement (and changes level above I think)
             
+            # self.render()
+            
+            self.camera.draw(self.player, self.moves, self.player_group, self.portal_group, self.level, self.level_matrix, self.level_group, self.m_pos, self.enemy_group, self.spawner_group, self.collectable_group, self.bullet_group, self.footprint_group, self.interactable_group, self.info_txt)
+            
+            # self.timer += 1
+            # if self.camera.c_draw(self.player, self.moves, self.level_group, self.m_pos, self.enemy_group, self.spawner_group, self.collectable_group, self.bullet_group, self.footprint_group, self.interactable_group):
+            #     self.player.level += 1
+                # prev_score = self.player.score
+                # prev_bullets = self.player.bullets
+                # prev_cash = self.player.cash
+                # prev_kills = self.player.kills
+                # self.player.energyval = self.player.energymax
+                
+                # if self.player.level > 2:
+                #     with open('save.txt', 'r+') as file:
+                #         file.seek(0)
+                #         file.truncate()
+                #     self.next_state = "Win_Screen"
+                #     self.show = False
+                #     # break
+                # else:
+                #     for t in self.level_group:
+                #         t.kill()
+                #     self.level_group.empty()
+                #     self.bullet_group.empty()
+                #     self.enemy_group.empty()
+                #     self.spawner_group.empty()
+                #     self.footprint_group.empty()
+                #     self.collectable_group.empty()
+                #     self.camera.c_empty()
+
+                #     self.player.pos = pygame.math.Vector2((200*sprite_scale, 200*sprite_scale))
+                #     self.load_level()
+                #     self.load_sprites()
             self.camera.draw(self.player, self.moves, self.player_group, self.portal_group, self.level, self.level_matrix, self.level_group, self.m_pos, self.enemy_group, self.spawner_group, self.collectable_group, self.bullet_group, self.footprint_group, self.interactable_group, self.info_txt)
             
             if self.player.change_lvl:
+                # prev_score = self.player.score
+                # prev_bullets = self.player.bullets
+                # prev_cash = self.player.cash
+                # prev_kills = self.player.kills
+                # self.player.energyval = self.player.energymax
                 self.level += 1
                 self.player.change_lvl = False
                 
@@ -681,7 +821,9 @@ class Playing(Game_State):
                     self.collectable_group.empty()
                     self.interactable_group.empty()
                     self.portal_group.empty()
-                    
+                    # self.camera.c_empty()
+
+                    # self.player.pos = pygame.math.Vector2((200*sprite_scale, 200*sprite_scale))
                     self.load_level()
                     self.load_sprites()
                     self.load_portals()
@@ -689,6 +831,17 @@ class Playing(Game_State):
                     self.player.sync()
             
             elif self.player.die():#maybe change to load and not save when die
+                # self.player.score = prev_score - 100
+                # self.player.health = self.player.healthmax
+                # self.player.energyval = self.player.energymax
+                # self.player.bullets = prev_bullets
+                # self.player.kills = prev_kills
+                # self.player.cash = prev_cash - 50
+                # if self.player.cash < 0:
+                #     self.player.cash = 0
+                # if self.player.score < 0:
+                #     self.player.score = 0
+
                 for t in self.level_group:
                     t.kill()
                 self.level_group.empty()
@@ -699,6 +852,7 @@ class Playing(Game_State):
                 self.collectable_group.empty()
                 self.interactable_group.empty()
                 self.portal_group.empty()
+                # self.camera.c_empty()
                 
                 if self.player.lives > 0:
                     self.load_sprites()
@@ -710,6 +864,8 @@ class Playing(Game_State):
                         else:
                             file.write(str(self.player.lives) + ' lives remaining')
                             
+                    # self.load_level()
+                    # self.load_sprites()
                     self.next_state = "Death_Screen"
                     self.show = False
             
@@ -719,7 +875,7 @@ class Playing(Game_State):
                         file.truncate()
                         
                     with open('stats.txt', 'w') as file:
-                        file.write(f'Score: {self.player.score}\nKills: {self.player.kills}')
+                        file.write('Score: ' + str(self.player.score) + '\nKills: ' + str(self.player.kills))
                         
                     self.next_state = "Game_Over"
                     self.show = False
@@ -727,6 +883,9 @@ class Playing(Game_State):
             for b in self.buttons:
                 if b.update(self.m_pos, self.click):
                     return b.next_state
+                
+            # if hasattr(self, 'next_state'):#or could do this straight after input detection
+            #     return self.next_state
             
             self.render()
                 
@@ -738,6 +897,7 @@ class Playing(Game_State):
         self.click = False
         self.moves[6] = False
         self.moves[7] = False
+        # self.player.dir.update(0,0)
         
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -750,7 +910,7 @@ class Playing(Game_State):
                 self.next_state = 'Paused'
                 
                 with open('stats.txt', 'w') as file:
-                        file.write(f'Score: {self.player.score}\nKills: {self.player.kills}\nLives: {self.player.lives}')
+                        file.write('Score: ' + str(self.player.score) + '\nKills: ' + str(self.player.kills) + '\nLives: ' + str(self.player.lives))
                     
                 self.save()
                 self.show = False
@@ -761,20 +921,21 @@ class Playing(Game_State):
                 #movement
                 if event.key == K_w or event.key == pygame.K_UP:#I don't need pygame.?!?!?!?!?
                     self.moves[0] = True
-                    # self.player.dir.y -= 1
+                    # self.player.dir.x -= 1
                 elif event.key == pygame.K_s or event.key == pygame.K_DOWN:
                     self.moves[1] = True
-                    # self.player.dir.y += 1
+                    # self.player.dir.x += 1
                 elif event.key == pygame.K_a or event.key == pygame.K_LEFT:
                     self.moves[2]= True
-                    # self.player.dir.x -= 1
+                    # self.player.dir.y -= 1
                 elif event.key == pygame.K_d or event.key == pygame.K_RIGHT:
                     self.moves[3] = True
-                    # self.player.dir.x += 1
+                    # self.player.dir.y += 1
+                    
                 #actions
                 elif event.key == pygame.K_LSHIFT:
                     self.moves[4] = True
-                    
+                    # self.is_new_press = False
                 elif event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
                     self.moves[5] = True
                 
@@ -791,34 +952,37 @@ class Playing(Game_State):
                     
                 #pausing
                 elif event.key == pygame.K_ESCAPE or event.key == pygame.K_p:
-                    self.next_state = 'Paused'
+                    self.next_state = 'Paused'#Paused()
                     
                     with open('stats.txt', 'w') as file:
-                        file.write(f'Score: {self.player.score}\nKills: {self.player.kills}\nLives: {self.player.lives}')
+                        file.write('Score: ' + str(self.player.score) + '\nKills: ' + str(self.player.kills) + '\nLives: ' + str(self.player.lives))
                     
                     self.save()
                     self.show = False
                     break
+                
+                # elif event.key == pygame.K_F11:
+                #     pygame.display.gl_set_attribute(FULLSCREEN, 2)
             
             elif event.type == pygame.KEYUP:
                 #movement
                 if event.key == pygame.K_w or event.key == pygame.K_UP:
                     self.moves[0] = False
-                    # self.player.dir.y += 1
+                    # self.player.dir.x += 1
                 elif event.key == pygame.K_s or event.key == pygame.K_DOWN:
                     self.moves[1] = False
-                    # self.player.dir.y -= 1
+                    # self.player.dir.x -= 1
                 elif event.key == pygame.K_a or event.key == pygame.K_LEFT:
                     self.moves[2] = False
-                    # self.player.dir.x += 1
+                    # self.player.dir.y += 1
                 elif event.key == pygame.K_d or event.key == pygame.K_RIGHT:
                     self.moves[3] = False
-                    # self.player.dir.x -= 1
+                    # self.player.dir.y -= 1
+                    
                 #actions
                 elif event.key == pygame.K_LSHIFT:
                     self.moves[4] = False
                     self.player.is_new_press = True
-                    
                 elif event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
                     self.moves[5] = False
                     
@@ -829,7 +993,7 @@ class Playing(Game_State):
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     self.moves[5] = True
-                    
+                    # print(self.m_pos)
                 elif event.button == 3:
                     self.moves[7] = True
             
@@ -842,6 +1006,9 @@ class Playing(Game_State):
                     
         #mouse position
         self.m_pos = pygame.math.Vector2(pygame.mouse.get_pos())
+        # pygame.mouse.set_pos(500,500)
+    def render(self):
+        # display.fill(grey)
         
     def render(self):
         if self.show_stats:
@@ -858,14 +1025,16 @@ class Playing(Game_State):
     def save(self):#use repr instead?
         with open('save.txt', 'w') as file:
             file.write(f'self.level={self.level}')
-            
-            file.write(f'\nself.player = {self.player.__class__.__name__}({self.player.pos.x}, {self.player.pos.y}, lives = {self.player.lives})\n')
+            file.write('\nself.player = ' + self.player.__class__.__name__ + '(' + str(self.player.pos.x) + ', ' + str(self.player.pos.y) + ', lives = ' + str(self.player.lives) + ')\n')
             for attribute, value in self.player.__dict__.items():
                 if attribute in self.player_save_vals:
                     if type(value) == str:
-                        file.write(f'self.player.{attribute} = "{value}"\n')
+                        file.write('self.player.' + attribute + ' = "' + value + '"\n')
                     else:
-                        file.write(f'self.player.{attribute} = {value}\n')
+                        file.write('self.player.' + attribute + ' = ' + str(value) + '\n')
+            # file.write('self.camera.add(self.player)\n')
+            file.write('self.player_group.add(self.player)\n')
+            # file.write('\n')
             
             file.write('self.player_group.add(self.player)\n')
                     
@@ -877,8 +1046,8 @@ class Playing(Game_State):
                             if type(value) == str:
                                 file.write(f'sprite.{attribute} = "{value}"\n')
                             else:
-                                file.write(f'sprite.{attribute} = {value}\n')
-                    file.write(f'{name}.add(sprite)\n')
+                                file.write('sprite.' + attribute + ' = ' + str(value) + '\n')
+                    file.write(name + '.add(sprite)\n')#self.camera.add(sprite)\n')
                     
             for name, value in self.save_angle_groups.items():
                 for sprite in value.sprites():
@@ -888,8 +1057,21 @@ class Playing(Game_State):
                             if type(value) == str:
                                 file.write(f'sprite.{attribute} = "{value}"\n')
                             else:
-                                file.write(f'sprite.{attribute} = {value}\n')
-                    file.write(f'{name}.add(sprite)\n')
+                                file.write('sprite.' + attribute + ' = ' + str(value) + '\n')
+                    file.write(name + '.add(sprite)\n')#self.camera.add(sprite)\n')
+                    
+            for sprite in self.interactable_group.sprites():
+                if sprite.type == "chest":
+                    file.write('sprite = ' + sprite.__class__.__name__ + '(' + str(sprite.pos.x) + ', ' + str(sprite.pos.y) + ', ' + str(sprite.state) + ')\n')
+                else:
+                    file.write('sprite = ' + sprite.__class__.__name__ + '(' + str(sprite.pos.x) + ', ' + str(sprite.pos.y) + ', ' + str(sprite.state) + ', "' + sprite.d_type + '")\n')
+                for attribute, value in sprite.__dict__.items():
+                    if attribute in self.save_vals:
+                        if type(value) == str:
+                            file. write('sprite.' + attribute + ' = "' + value + '"\n')
+                        else:
+                            file.write('sprite.' + attribute + ' = ' + str(value) + '\n')
+                file.write('self.interactable_group.add(sprite)\n')#self.camera.add(sprite)\n')
                     
             for sprite in self.interactable_group.sprites():
                 if sprite.type == "chest":
@@ -938,15 +1120,287 @@ class Playing(Game_State):
                         self.level_matrix[r].append(tile)
                         self.level_group.add(tile)
                         
+    #             #     if value == "False" or "True":
+    #             #         setattr(obj, attribute, bool(value))
+    #             #     elif value == "None":
+    #             #         setattr(obj, attribute, None)
+    #             #     elif 
+    
+    def load_save(self):
+        with open('save.txt') as file:
+            # lines = file.readlines()
+            # for r in range(0, len(lines)):
+            #     line = lines[r][:-1]
+            #     # print(line)
+            #     exec(line)
+            exec(file.read())
+    
+    # #level loading
+    # def load_level(self):
+    #     p_1 = []
+    #     p_2 = []
+    #     p_3 = []
+    #     p_4 = []
+    #     p_5 = []
+    #     p_6 = []
+    #     p_7 = []
+    #     p_8 = []
+    #     p_9 = []
+    #     p_0 = []
+    #     # portal_dict = {}
+    #     f = open(f"levels/level_{self.player.level}.txt")
+    #     lines = f.readlines()
+    #     for r in range(0, len(lines)):
+    #         for c in range(0, len(lines[r])):
+    #             if lines[r][c] == " ":
+    #                 random.choice(self.grass_list)(c, r)
+    #             elif lines[r][c] == "W":
+    #                 newTile = Tile("wall", wall, tile_scale*c, tile_scale*r)
+    #                 self.level_group.add(newTile)
+    #                 self.camera.add(newTile)
+    #             elif lines[r][c] == "B":
+    #                 newTile = Tile("b_portal", b_portal, tile_scale*c, tile_scale*r)
+    #                 self.level_group.add(newTile)
+    #                 self.camera.add(newTile)
+    #             elif lines[r][c] == "T":
+    #                 newTile = Tile("tree", tree, tile_scale*c, tile_scale*r)
+    #                 self.level_group.add(newTile)
+    #                 self.camera.add(newTile)
+    #             elif lines[r][c] == "M":
+    #                 newTile = Tile("mud", mud, tile_scale*c, tile_scale*r)
+    #                 self.level_group.add(newTile)
+    #                 self.camera.add(newTile)
+    #             elif lines[r][c] == ".":
+    #                 newTile = Tile("snowy_grass", snowy_grass, tile_scale*c, tile_scale*r)
+    #                 self.level_group.add(newTile)
+    #                 self.camera.add(newTile)
+    #             #else:
+    #             #    for i in range(0, 9):
+    #             #        if lines[r][c] == str(i):
+    #             #            p_{i}.append(c*tile_scale)
+    #             #            p_{i}.append(r*tile_scale)
+    #             elif lines[r][c] == "1":
+    #                 p_1.append(c*tile_scale)
+    #                 p_1.append(r*tile_scale)
+    #             elif lines[r][c] == "2":
+    #                 p_2.append(c*tile_scale)
+    #                 p_2.append(r*tile_scale)
+    #             elif lines[r][c] == "3":
+    #                 p_3.append(c*tile_scale)
+    #                 p_3.append(r*tile_scale)
+    #             elif lines[r][c] == "4":
+    #                 p_4.append(c*tile_scale)
+    #                 p_4.append(r*tile_scale)
+    #             elif lines[r][c] == "5":
+    #                 p_5.append(c*tile_scale)
+    #                 p_5.append(r*tile_scale)
+    #             elif lines[r][c] == "6":
+    #                 p_6.append(c*tile_scale)
+    #                 p_6.append(r*tile_scale)
+    #             elif lines[r][c] == "7":
+    #                 p_7.append(c*tile_scale)
+    #                 p_7.append(r*tile_scale)
+    #             elif lines[r][c] == "8":
+    #                 p_8.append(c*tile_scale)
+    #                 p_8.append(r*tile_scale)
+    #             elif lines[r][c] == "9":
+    #                 p_9.append(c*tile_scale)
+    #                 p_9.append(r*tile_scale)
+    #             elif lines[r][c] == "0":
+    #                 p_0.append(c*tile_scale)
+    #                 p_0.append(r*tile_scale)
+    #     #for i in range(0, 9):
+    #     #    if len(p_{i}) == 4:
+    #     #        newTile = Portal("portal", ortal, p_{i})
+    #     #        group.add(newTile)
+    #     #        camera.add(newTile)
+    #     if len(p_1) == 4:
+    #         newTile = Portal("portal", portal, p_1)
+    #         self.level_group.add(newTile)
+    #         self.camera.add(newTile)
+    #     if len(p_2) == 4:
+    #         newTile = Portal("portal", portal, p_2)
+    #         self.level_group.add(newTile)
+    #         self.camera.add(newTile)
+    #     if len(p_3) == 4:
+    #         newTile = Portal("portal", portal, p_3)
+    #         self.level_group.add(newTile)
+    #         self.camera.add(newTile)
+    #     if len(p_4) == 4:
+    #         newTile = Portal("portal", portal, p_4)
+    #         self.level_group.add(newTile)
+    #         self.camera.add(newTile)
+    #     if len(p_5) == 4:
+    #         newTile = Portal("portal", portal, p_5)
+    #         self.level_group.add(newTile)
+    #         self.camera.add(newTile)
+    #     if len(p_6) == 4:
+    #         newTile = Portal("portal", portal, p_6)
+    #         self.level_group.add(newTile)
+    #         self.camera.add(newTile)
+    #     if len(p_7) == 4:
+    #         newTile = Portal("portal", portal, p_7)
+    #         self.level_group.add(newTile)
+    #         self.camera.add(newTile)
+    #     if len(p_8) == 4:
+    #         newTile = Portal("portal", portal, p_8)
+    #         self.level_group.add(newTile)
+    #         self.camera.add(newTile)
+    #     if len(p_9) == 4:
+    #         newTile = Portal("portal", portal, p_9)
+    #         self.level_group.add(newTile)
+    #         self.camera.add(newTile)
+    #     if len(p_0) == 4:
+    #         newTile = Portal("portal", portal, p_0)
+    #         self.level_group.add(newTile)
+    #         self.camera.add(newTile)
+        
+    #     lvl_dim = [len(lines[0])-1, len(lines)]
+    #     #print(lvl_dim)
+    #     #return lvl_dim
+        
+    def load_level(self):#load_level_matrix
+        self.level_matrix.clear()
+        # p_1 = []
+        # p_2 = []
+        # p_3 = []
+        # p_4 = []
+        # p_5 = []
+        # p_6 = []
+        # p_7 = []
+        # p_8 = []
+        # p_9 = []
+        # p_0 = []
+        # f = open(f"levels/level_{self.player.level}.txt")
+        with open(f'levels/level_{self.level}.txt') as f:#'levels/test_level.txt'
+            lines = f.readlines()
+            # print(len(lines))
+            for r in range(len(lines)):
+                self.level_matrix.append([])
+                # print(len(lines[r]))
+                for c in range(len(lines[r])):
+                    if lines[r][c] == " ":
+                        tile = random.choice(self.grass_list)(c, r)
+                        self.level_matrix[r].append(tile)
+                        self.level_group.add(tile)
+                    elif lines[r][c] == "W":
+                        tile = Tile("wall", wall, tile_scale*c, tile_scale*r)
+                        self.level_matrix[r].append(tile)
+                        self.level_group.add(tile)
+                    elif lines[r][c] == "B":
+                        tile = Tile("b_portal", b_portal, tile_scale*c, tile_scale*r)
+                        self.level_matrix[r].append(tile)
+                        self.level_group.add(tile)
+                    elif lines[r][c] == "T":
+                        tile = Tile("tree", tree, tile_scale*c, tile_scale*r)
+                        self.level_matrix[r].append(tile)
+                        self.level_group.add(tile)
                     elif lines[r][c] == "M":
                         tile = Tile("mud", mud, tile_scale*c, tile_scale*r)
                         self.level_matrix[r].append(tile)
                         self.level_group.add(tile)
-                        
                     elif lines[r][c] == ".":
                         tile = Tile("snowy_grass", snowy_grass, tile_scale*c, tile_scale*r)
                         self.level_matrix[r].append(tile)
                         self.level_group.add(tile)
+                        
+        # for r in range(len(self.level_matrix)):
+        #     for c in range(len(self.level_matrix[r])):
+        #         print(self.level_matrix[r][c].t_type + ' ' + str(r) + ',' + str(c))
+        # group = []
+        # print(len(self.level_matrix[1]))
+        # for c in range(len(self.level_matrix[1])):
+        #     group.append(self.level_matrix[1][c].t_type)
+        # print(group)
+        
+        # for r in range(len(self.level_matrix)):
+        #     for c in range(len(self.level_matrix[r])):
+        #         print(self.level_matrix[r][c].t_type)
+                    # self.camera.add(tile)
+                    #else:
+                    #    for i in range(0, 9):
+                    #        if lines[r][c] == str(i):
+                    #            p_{i}.append(c*tile_scale)
+                    #            p_{i}.append(r*tile_scale)
+                    # elif lines[r][c] == "1":
+                    #     p_1.append(c*tile_scale)
+                    #     p_1.append(r*tile_scale)
+                    # elif lines[r][c] == "2":
+                    #     p_2.append(c*tile_scale)
+                    #     p_2.append(r*tile_scale)
+                    # elif lines[r][c] == "3":
+                    #     p_3.append(c*tile_scale)
+                    #     p_3.append(r*tile_scale)
+                    # elif lines[r][c] == "4":
+                    #     p_4.append(c*tile_scale)
+                    #     p_4.append(r*tile_scale)
+                    # elif lines[r][c] == "5":
+                    #     p_5.append(c*tile_scale)
+                    #     p_5.append(r*tile_scale)
+                    # elif lines[r][c] == "6":
+                    #     p_6.append(c*tile_scale)
+                    #     p_6.append(r*tile_scale)
+                    # elif lines[r][c] == "7":
+                    #     p_7.append(c*tile_scale)
+                    #     p_7.append(r*tile_scale)
+                    # elif lines[r][c] == "8":
+                    #     p_8.append(c*tile_scale)
+                    #     p_8.append(r*tile_scale)
+                    # elif lines[r][c] == "9":
+                    #     p_9.append(c*tile_scale)
+                    #     p_9.append(r*tile_scale)
+                    # elif lines[r][c] == "0":
+                    #     p_0.append(c*tile_scale)
+                    #     p_0.append(r*tile_scale)
+            #for i in range(0, 9):
+            #    if len(p_{i}) == 4:
+            #        newTile = Portal("portal", ortal, p_{i})
+            #        group.add(newTile)
+            #        camera.add(newTile)
+            # if len(p_1) == 4:
+            #     newTile = Portal("portal", portal, p_1)
+            #     self.level_group.add(newTile)
+            #     self.camera.add(newTile)
+            # if len(p_2) == 4:
+            #     newTile = Portal("portal", portal, p_2)
+            #     self.level_group.add(newTile)
+            #     self.camera.add(newTile)
+            # if len(p_3) == 4:
+            #     newTile = Portal("portal", portal, p_3)
+            #     self.level_group.add(newTile)
+            #     self.camera.add(newTile)
+            # if len(p_4) == 4:
+            #     newTile = Portal("portal", portal, p_4)
+            #     self.level_group.add(newTile)
+            #     self.camera.add(newTile)
+            # if len(p_5) == 4:
+            #     newTile = Portal("portal", portal, p_5)
+            #     self.level_group.add(newTile)
+            #     self.camera.add(newTile)
+            # if len(p_6) == 4:
+            #     newTile = Portal("portal", portal, p_6)
+            #     self.level_group.add(newTile)
+            #     self.camera.add(newTile)
+            # if len(p_7) == 4:
+            #     newTile = Portal("portal", portal, p_7)
+            #     self.level_group.add(newTile)
+            #     self.camera.add(newTile)
+            # if len(p_8) == 4:
+            #     newTile = Portal("portal", portal, p_8)
+            #     self.level_group.add(newTile)
+            #     self.camera.add(newTile)
+            # if len(p_9) == 4:
+            #     newTile = Portal("portal", portal, p_9)
+            #     self.level_group.add(newTile)
+            #     self.camera.add(newTile)
+            # if len(p_0) == 4:
+            #     newTile = Portal("portal", portal, p_0)
+            #     self.level_group.add(newTile)
+            #     self.camera.add(newTile)
+            
+            # lvl_dim = [len(lines[0])-1, len(lines)]
+            #print(lvl_dim)
+            #return lvl_dim
         
     def load_sprites(self):
         f = open(f"levels/level_{self.level}_e.txt")
@@ -954,51 +1408,54 @@ class Playing(Game_State):
         for r in range(0, len(lines)):
             for c in range(0, len(lines[r])):
                 if lines[r][c] == "P":
+                    # self.player = Player(tile_scale*(c+0.5), tile_scale*(r+0.5))
+                    # self.player_group.add(self.player)
                     self.player.pos.x = tile_scale*(c+0.5)
                     self.player.pos.y = tile_scale*(r+0.5)
                 elif lines[r][c] == "Z":
-                    zombie = Zombie(tile_scale*(c+0.5), tile_scale*(r+0.5))
+                    zombie = Zombie(tile_scale*(c+0.5), tile_scale*(r+0.5))#, display, zmbhd, zmbrm, False, -1)
                     self.enemy_group.add(zombie)
-                    
+                    # self.camera.add(zombie)
                 elif lines[r][c] == "S":
                     skeleton = Skeleton(tile_scale*(c+0.5), tile_scale*(r+0.5))
                     self.enemy_group.add(skeleton)
-                    
+                    # self.camera.add(skeleton)
                 elif lines[r][c] == "G":
                     ghost = Ghost(tile_scale*(c+0.5), tile_scale*(r+0.5))
                     self.enemy_group.add(ghost)
-                    
+                    # self.camera.add(ghost)
                 elif lines[r][c] == "g":
                     grave = Grave(tile_scale*(c+0.5), tile_scale*(r+0.5))
                     self.spawner_group.add(grave)
-                    
+                    # self.camera.add(grave)
                 elif lines[r][c] == "D":#up to right
                     door = Door(tile_scale*c, tile_scale*(r+1), 0)
                     self.interactable_group.add(door)
-                    
+                    # self.camera.add(door)
                 elif lines[r][c] == "d":#up to left
                     door = Door(tile_scale*(c+1), tile_scale*(r+1), 0, "tl")
                     self.interactable_group.add(door)
-                    
+                    # self.camera.add(door)
                 elif lines[r][c] == "O":#down to right
                     door = Door(tile_scale*c, tile_scale*r, 1, "br")
                     self.interactable_group.add(door)
-                    
+                    # self.camera.add(door)
                 elif lines[r][c] == "o":#down to left
                     door = Door(tile_scale*(c+1), tile_scale*r, 1, "bl")
                     self.interactable_group.add(door)
-                    
+                    # self.camera.add(door)
                 elif lines[r][c] == "1":
                     w_chest = Chest(tile_scale*c, tile_scale*r + 48, 0)
                     self.interactable_group.add(w_chest)
-                    
+                    # self.camera.add(w_chest)
                 elif lines[r][c] == "2":
                     i_chest = Iron_Chest(tile_scale*c, tile_scale*r + 48, 0)
                     self.interactable_group.add(i_chest)
-                    
+                    # self.camera.add(i_chest)
                 elif lines[r][c] == "3":
                     g_chest = Gold_Chest(tile_scale*c, tile_scale*r + 48, 0)
                     self.interactable_group.add(g_chest)
+                    # self.camera.add(g_chest)
         
     def load_portals(self):
         with open(f"levels/level_{self.level}_p.txt") as f:
@@ -1007,6 +1464,13 @@ class Playing(Game_State):
             for r in range(len(lines)):
                 for c in range(len(lines[r])):
                     if lines[r][c] != '#' and lines[r][c] != ' ' and lines[r][c] != '\n':
+                        # if lines[r][c] in portals:
+                        #     portals[lines[r][c]].extend((r * tile_scale, c * tile_scale))
+                            # newPortal = Portal("portal", portal, portals[lines[r][c]])
+                            # self.portal_group.add(newPortal)
+                        #     del portals[lines[r][c]]
+                        # else:
+                        #     portals[lines[r][c]] = [r * tile_scale, c * tile_scale]
                         if not lines[r][c] in portals:
                             portals[lines[r][c]] = [c * tile_scale, r * tile_scale]
                         else:
@@ -1019,7 +1483,17 @@ class Playing(Game_State):
     def grass_obj(self, c, r):
         tile = Tile("grass", grass, tile_scale*c, tile_scale*r)
         return tile
+        # self.level_group.add(tile)
+        # self.level_matrix[r].append(tile)
+        # self.camera.add(newTile)
 
     def f_grass_obj(self, c, r):
         tile = Tile("flower_grass", flower_grass, tile_scale*c, tile_scale*r)
         return tile
+        # self.level_group.add(tile)
+        # self.level_matrix[r].append(tile)
+        # self.camera.add(newTile)
+
+# class Quitting():
+#     def __init__(self):
+#         pass

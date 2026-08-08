@@ -20,14 +20,14 @@ class Main_Menu_Button():
 
     def mouse_hover(self, m_pos, click, m_player):
         if self.rect.collidepoint(m_pos):
-            if self.image != self.down:
+            if self.image != self.down:#don't really need
                 self.image = self.down
                 if m_player.hitbox.colliderect(self.rect.topleft[0]+8, self.rect.topleft[1]+8, self.rect.topright[0]-self.rect.topleft[0]-16, self.rect.bottomleft[1]-self.rect.topleft[1]-32):
                     m_player.pos.y += 16
             if click:
                 self.clicked = True
         else:
-            if self.image != self.up:
+            if self.image != self.up:#dont really need
                 self.image = self.up
                 if m_player.hitbox.colliderect(self.rect.topleft[0]+8, self.rect.topleft[1]+8+16, self.rect.topright[0]-self.rect.topleft[0]-16, self.rect.bottomleft[1]-self.rect.topleft[1]-32):
                     m_player.pos.y -= 16
