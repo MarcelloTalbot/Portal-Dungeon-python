@@ -9,17 +9,17 @@ W                             W
 W                             W
 W                             W
 W                             W
-W              1              W
+W                             W
 WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 W              W              W
-W    2    4    W    4    3    W
+W              W              W
 W              W              W
 WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 W                             W
-W    5      3     2      1    W
+W                             W
 W                             W
 WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
-W              5              W
+W                             W
 W                             W
 W                             W
 W                             W

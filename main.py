@@ -1,17 +1,12 @@
 import sys, pygame
-from game import *#here or
 
-# try:
-    # from game import *#here?
+pygame.init()
 
-# pygame.init()
+from game import *
 
 game = Game()
-    
-game.update_1_2()
-    
-# except:
-#     print("Game Crashed")
-    
+
+game.update()
+
 pygame.quit()
 sys.exit()
