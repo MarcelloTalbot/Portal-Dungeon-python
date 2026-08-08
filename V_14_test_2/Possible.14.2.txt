@@ -1,0 +1,16 @@
+Possible:
+
+move button creation into update before the while loop
+
+use the while loop with self.show = False and return after that
+	- this won't need the hasattr() in update I think
+	- the input_detection need some work for the next_state
+
+work out how to properly do:
+	x = "Main_Menu"
+	next_state = f(x)()
+
+	which should be the same as next_state = Main_Menu()
+
+make buttons now as state change buttons and their can be overlay buttons:
+	- needs two buttons loops in game state update(better) or try and except
