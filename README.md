@@ -144,7 +144,7 @@ The prev_ variables in the game loop can be removed if the player entity and oth
 
 Actually use delta time (dt)
 
-Make it so the images aren't passed into the init function of classes
+Make it so the images aren't passed into the init function of classes (maybe)
 
 Different Difficulties
 
