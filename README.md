@@ -1,7 +1,7 @@
 # Portal-Dungeon-python
 A small top-down 2D dungeon crawler game, based on the 1993 Gauntlet IV arcade game, made in python 3.11 with pygame.
 
-You control a character using WASD around tile map levels containing many enemies chasing you while collecting coins, refilling ammo and escaping to the next level.
+You control a character using WASD around tile map levels containing many enemies chasing you, while you traverse portals, collect coins, refill ammo and escape to the next level.
 
 ## Controls
 Movement: W, A, S, D
