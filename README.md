@@ -15,7 +15,14 @@ Interact: Right Click
 Pause/Quit/go back: Escape
 
 ## Run
-Download all the items into the same directory and run the main.py file.
+Download all the items into the same directory.
+
+Ensure you have python and pygame installed with the commands:
+- python --version
+- pip --version
+- pip install pygame
+
+Run the main.py file.
 
 ## Changes
 Finished creating new tile matrix, calc_path (and almost tile_collisions)
